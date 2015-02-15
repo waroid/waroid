@@ -87,45 +87,41 @@ void PololuQik::move(float power0, float power1)
 
 void PololuQik::setMotor0(int power)
 {
-	int value = 0;
 	int command = 0;
 	if (power < 0)
 	{
 		command = COMMAND_SET_MOTOR_0_BACKWARD;
-		value = -(int) (power);
+		power *= (-1);
 	}
 	else
 	{
 		command = COMMAND_SET_MOTOR_0_FORWARD;
-		value = (int) (power);
 	}
 
-	if (value > PWM_MAX)
-		value = PWM_MAX;
+	if (power > PWM_MAX)
+		power = PWM_MAX;
 
 	serialPutchar(m_fd, command);
-	serialPutchar(m_fd, value);
+	serialPutchar(m_fd, power);
 }
 
 void PololuQik::setMotor1(int power)
 {
-	int value = 0;
 	int command = 0;
 	if (power < 0)
 	{
 		command = COMMAND_SET_MOTOR_1_BACKWARD;
-		value = -(int) (power);
+		power *= (-1);
 	}
 	else
 	{
 		command = COMMAND_SET_MOTOR_1_FORWARD;
-		value = (int) (power);
 	}
 
-	if (value > PWM_MAX)
-		value = PWM_MAX;
+	if (power > PWM_MAX)
+		power = PWM_MAX;
 
 	serialPutchar(m_fd, command);
-	serialPutchar(m_fd, value);
+	serialPutchar(m_fd, power);
 }
 
