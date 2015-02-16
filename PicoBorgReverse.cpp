@@ -51,13 +51,13 @@ bool PicoBorgReverse::open()
 		return false;
 	}
 
-	READDATA readData;
-	readBlock(COMMAND_GET_ID, readData);
-	if (readData.value == -1 || readData.data[1] != PICOBORGREVERSE_ID)
-	{
-		printf("[I2C(%d)]failed get id. id=%d", m_i2cAddress, readData.data[1]);
-		return false;
-	}
+//	READDATA readData;
+//	readBlock(COMMAND_GET_ID, readData);
+//	if (readData.value == -1 || readData.data[1] != PICOBORGREVERSE_ID)
+//	{
+//		printf("[I2C(%d)]failed get id. id=%d", m_i2cAddress, readData.data[1]);
+//		return false;
+//	}
 
 	if (wiringPiI2CWriteReg8(m_fd, COMMAND_RESET_EPO, 0) == -1)
 	{

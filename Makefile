@@ -50,6 +50,8 @@ depend:
 	$(CC) -MM $(CSOURCES) > $(DEPEND_FILE)
 	$(CXX) -MM $(CPPSOURCES) > $(DEPEND_FILE)
 
+rebuild: clean depend all
+
 install :
 	mkdir -p $(DATADIR)
 	cp -f $(TARGET) $(BINDIR)
@@ -62,9 +64,14 @@ uninstall :
 
 ifneq ($(MAKECMDGOALS), clean)
 ifneq ($(MAKECMDGOALS), depend)
-ifneq ($(SRCS), )
+ifneq ($(MAKECMDGOALS), install)
+ifneq ($(MAKECMDGOALS), uninstall)
+ifneq ($(CSOURCES), )
+ifneq ($(CPPSOURCE), )
 -include $(DEPEND_FILE)
 endif
 endif
 endif
-
+endif
+endif
+endif
