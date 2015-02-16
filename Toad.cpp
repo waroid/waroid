@@ -1,13 +1,13 @@
 /*
- * Turtle.cpp
+ * Toad.cpp
  *
- *  Created on: 2015. 2. 14.
+ *  Created on: 2015. 2. 16.
  *      Author: mirime
  */
 
-#include "Turtle.h"
+#include "Toad.h"
 
-namespace TURTLE
+namespace TOAD
 {
 	const int DIRECTION_COUNT = 11;
 	const int SPEED_COUNT = 3;
@@ -17,13 +17,13 @@ namespace TURTLE
 	//0:motor0, 0:motor1, 1:motor0, 1:motor1
 	{ 0, 0, 0, 0 },		//idle
 	{ -1, -1, 1, 1 },	//forward
-	{ 0, -1, 0, 1 },	//right forward
+	{ 0, 0, 0, 0 },	//right forward
 	{ 1, -1, -1, 1 },	//right
-	{ 1, 0, -1, 0 },	//right backward
+	{ 0, 0, 0, 0 },	//right backward
 	{ 1, 1, -1, -1 },	//backward
-	{ 0, 1, 0, -1 },	//left backward
+	{ 0, 0, 0, 0 },	//left backward
 	{ -1, 1, 1, -1 },	//left
-	{ -1, 0, 1, 0 },	//left forward
+	{ 0, 0, 0, 0 },	//left forward
 	{ 1, 1, 1, 1 },		//turn right
 	{ -1, -1, -1, -1 },	//turn left
 	};
@@ -31,21 +31,21 @@ namespace TURTLE
 	const float SPEED_DATA[SPEED_COUNT] =
 	{ 0.4, 0.6, 0.8 };
 }
-using namespace TURTLE;
+using namespace TOAD;
 
-Turtle::Turtle() :
-		Robot("Turtle"), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
+Toad::Toad() :
+		Robot("Toad"), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-Turtle::~Turtle()
+Toad::~Toad()
 {
 	// TODO Auto-generated destructor stub
 }
 
-bool Turtle::onStart()
+bool Toad::onStart()
 {
 	if (Robot::onStart() == false)
 		return false;
@@ -59,7 +59,7 @@ bool Turtle::onStart()
 	return true;
 }
 
-void Turtle::onStop()
+void Toad::onStop()
 {
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
@@ -67,13 +67,13 @@ void Turtle::onStop()
 	Robot::onStop();
 }
 
-void Turtle::onReset()
+void Toad::onReset()
 {
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
 }
 
-void Turtle::onMove(int data0, int data1)
+void Toad::onMove(int data0, int data1)
 {
 	int dir = data0;
 	if (dir < 0)
@@ -90,4 +90,3 @@ void Turtle::onMove(int data0, int data1)
 	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * SPEED_DATA[speed], DIRECTION_DATA[dir][1] * SPEED_DATA[speed]);
 	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * SPEED_DATA[speed], DIRECTION_DATA[dir][3] * SPEED_DATA[speed]);
 }
-

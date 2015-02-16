@@ -18,6 +18,7 @@
 #include "Crab.h"
 #include "Hydra.h"
 #include "Turtle.h"
+#include "Toad.h"
 #include "MainManager.h"
 
 namespace MAIN_MANAGER
@@ -102,8 +103,8 @@ Robot* MainManager::createRobot(const char* robotName)
 		robot = new Hydra();
 	else if (strcasecmp(robotName, "Turtle") == 0)
 		robot = new Turtle();
-//	else if (strcasecmp(robotName, "Toad") == 0)
-//		robot = new Crab();
+	else if (strcasecmp(robotName, "Toad") == 0)
+		robot = new Toad();
 	else
 	{
 		printf("invalid robot name. name=%s\n", robotName);

@@ -36,7 +36,6 @@ public:
 	void move(float power0, float power1);
 
 protected:
-	void readBlock(int command, READDATA& readData);
 	void setMotor0(int power);
 	void setMotor1(int power);
 

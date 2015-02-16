@@ -15,7 +15,6 @@
 
 namespace PICO_BORG_REVERSE
 {
-	const int PICOBORGREVERSE_ID = 0x15;
 	const int PWM_MAX = 255;
 
 	enum ECOMMAND
@@ -56,14 +55,6 @@ bool PicoBorgReverse::open()
 		return false;
 	}
 
-//	READDATA readData;
-//	readBlock(COMMAND_GET_ID, readData);
-//	if (readData.value == -1 || readData.data[1] != PICOBORGREVERSE_ID)
-//	{
-//		printf("[I2C(%d)]failed get id. id=%d", m_i2cAddress, readData.data[1]);
-//		return false;
-//	}
-
 	if (wiringPiI2CWriteReg8(m_fd, COMMAND_RESET_EPO, 0) == -1)
 	{
 		printf("[I2C(%d)]failed reset", m_i2cAddress);
@@ -93,47 +84,6 @@ void PicoBorgReverse::move(float power0, float power1)
 {
 	setMotor0(power0 * PWM_MAX);
 	setMotor1(power1 * PWM_MAX);
-}
-
-void PicoBorgReverse::readBlock(int command, READDATA& readData)
-{
-	const int I2C_SMBUS_BLOCK_MAX = 32;
-	const int I2C_SMBUS_READ = 1;
-	const int I2C_SMBUS_BLOCK_DATA = 5;
-	const int I2C_SMBUS = 0x0720;
-
-	union i2c_smbus_data
-	{
-		unsigned char byte;
-		unsigned short word;
-		unsigned char block[I2C_SMBUS_BLOCK_MAX + 2]; // block [0] is used for length + one more for PEC
-	};
-
-	struct i2c_smbus_ioctl_data
-	{
-		char read_write;
-		unsigned char command;
-		int size;
-		union i2c_smbus_data *data;
-	};
-
-	i2c_smbus_data data;
-	struct i2c_smbus_ioctl_data args;
-
-	args.read_write = I2C_SMBUS_READ;
-	args.command = command;
-	args.size = I2C_SMBUS_BLOCK_DATA;
-	args.data = &data;
-	if (ioctl(m_fd, I2C_SMBUS, &args))
-		return;
-
-	if (data.block[0] != 4)
-		return;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		readData.data[i] = data.block[i + 1];
-	}
 }
 
 void PicoBorgReverse::setMotor0(int power)
