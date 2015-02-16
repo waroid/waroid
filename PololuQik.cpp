@@ -36,6 +36,11 @@ PololuQik::~PololuQik()
 {
 }
 
+const char* PololuQik::getDescription() const
+{
+	return "Pololu Qik 2s9v1 Dual Serial Motor Controller";
+}
+
 bool PololuQik::open()
 {
 	m_fd = serialOpen("/dev/ttyAMA0", 38400);

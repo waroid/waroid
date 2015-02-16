@@ -28,6 +28,7 @@ public:
 	virtual ~PicoBorgReverse();
 
 public:
+	virtual const char* getDescription() const;
 	virtual bool open();
 	virtual void close();
 	virtual void init();

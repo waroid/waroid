@@ -42,6 +42,11 @@ PicoBorgReverse::~PicoBorgReverse()
 {
 }
 
+const char* PicoBorgReverse::getDescription() const
+{
+	return "PicoBorg Reverse - Advanced motor control for your Raspberry Pi";
+}
+
 bool PicoBorgReverse::open()
 {
 	m_fd = wiringPiI2CSetup(m_i2cAddress);

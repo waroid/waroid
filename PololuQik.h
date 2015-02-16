@@ -17,6 +17,7 @@ public:
 	virtual ~PololuQik();
 
 public:
+	virtual const char* getDescription() const;
 	virtual bool open();
 	virtual void close();
 	virtual void init();
