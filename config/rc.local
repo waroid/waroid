@@ -17,7 +17,7 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-_ROBOT=Crab
-printf "Start waroid of %s\n" "$_ROBOT"
+_ROBOT_INDEX=1
+printf "Start waroid of %s\n" "$_ROBOT_INDEX"
 aplay /usr/local/share/waroid/boot_sentrymode_active.wav
-/usr/local/bin/WaroidServer "$_ROBOT" &
+/usr/local/bin/WaroidServer "$_ROBOT_INDEX" &
