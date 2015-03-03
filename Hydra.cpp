@@ -50,6 +50,7 @@ void Hydra::onReset()
 {
 	m_pololuQik.init();
 	controlTurret(0);
+	Robot::onReset();
 }
 
 void Hydra::onMove(int data0, int data1)

@@ -68,6 +68,7 @@ void Turtle::onReset()
 {
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
+	Robot::onReset();
 }
 
 void Turtle::onMove(int data0, int data1)

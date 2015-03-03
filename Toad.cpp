@@ -68,6 +68,7 @@ void Toad::onReset()
 {
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
+	Robot::onReset();
 }
 
 void Toad::onMove(int data0, int data1)

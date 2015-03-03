@@ -48,6 +48,7 @@ void Crab::onReset()
 {
 	m_pololuQik.init();
 	digitalWrite(GPIO_FIRE, 0);
+	Robot::onReset();
 }
 
 void Crab::onFire(int data0, int data1)
