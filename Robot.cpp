@@ -13,16 +13,13 @@
 
 namespace ROBOT
 {
-	enum EMESSAGE
-	{
-		NONE = 0, RESERVE_1, TOGGLE_CAMERA, FIRE, MOVE, CONTROL_TURRET,
-	};
+
 }
 using namespace ROBOT;
 
-Robot::Robot(const char* name)
+Robot::Robot(EROBOT erobot, const char* name, int index)
+		: m_erobot(erobot), m_index(index)
 {
-	// TODO Auto-generated constructor stub
 	strncpy(m_name, name, sizeof(m_name));
 }
 
@@ -35,16 +32,16 @@ void Robot::process(int message, int data0, int data1)
 {
 	switch (message)
 	{
-	case TOGGLE_CAMERA:
+	case MSG_TOGGLE_CAMERA:
 		onToggleCamera(data0, data1);
 		break;
-	case FIRE:
+	case MSG_FIRE:
 		onFire(data0, data1);
 		break;
-	case MOVE:
+	case MSG_MOVE:
 		onMove(data0, data1);
 		break;
-	case CONTROL_TURRET:
+	case MSG_CONTROL_TURRET:
 		onControlTurret(data0, data1);
 		break;
 	default:

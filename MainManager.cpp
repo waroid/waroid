@@ -23,12 +23,12 @@
 
 namespace MAIN_MANAGER
 {
-	const int RECV_MESSAGE_SIZE = 3;
+	const int MESSAGE_SIZE = 3;
 }
 using namespace MAIN_MANAGER;
 
-MainManager::MainManager() :
-		m_robot(NULL), m_listenSocket(-1), m_clientSocket(-1), m_threadId(-1)
+MainManager::MainManager()
+		: m_robot(NULL), m_listenSocket(-1), m_clientSocket(-1), m_threadId(-1)
 {
 }
 
@@ -36,17 +36,14 @@ MainManager::~MainManager()
 {
 }
 
-bool MainManager::start(const char* robotName)
+bool MainManager::start(int robotIndex)
 {
-	m_robot = createRobot(robotName);
-	if (m_robot == NULL)
-		return false;
-	if (m_robot->start() == false)
-		return false;
+	m_robot = createRobot(robotIndex);
+	if (m_robot == NULL) return false;
+	if (m_robot->start() == false) return false;
 
 	m_listenSocket = tcpListen();
-	if (m_listenSocket == -1)
-		return false;
+	if (m_listenSocket == -1) return false;
 	printf("tcp listen\n");
 
 	pthread_create(&m_threadId, NULL, networkThread, this);
@@ -94,20 +91,35 @@ void MainManager::loop()
 	}
 }
 
-Robot* MainManager::createRobot(const char* robotName)
+Robot* MainManager::createRobot(int robotIndex)
 {
 	Robot* robot = NULL;
-	if (strcasecmp(robotName, "Crab") == 0)
-		robot = new Crab();
-	else if (strcasecmp(robotName, "Hydra") == 0)
-		robot = new Hydra();
-	else if (strcasecmp(robotName, "Turtle") == 0)
-		robot = new Turtle();
-	else if (strcasecmp(robotName, "Toad") == 0)
-		robot = new Toad();
-	else
+	switch (robotIndex)
 	{
-		printf("invalid robot name. name=%s\n", robotName);
+	case 1:
+	case 2:
+		robot = new Crab(robotIndex);
+		break;
+
+	case 3:
+	case 4:
+		robot = new Hydra(robotIndex);
+		break;
+
+	case 5:
+	case 6:
+		robot = new Turtle(robotIndex);
+		break;
+
+	case 7:
+	case 8:
+		robot = new Toad(robotIndex);
+		break;
+	}
+
+	if (robot == NULL)
+	{
+		printf("invalid robot. index=%d\n", robotIndex);
 	}
 
 	return robot;
@@ -155,6 +167,7 @@ bool MainManager::tcpAccept()
 	m_clientSocket = accept(m_listenSocket, (struct sockaddr*) &sockAddrIn, &sockAddrlen);
 	if (m_clientSocket != -1)
 	{
+		tcpSend(MSG_ROBOT_INDEX_ACK, m_robot->getIndex(), 0);
 		printf("connected. addr=%s:%d\n", inet_ntoa(sockAddrIn.sin_addr), ntohs(sockAddrIn.sin_port));
 	}
 
@@ -165,10 +178,10 @@ void MainManager::tcpProcess()
 {
 	if (m_clientSocket != -1)
 	{
-		signed char message[RECV_MESSAGE_SIZE];
+		signed char message[MESSAGE_SIZE];
 		for (;;)
 		{
-			int res = recv(m_clientSocket, message, RECV_MESSAGE_SIZE, 0);
+			int res = recv(m_clientSocket, message, MESSAGE_SIZE, 0);
 			if (res < 0)
 			{
 				printf("failed recv. err=%s(%d)\n", strerror(errno), errno);
@@ -181,7 +194,7 @@ void MainManager::tcpProcess()
 				tcpDisconnect();
 				return;
 			}
-			else if (res == RECV_MESSAGE_SIZE)
+			else if (res == MESSAGE_SIZE)
 			{
 				printf("recv message. %d %d %d\n", message[0], message[1], message[2]);
 				m_robot->process(message[0], message[1], message[2]);
@@ -207,6 +220,15 @@ void MainManager::tcpDisconnect()
 	if (m_robot)
 	{
 		m_robot->reset();
+	}
+}
+
+void MainManager::tcpSend(EMESSAGE emessage, signed char data0, signed char data1)
+{
+	if (m_clientSocket != -1)
+	{
+		signed char message[MESSAGE_SIZE] = {(signed char)emessage, data0, data1};
+		send(m_clientSocket, message, MESSAGE_SIZE, 0);
 	}
 }
 

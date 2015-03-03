@@ -33,8 +33,8 @@ namespace TOAD
 }
 using namespace TOAD;
 
-Toad::Toad() :
-		Robot("Toad"), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
+Toad::Toad(int index)
+		: Robot(ROBOT_TOAD, "Toad", index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
 {
 	// TODO Auto-generated constructor stub
 
@@ -47,14 +47,11 @@ Toad::~Toad()
 
 bool Toad::onStart()
 {
-	if (Robot::onStart() == false)
-		return false;
+	if (Robot::onStart() == false) return false;
 
-	if (m_picoBorgReverse0.open() == false)
-		return false;
+	if (m_picoBorgReverse0.open() == false) return false;
 
-	if (m_picoBorgReverse1.open() == false)
-		return false;
+	if (m_picoBorgReverse1.open() == false) return false;
 
 	return true;
 }
@@ -76,16 +73,12 @@ void Toad::onReset()
 void Toad::onMove(int data0, int data1)
 {
 	int dir = data0;
-	if (dir < 0)
-		dir = 0;
-	else if (dir >= DIRECTION_COUNT)
-		dir = 0;
+	if (dir < 0) dir = 0;
+	else if (dir >= DIRECTION_COUNT) dir = 0;
 
 	int speed = data1;
-	if (speed < 0)
-		speed = 0;
-	else if (speed >= SPEED_COUNT)
-		speed = 0;
+	if (speed < 0) speed = 0;
+	else if (speed >= SPEED_COUNT) speed = 0;
 
 	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * SPEED_DATA[speed], DIRECTION_DATA[dir][1] * SPEED_DATA[speed]);
 	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * SPEED_DATA[speed], DIRECTION_DATA[dir][3] * SPEED_DATA[speed]);

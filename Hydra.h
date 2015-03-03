@@ -11,10 +11,10 @@
 #include "PololuQik.h"
 #include "Robot.h"
 
-class Hydra : public Robot
+class Hydra: public Robot
 {
 public:
-	Hydra();
+	Hydra(int index);
 	virtual ~Hydra();
 
 protected:
@@ -28,7 +28,7 @@ private:
 	void controlTurret(int angle);
 
 protected:
-	PololuQik	m_pololuQik;
+	PololuQik m_pololuQik;
 };
 
 #endif /* HYDRA_H_ */

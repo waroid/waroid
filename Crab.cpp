@@ -15,8 +15,8 @@ namespace CRAB
 }
 using namespace CRAB;
 
-Crab::Crab() :
-		Robot("Crab")
+Crab::Crab(int index)
+		: Robot(ROBOT_CRAB, "Crab", index)
 {
 	// TODO Auto-generated constructor stub
 
@@ -29,11 +29,9 @@ Crab::~Crab()
 
 bool Crab::onStart()
 {
-	if (Robot::onStart() == false)
-		return false;
+	if (Robot::onStart() == false) return false;
 
-	if (m_pololuQik.open() == false)
-		return false;
+	if (m_pololuQik.open() == false) return false;
 
 	pinMode(GPIO_FIRE, OUTPUT);
 

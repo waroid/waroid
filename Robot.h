@@ -8,17 +8,18 @@
 #ifndef ROBOT_H_
 #define ROBOT_H_
 
+#include "Global.h"
+
 class Robot
 {
 public:
-	Robot(const char* name);
+	Robot(EROBOT erobot, const char* name, int index);
 	virtual ~Robot();
 
 public:
 	bool start()
 	{
-		if (onStart() == false)
-			return false;
+		if (onStart() == false) return false;
 
 		onReset();
 		return true;
@@ -35,6 +36,19 @@ public:
 		onReset();
 	}
 
+	EROBOT getType() const
+	{
+		return m_erobot;
+	}
+	const char* getName() const
+	{
+		return m_name;
+	}
+	int getIndex() const
+	{
+		return m_index;
+	}
+
 	void process(int message, int data0, int data1);
 
 protected:
@@ -48,7 +62,9 @@ protected:
 	virtual void onControlTurret(int data0, int data1);
 
 protected:
+	EROBOT m_erobot;
 	char m_name[100];
+	int m_index;
 };
 
 #endif /* ROBOT_H_ */

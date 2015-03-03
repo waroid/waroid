@@ -8,6 +8,8 @@
 #ifndef MAINMANAGER_H_
 #define MAINMANAGER_H_
 
+#include "Global.h"
+
 class Robot;
 
 class MainManager
@@ -17,16 +19,17 @@ public:
 	virtual ~MainManager();
 
 public:
-	bool start(const char* robotName);
+	bool start(int robotIndex);
 	void stop();
 	void loop();
 
 private:
-	Robot* createRobot(const char* robotName);
+	Robot* createRobot(int robotIndex);
 	int tcpListen();
 	bool tcpAccept();
 	void tcpProcess();
 	void tcpDisconnect();
+	void tcpSend(EMESSAGE emessage, signed char data0, signed char data1);
 
 private:
 	Robot* m_robot;

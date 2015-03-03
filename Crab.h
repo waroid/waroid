@@ -11,10 +11,10 @@
 #include "PololuQik.h"
 #include "Robot.h"
 
-class Crab : public Robot
+class Crab: public Robot
 {
 public:
-	Crab();
+	Crab(int index);
 	virtual ~Crab();
 
 protected:
@@ -25,7 +25,7 @@ protected:
 	virtual void onMove(int data0, int data1);
 
 protected:
-	PololuQik	m_pololuQik;
+	PololuQik m_pololuQik;
 };
 
 #endif /* CRAB_H_ */

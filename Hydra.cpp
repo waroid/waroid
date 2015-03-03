@@ -16,8 +16,8 @@ namespace HYDRA
 }
 using namespace HYDRA;
 
-Hydra::Hydra() :
-		Robot("Hydra")
+Hydra::Hydra(int index)
+		: Robot(ROBOT_HYDRA, "Hydra", index)
 {
 	// TODO Auto-generated constructor stub
 
@@ -30,11 +30,9 @@ Hydra::~Hydra()
 
 bool Hydra::onStart()
 {
-	if (Robot::onStart() == false)
-		return false;
+	if (Robot::onStart() == false) return false;
 
-	if (m_pololuQik.open() == false)
-		return false;
+	if (m_pololuQik.open() == false) return false;
 
 	softServoSetup(GPIO_TURRET, -1, -1, -1, -1, -1, -1, -1);
 	controlTurret(0);
@@ -66,10 +64,8 @@ void Hydra::onControlTurret(int data0, int data1)
 
 void Hydra::controlTurret(int angle)
 {
-	if (angle < 0)
-		angle = 0;
-	else if (angle > 60)
-		angle = 60;
+	if (angle < 0) angle = 0;
+	else if (angle > 60) angle = 60;
 
 	softServoWrite(GPIO_TURRET, (25 * angle) / 3 - 250);
 }

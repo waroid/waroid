@@ -14,7 +14,7 @@
 class Toad: public Robot
 {
 public:
-	Toad();
+	Toad(int index);
 	virtual ~Toad();
 
 public:

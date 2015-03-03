@@ -18,8 +18,8 @@ protected:
 		int value;
 		unsigned char data[4];
 
-		READDATA() :
-				value(-1)
+		READDATA()
+				: value(-1)
 		{
 		}
 	};

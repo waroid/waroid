@@ -14,7 +14,7 @@
 class Turtle: public Robot
 {
 public:
-	Turtle();
+	Turtle(int index);
 	virtual ~Turtle();
 
 public:

@@ -32,8 +32,8 @@ namespace PICO_BORG_REVERSE
 }
 using namespace PICO_BORG_REVERSE;
 
-PicoBorgReverse::PicoBorgReverse(int i2cAddress) :
-		m_fd(-1), m_i2cAddress(i2cAddress)
+PicoBorgReverse::PicoBorgReverse(int i2cAddress)
+		: m_fd(-1), m_i2cAddress(i2cAddress)
 {
 }
 
@@ -99,8 +99,7 @@ void PicoBorgReverse::setMotor0(int power)
 		command = COMMAND_SET_MOTOR_0_FORWARD;
 	}
 
-	if (power > PWM_MAX)
-		power = PWM_MAX;
+	if (power > PWM_MAX) power = PWM_MAX;
 
 	wiringPiI2CWriteReg8(m_fd, command, power);
 }
@@ -118,7 +117,6 @@ void PicoBorgReverse::setMotor1(int power)
 		command = COMMAND_SET_MOTOR_1_FORWARD;
 	}
 
-	if (power > PWM_MAX)
-		power = PWM_MAX;
+	if (power > PWM_MAX) power = PWM_MAX;
 	wiringPiI2CWriteReg8(m_fd, command, power);
 }

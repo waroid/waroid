@@ -27,8 +27,8 @@ namespace POLOLU_QIK
 }
 using namespace POLOLU_QIK;
 
-PololuQik::PololuQik() :
-		m_fd(-1)
+PololuQik::PololuQik()
+		: m_fd(-1)
 {
 }
 
@@ -103,8 +103,7 @@ void PololuQik::setMotor0(int power)
 		command = COMMAND_SET_MOTOR_0_FORWARD;
 	}
 
-	if (power > PWM_MAX)
-		power = PWM_MAX;
+	if (power > PWM_MAX) power = PWM_MAX;
 
 	serialPutchar(m_fd, command);
 	serialPutchar(m_fd, power);
@@ -123,8 +122,7 @@ void PololuQik::setMotor1(int power)
 		command = COMMAND_SET_MOTOR_1_FORWARD;
 	}
 
-	if (power > PWM_MAX)
-		power = PWM_MAX;
+	if (power > PWM_MAX) power = PWM_MAX;
 
 	serialPutchar(m_fd, command);
 	serialPutchar(m_fd, power);
