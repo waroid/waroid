@@ -55,7 +55,7 @@ void Hydra::onReset()
 
 void Hydra::onMove(int data0, int data1)
 {
-	m_pololuQik.move(data0 / 100.0f, data1 * 100.0f);
+	m_pololuQik.move(data0 / 100.0f, data1 / 100.0f);
 }
 
 void Hydra::onControlTurret(int data0, int data1)
