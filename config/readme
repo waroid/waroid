@@ -1,0 +1,41 @@
+1. sudo raspi-config
+	- Expend Filesystem
+	- Internationalisation Options
+		- Change Timezone : Asia -> Seoul
+		- Change Keyboard Layout : Generic 105-key -> Other -> Korean -> Korean(104...) -> default -> default -> default
+	- Enable Camera : enable
+	- Advanced Options
+		- Hostname : R01 or R02 ...... R06
+		- Memory Split : 32
+		- I2C : enable
+	
+2. update
+	- sudo apt-get update
+	- sudo apt-get upgrade
+
+3. samba
+	- book (raspberry pi)
+
+4. camera
+	- bool (raspberry pi)
+
+5. get source
+	- git clone https://github.com/waroid/waroid.git
+
+6. hostapd, dhcp
+	- url (https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-acess-point/install-software)
+
+7. Piborg
+	- url (https://www.piborg.org/picoborgrev/install)
+
+
+8. etc
+	- sudo apt-get netcat-openbsd libncurses5-dev
+	- /etc/inittab -> comment ttyAMA0
+
+9. build and install
+	- make rebuild
+	- sudo make install
+	- modified /etc/rc.local
+
+* waroid/config folder
