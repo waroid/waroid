@@ -19,7 +19,8 @@ namespace SERVO_MOTOR
 }
 using namespace SERVO_MOTOR;
 
-ServoMotor::ServoMotor()
+ServoMotor::ServoMotor(int offset)
+		: m_offset(offset)
 {
 	// TODO Auto-generated constructor stub
 
@@ -54,13 +55,13 @@ void ServoMotor::close()
 
 void ServoMotor::init()
 {
-	pwmWrite(GPIO_NUM, 0);
+	rotate(0);
 }
 
 void ServoMotor::rotate(int angle)
 {
 	if ((angle < 0) || (angle > 180)) return;
 
-	int v = (angle + 45) * PWM_RANGE / 1800;
+	int v = (angle + m_offset + 45) * PWM_RANGE / 1800;
 	pwmWrite(GPIO_NUM, v);
 }

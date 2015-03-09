@@ -13,7 +13,7 @@
 class ServoMotor: public IModule
 {
 public:
-	ServoMotor();
+	ServoMotor(int offset);
 	virtual ~ServoMotor();
 
 	virtual const char* getDescription() const;
@@ -22,6 +22,9 @@ public:
 	virtual void init();
 
 	void rotate(int angle);
+
+protected:
+	int m_offset;
 };
 
 #endif /* SERVOMOTOR_H_ */
