@@ -9,6 +9,7 @@
 #define HYDRA_H_
 
 #include "PololuQik.h"
+#include "ServoMotor.h"
 #include "Robot.h"
 
 class Hydra: public Robot
@@ -29,6 +30,7 @@ private:
 
 protected:
 	PololuQik m_pololuQik;
+	ServoMotor m_servoMotor;
 };
 
 #endif /* HYDRA_H_ */
