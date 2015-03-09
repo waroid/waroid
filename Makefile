@@ -12,11 +12,12 @@ LINK = g++
 LIBS = -lwiringPi -lm -lpthread
 
 # FILE
-CSOURCES = softServo.c
+CSOURCES = 
 
 CPPSOURCES = main.cpp \
 	PicoBorgReverse.cpp \
 	PololuQik.cpp \
+	ServoMotor.cpp \
 	Robot.cpp \
 	Crab.cpp \
 	Hydra.cpp \
