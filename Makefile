@@ -49,7 +49,7 @@ clean :
 	rm -f $(OBJECTS) $(TARGET) $(DEPEND_FILE)
 
 depend:
-	$(CC) -MM $(CSOURCES) > $(DEPEND_FILE)
+	#$(CC) -MM $(CSOURCES) > $(DEPEND_FILE)
 	$(CXX) -MM $(CPPSOURCES) > $(DEPEND_FILE)
 
 rebuild: clean depend all
