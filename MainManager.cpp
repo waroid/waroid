@@ -23,11 +23,12 @@
 
 namespace MAIN_MANAGER
 {
+	const int MAX_BUFFER_SIZE = 128;
 }
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(-1), m_clientSocket(-1), m_threadId(-1)
+		: m_robot(NULL), m_listenSocket(-1), m_ownerSocket(-1), m_threadId(-1)
 {
 }
 
@@ -48,6 +49,8 @@ bool MainManager::start(int robotIndex)
 	pthread_create(&m_threadId, NULL, networkThread, this);
 	printf("create network thread\n");
 
+	pthread_join(m_threadId, NULL);
+
 	return true;
 }
 
@@ -59,11 +62,11 @@ void MainManager::stop()
 	}
 	printf("cancel network thread\n");
 
-	if (m_clientSocket != -1)
+	if (m_ownerSocket != -1)
 	{
-		close(m_clientSocket);
-		m_clientSocket = -1;
-		printf("close client socket\n");
+		close(m_ownerSocket);
+		m_ownerSocket = -1;
+		printf("close owner socket\n");
 	}
 
 	if (m_listenSocket != -1)
@@ -79,14 +82,6 @@ void MainManager::stop()
 		delete m_robot;
 		m_robot = NULL;
 		printf("delete robot\n");
-	}
-}
-
-void MainManager::loop()
-{
-	for (;;)
-	{
-		usleep(50000);
 	}
 }
 
@@ -136,13 +131,13 @@ int MainManager::tcpListen()
 	int optval = 1;
 	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
-	struct sockaddr_in sockAddrIn;
-	memset(&sockAddrIn, 0, sizeof(sockAddrIn));
-	sockAddrIn.sin_family = AF_INET;
-	sockAddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
-	sockAddrIn.sin_port = htons(5002);
+	struct sockaddr_in sockaddrIn;
+	memset(&sockaddrIn, 0, sizeof(sockaddrIn));
+	sockaddrIn.sin_family = AF_INET;
+	sockaddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
+	sockaddrIn.sin_port = htons(5002);
 
-	if (bind(s, (struct sockaddr*) &sockAddrIn, sizeof(sockAddrIn)) < 0)
+	if (bind(s, (struct sockaddr*) &sockaddrIn, sizeof(sockaddrIn)) < 0)
 	{
 		printf("failed bind(). err=%s(%d)\n", strerror(errno), errno);
 		close(s);
@@ -159,94 +154,96 @@ int MainManager::tcpListen()
 	return s;
 }
 
-bool MainManager::tcpAccept()
+void MainManager::tcpLoop()
 {
-	static struct sockaddr_in sockAddrIn;
-	static socklen_t sockAddrlen = sizeof(sockAddrIn);
-	m_clientSocket = accept(m_listenSocket, (struct sockaddr*) &sockAddrIn, &sockAddrlen);
-	if (m_clientSocket != -1)
+	fd_set master_fds;
+	FD_ZERO(&master_fds);
+	FD_SET(m_listenSocket, &master_fds);
+	int fd_max = m_listenSocket;
+	fd_set read_fds;
+	for (;;)
 	{
-		tcpSend(EMESSAGE::ROBOT_INDEX_ACK, m_robot->getIndex(), 0);
-		printf("connected. addr=%s:%d\n", inet_ntoa(sockAddrIn.sin_addr), ntohs(sockAddrIn.sin_port));
-	}
-
-	return (m_clientSocket != -1);
-}
-
-void MainManager::tcpProcess()
-{
-	if (m_clientSocket != -1)
-	{
-		ROBOT_DATA robotData;
-		for (;;)
+		read_fds = master_fds;
+		int ret = select(fd_max + 1, &read_fds, 0, 0, 0);
+		if (ret == -1)
 		{
-			int res = recv(m_clientSocket, &robotData, ROBOT_DATA_SIZE, 0);
-			if (res < 0)
+			printf("failed select. err=%s(%d)\n", strerror(errno), errno);
+			return;
+		}
+
+		if (FD_ISSET(m_listenSocket, &read_fds))
+		{
+			struct sockaddr_in sockaddrIn;
+			socklen_t socklen = sizeof(sockaddrIn);
+			int s = accept(m_listenSocket, (struct sockaddr*) &sockaddrIn, &socklen);
+			printf("new connection. socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
+			if (m_ownerSocket == -1)
 			{
-				printf("failed recv. err=%s(%d)\n", strerror(errno), errno);
-				tcpDisconnect();
-				return;
+				m_ownerSocket = s;
+				FD_SET(s, &master_fds);
+				if (s > fd_max) fd_max = s;
+				tcpSend(s, EMESSAGE::ROBOT_INDEX_ACK, m_robot->getIndex(), 0);
 			}
-			else if (res == 0)
+			else
 			{
-				printf("disconnect.\n");
-				tcpDisconnect();
-				return;
+				printf("close connection. reason=EXIST_OWNER, socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
+				tcpSend(s, EMESSAGE::ERROR_ACK, EERROR::EXIST_OWNER, 0);
+				tcpDisconnect(s);
 			}
-			else if (res == ROBOT_DATA_SIZE)
+		}
+
+		if (m_ownerSocket != -1 && FD_ISSET(m_ownerSocket, &read_fds))
+		{
+			ROBOT_DATA robotData;
+			int recvLen = recv(m_ownerSocket, &robotData, sizeof(robotData), 0);
+			if (recvLen <= 0)
+			{
+				printf("disconnect\n recv=%d err=%s(%d)", recvLen, strerror(errno), errno);
+				FD_CLR(m_ownerSocket, &master_fds);
+				tcpDisconnect(m_ownerSocket);
+			}
+			else if (recvLen == ROBOT_DATA_SIZE)
 			{
 				printf("recv message. %d %d %d\n", robotData.ID, robotData.Data0, robotData.Data1);
 				m_robot->process(robotData);
 			}
 			else
 			{
-				printf("invalid packet size. size=%d\n", res);
-				return;
+				printf("invalid packet size. size=%d\n", recvLen);
+				tcpDisconnect(m_ownerSocket);
 			}
+
 		}
 	}
 }
 
-void MainManager::tcpDisconnect()
+void MainManager::tcpSend(int socket, EMESSAGE::ETYPE emessage, int data0, int data1)
 {
-	if (m_clientSocket != -1)
-	{
-		close(m_clientSocket);
-		m_clientSocket = -1;
-		printf("close client socket\n");
-	}
-
-	if (m_robot)
-	{
-		m_robot->reset();
-	}
+	ROBOT_DATA data;
+	data.ID = (signed char)emessage;
+	data.Data0 = (signed char)data0;
+	data.Data1 = (signed char)data1;
+	send(socket, &data, ROBOT_DATA_SIZE, 0);
 }
 
-void MainManager::tcpSend(EMESSAGE::ETYPE emessage, int data0, int data1)
+void MainManager::tcpDisconnect(int socket)
 {
-	if (m_clientSocket != -1)
+	close(socket);
+	if (m_ownerSocket == socket)
 	{
-		ROBOT_DATA data;
-		data.ID = (signed char)emessage;
-		data.Data0 = (signed char)data0;
-		data.Data1 = (signed char)data1;
-		send(m_clientSocket, &data, ROBOT_DATA_SIZE, 0);
+		m_ownerSocket = -1;
+
+		if (m_robot)
+		{
+			m_robot->reset();
+		}
 	}
 }
 
 void* MainManager::networkThread(void* param)
 {
 	MainManager* mainManager = (MainManager*) param;
-
-	for (;;)
-	{
-		if (mainManager->tcpAccept())
-		{
-			mainManager->tcpProcess();
-		}
-
-		usleep(100000);
-	}
+	mainManager->tcpLoop();
 
 	return NULL;
 }

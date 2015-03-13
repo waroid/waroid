@@ -21,20 +21,18 @@ public:
 public:
 	bool start(int robotIndex);
 	void stop();
-	void loop();
 
 private:
 	Robot* createRobot(int robotIndex);
 	int tcpListen();
-	bool tcpAccept();
-	void tcpProcess();
-	void tcpDisconnect();
-	void tcpSend(EMESSAGE::ETYPE emessage, int data0, int data1);
+	void tcpLoop();
+	void tcpSend(int socket, EMESSAGE::ETYPE emessage, int data0, int data1);
+	void tcpDisconnect(int socket);
 
 private:
 	Robot* m_robot;
 	int m_listenSocket;
-	int m_clientSocket;
+	int m_ownerSocket;
 	pthread_t m_threadId;
 
 protected:

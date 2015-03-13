@@ -16,7 +16,7 @@
 
 MainManager mainManager;
 
-bool initialize(int robotIndex);
+bool initialize();
 void cleanup(int s);
 
 int main(int argc, char* argv[])
@@ -28,21 +28,22 @@ int main(int argc, char* argv[])
 	}
 
 	int robotIndex = atoi(argv[1]);
-	if (initialize(robotIndex) == false)
+
+	if (initialize() == false)
 	{
 		printf("failed initialize()\n");
 		cleanup(0);
 		return -1;
 	}
 
-	mainManager.loop();
+	mainManager.start(robotIndex);
 
 	cleanup(0);
 
 	return 0;
 }
 
-bool initialize(int robotIndex)
+bool initialize()
 {
 	signal(SIGINT, cleanup);
 	signal(SIGTERM, cleanup);
@@ -55,12 +56,6 @@ bool initialize(int robotIndex)
 		return false;
 	}
 	printf("setup gpio of wiringPi\n");
-
-	if (mainManager.start(robotIndex) == false)
-	{
-		printf("failed mainManager.start()\n");
-		return false;
-	}
 
 	return true;
 }
