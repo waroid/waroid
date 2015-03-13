@@ -8,19 +8,9 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
-enum EMESSAGE
-{
-	MSG_NONE = 0,
-	MSG_ROBOT_INDEX_ACK,
-	MSG_TOGGLE_CAMERA,
-	MSG_FIRE,
-	MSG_MOVE,
-	MSG_CONTROL_TURRET,
-};
+#include "share/defines.h"
+#include "share/enums.h"
 
-enum EROBOT
-{
-	ROBOT_NONE = 0, ROBOT_CRAB, ROBOT_HYDRA, ROBOT_TURTLE, ROBOT_TOAD,
-};
+extern const char* g_robotName[EROBOT::TOTAL];
 
 #endif /* GLOBAL_H_ */

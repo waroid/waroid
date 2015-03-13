@@ -23,7 +23,6 @@
 
 namespace MAIN_MANAGER
 {
-	const int MESSAGE_SIZE = 3;
 }
 using namespace MAIN_MANAGER;
 
@@ -167,7 +166,7 @@ bool MainManager::tcpAccept()
 	m_clientSocket = accept(m_listenSocket, (struct sockaddr*) &sockAddrIn, &sockAddrlen);
 	if (m_clientSocket != -1)
 	{
-		tcpSend(MSG_ROBOT_INDEX_ACK, m_robot->getIndex(), 0);
+		tcpSend(EMESSAGE::ROBOT_INDEX_ACK, m_robot->getIndex(), 0);
 		printf("connected. addr=%s:%d\n", inet_ntoa(sockAddrIn.sin_addr), ntohs(sockAddrIn.sin_port));
 	}
 
@@ -178,10 +177,10 @@ void MainManager::tcpProcess()
 {
 	if (m_clientSocket != -1)
 	{
-		signed char message[MESSAGE_SIZE];
+		ROBOT_DATA robotData;
 		for (;;)
 		{
-			int res = recv(m_clientSocket, message, MESSAGE_SIZE, 0);
+			int res = recv(m_clientSocket, &robotData, ROBOT_DATA_SIZE, 0);
 			if (res < 0)
 			{
 				printf("failed recv. err=%s(%d)\n", strerror(errno), errno);
@@ -194,10 +193,10 @@ void MainManager::tcpProcess()
 				tcpDisconnect();
 				return;
 			}
-			else if (res == MESSAGE_SIZE)
+			else if (res == ROBOT_DATA_SIZE)
 			{
-				printf("recv message. %d %d %d\n", message[0], message[1], message[2]);
-				m_robot->process(message[0], message[1], message[2]);
+				printf("recv message. %d %d %d\n", robotData.ID, robotData.Data0, robotData.Data1);
+				m_robot->process(robotData);
 			}
 			else
 			{
@@ -223,12 +222,15 @@ void MainManager::tcpDisconnect()
 	}
 }
 
-void MainManager::tcpSend(EMESSAGE emessage, signed char data0, signed char data1)
+void MainManager::tcpSend(EMESSAGE::ETYPE emessage, int data0, int data1)
 {
 	if (m_clientSocket != -1)
 	{
-		signed char message[MESSAGE_SIZE] = {(signed char)emessage, data0, data1};
-		send(m_clientSocket, message, MESSAGE_SIZE, 0);
+		ROBOT_DATA data;
+		data.ID = (signed char)emessage;
+		data.Data0 = (signed char)data0;
+		data.Data1 = (signed char)data1;
+		send(m_clientSocket, &data, ROBOT_DATA_SIZE, 0);
 	}
 }
 

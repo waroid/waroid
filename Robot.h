@@ -13,7 +13,7 @@
 class Robot
 {
 public:
-	Robot(EROBOT erobot, const char* name, int index);
+	Robot(EROBOT::ETYPE erobot, int index);
 	virtual ~Robot();
 
 public:
@@ -36,20 +36,17 @@ public:
 		onReset();
 	}
 
-	EROBOT getType() const
+	EROBOT::ETYPE getType() const
 	{
 		return m_erobot;
 	}
-	const char* getName() const
-	{
-		return m_name;
-	}
+
 	int getIndex() const
 	{
 		return m_index;
 	}
 
-	void process(int message, int data0, int data1);
+	void process(const ROBOT_DATA& robotData);
 
 protected:
 	virtual bool onStart();
@@ -62,8 +59,7 @@ protected:
 	virtual void onControlTurret(int data0, int data1);
 
 protected:
-	EROBOT m_erobot;
-	char m_name[100];
+	EROBOT::ETYPE m_erobot;
 	int m_index;
 };
 

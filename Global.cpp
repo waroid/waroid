@@ -6,3 +6,6 @@
  */
 
 #include "Global.h"
+
+const char* g_robotName[EROBOT::TOTAL] =
+{ "Unknown", "Crab", "Hydra", "Turtle", "Toad" };

@@ -16,7 +16,7 @@ namespace CRAB
 using namespace CRAB;
 
 Crab::Crab(int index)
-		: Robot(ROBOT_CRAB, "Crab", index)
+		: Robot(EROBOT::CRAB, index)
 {
 	// TODO Auto-generated constructor stub
 

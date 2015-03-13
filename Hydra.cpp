@@ -17,7 +17,7 @@ namespace HYDRA
 using namespace HYDRA;
 
 Hydra::Hydra(int index)
-		: Robot(ROBOT_HYDRA, "Hydra", index), m_servoMotor(TURRET_OFFSET_ANGLE)
+		: Robot(EROBOT::HYDRA, index), m_servoMotor(TURRET_OFFSET_ANGLE)
 {
 	// TODO Auto-generated constructor stub
 

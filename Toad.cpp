@@ -34,7 +34,7 @@ namespace TOAD
 using namespace TOAD;
 
 Toad::Toad(int index)
-		: Robot(ROBOT_TOAD, "Toad", index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
+		: Robot(EROBOT::TOAD, index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
 {
 	// TODO Auto-generated constructor stub
 

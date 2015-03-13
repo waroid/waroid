@@ -29,7 +29,7 @@ private:
 	bool tcpAccept();
 	void tcpProcess();
 	void tcpDisconnect();
-	void tcpSend(EMESSAGE emessage, signed char data0, signed char data1);
+	void tcpSend(EMESSAGE::ETYPE emessage, int data0, int data1);
 
 private:
 	Robot* m_robot;

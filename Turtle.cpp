@@ -34,7 +34,7 @@ namespace TURTLE
 using namespace TURTLE;
 
 Turtle::Turtle(int index)
-		: Robot(ROBOT_TURTLE, "Turtle", index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
+		: Robot(EROBOT::TURTLE, index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
 {
 	// TODO Auto-generated constructor stub
 
