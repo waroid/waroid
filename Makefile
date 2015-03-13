@@ -15,6 +15,7 @@ LIBS = -lwiringPi -lm -lpthread
 CSOURCES = 
 
 CPPSOURCES = main.cpp \
+	Global.cpp \
 	PicoBorgReverse.cpp \
 	PololuQik.cpp \
 	ServoMotor.cpp \

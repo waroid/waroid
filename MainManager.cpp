@@ -176,7 +176,7 @@ void MainManager::tcpLoop()
 			struct sockaddr_in sockaddrIn;
 			socklen_t socklen = sizeof(sockaddrIn);
 			int s = accept(m_listenSocket, (struct sockaddr*) &sockaddrIn, &socklen);
-			printf("new connection. socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
+			printf("new connection. socket=%d addr=%s\n", s, inet_ntoa(sockaddrIn.sin_addr));
 			if (m_ownerSocket == -1)
 			{
 				m_ownerSocket = s;
@@ -186,7 +186,7 @@ void MainManager::tcpLoop()
 			}
 			else
 			{
-				printf("close connection. reason=EXIST_OWNER, socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
+				printf("close connection. reason=EXIST_OWNER, socket=%d addr=%s\n", s, inet_ntoa(sockaddrIn.sin_addr));
 				tcpSend(s, EMESSAGE::ERROR_ACK, EERROR::EXIST_OWNER, 0);
 				tcpDisconnect(s);
 			}
@@ -198,7 +198,7 @@ void MainManager::tcpLoop()
 			int recvLen = recv(m_ownerSocket, &robotData, sizeof(robotData), 0);
 			if (recvLen <= 0)
 			{
-				printf("disconnect\n recv=%d err=%s(%d)", recvLen, strerror(errno), errno);
+				printf("disconnect. recv=%d err=%s(%d)\n", recvLen, strerror(errno), errno);
 				FD_CLR(m_ownerSocket, &master_fds);
 				tcpDisconnect(m_ownerSocket);
 			}
