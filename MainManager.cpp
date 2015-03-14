@@ -25,11 +25,13 @@
 namespace MAIN_MANAGER
 {
 	const int MAX_BUFFER_SIZE = 128;
+	const int INVALID_SOCKET = -1;
+	const pthread_t INVALID_THREAD_ID = -1;
 }
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(-1), m_ownerSocket(-1), m_networkThreadId(-1), m_infoThreadId(-1)
+		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_networkThreadId(INVALID_THREAD_ID), m_infoThreadId(INVALID_THREAD_ID)
 {
 }
 
@@ -44,7 +46,7 @@ bool MainManager::start(int robotIndex)
 	if (m_robot->start() == false) return false;
 
 	m_listenSocket = tcpListen();
-	if (m_listenSocket == -1) return false;
+	if (m_listenSocket == INVALID_SOCKET) return false;
 	printf("tcp listen\n");
 
 	pthread_create(&m_networkThreadId, NULL, networkThread, this);
@@ -57,29 +59,35 @@ bool MainManager::start(int robotIndex)
 
 void MainManager::stop()
 {
-	if (pthread_cancel(m_networkThreadId) == 0)
+	if (m_networkThreadId != INVALID_THREAD_ID)
 	{
-		pthread_join(m_networkThreadId, NULL);
+		if (pthread_cancel(m_networkThreadId) == 0)
+		{
+			pthread_join(m_networkThreadId, NULL);
+		}
+		printf("cancel network thread\n");
 	}
-	printf("cancel network thread\n");
 
-	if (pthread_cancel(m_infoThreadId) == 0)
+	if (m_infoThreadId != INVALID_THREAD_ID)
 	{
-		pthread_join(m_infoThreadId, NULL);
+		if (pthread_cancel(m_infoThreadId) == 0)
+		{
+			pthread_join(m_infoThreadId, NULL);
+		}
+		printf("cancel info thread\n");
 	}
-	printf("cancel info thread\n");
 
-	if (m_ownerSocket != -1)
+	if (m_ownerSocket != INVALID_SOCKET)
 	{
 		close(m_ownerSocket);
-		m_ownerSocket = -1;
+		m_ownerSocket = INVALID_SOCKET;
 		printf("close owner socket\n");
 	}
 
-	if (m_listenSocket != -1)
+	if (m_listenSocket != INVALID_SOCKET)
 	{
 		close(m_listenSocket);
-		m_listenSocket = -1;
+		m_listenSocket = INVALID_SOCKET;
 		printf("close listen socket\n");
 	}
 
@@ -129,10 +137,10 @@ Robot* MainManager::createRobot(int robotIndex)
 int MainManager::tcpListen()
 {
 	int s = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
-	if (s == -1)
+	if (s == INVALID_SOCKET)
 	{
 		printf("failed create socket. err=%s(%d)", strerror(errno), errno);
-		return -1;
+		return INVALID_SOCKET;
 	}
 
 	int optval = 1;
@@ -148,14 +156,14 @@ int MainManager::tcpListen()
 	{
 		printf("failed bind(). err=%s(%d)\n", strerror(errno), errno);
 		close(s);
-		return -1;
+		return INVALID_SOCKET;
 	}
 
 	if (listen(s, 3) == -1)
 	{
 		printf("failed listen(). err=%s(%d)\n", strerror(errno), errno);
 		close(s);
-		return -1;
+		return INVALID_SOCKET;
 	}
 
 	return s;
@@ -184,7 +192,7 @@ void MainManager::tcpLoop()
 			socklen_t socklen = sizeof(sockaddrIn);
 			int s = accept(m_listenSocket, (struct sockaddr*) &sockaddrIn, &socklen);
 			printf("new connection. socket=%d addr=%s\n", s, inet_ntoa(sockaddrIn.sin_addr));
-			if (m_ownerSocket == -1)
+			if (m_ownerSocket == INVALID_SOCKET)
 			{
 				m_ownerSocket = s;
 				FD_SET(s, &master_fds);
@@ -199,7 +207,7 @@ void MainManager::tcpLoop()
 			}
 		}
 
-		if (m_ownerSocket != -1 && FD_ISSET(m_ownerSocket, &read_fds))
+		if (m_ownerSocket != INVALID_SOCKET && FD_ISSET(m_ownerSocket, &read_fds))
 		{
 			ROBOT_DATA robotData;
 			int recvLen = recv(m_ownerSocket, &robotData, sizeof(robotData), 0);
@@ -245,8 +253,7 @@ void MainManager::tcpDisconnect(int socket)
 	close(socket);
 	if (m_ownerSocket == socket)
 	{
-		m_ownerSocket = -1;
-
+		m_ownerSocket = INVALID_SOCKET;
 		if (m_robot)
 		{
 			m_robot->reset();
@@ -261,16 +268,16 @@ void MainManager::infoLoop()
 		struct sysinfo si;
 		if (sysinfo(&si) == 0)
 		{
-			unsigned short upTime = si.uptime / 60;
+			unsigned short upTime = si.uptime;
 			tcpSend(m_ownerSocket, EMESSAGE::UP_TIME_ACK, upTime);
 
 			unsigned short usageCpu = si.loads[0] / 100;
-			tcpSend(m_ownerSocket, EMESSAGE::USAGE_CPU_ACK, upTime);
+			tcpSend(m_ownerSocket, EMESSAGE::USAGE_CPU_ACK, usageCpu);
 
 			unsigned short freeRam = si.freeram * 10 / 1024 / 1024;
-			tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, upTime);
+			tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, freeRam);
 		}
-		usleep(1000000);
+		usleep(500000);	//0.5s
 	}
 }
 
@@ -283,21 +290,23 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 		{
 			if (robotData.Data0 == 1)
 			{
-				if (m_infoThreadId != (pthread_t)-1)
-				{
-					printf("info thread already on. \n");
-					return;
-				}
-				else
+				if (m_infoThreadId == INVALID_THREAD_ID)
 				{
 					pthread_create(&m_infoThreadId, NULL, infoThread, this);
 					printf("create info thread\n");
 				}
+				else
+				{
+					printf("info thread already on. \n");
+				}
 			}
 			else
 			{
-				pthread_cancel(m_infoThreadId);
-				m_infoThreadId = -1;
+				if (m_infoThreadId != INVALID_THREAD_ID)
+				{
+					pthread_cancel(m_infoThreadId);
+					m_infoThreadId = INVALID_THREAD_ID;
+				}
 			}
 		}
 		break;
