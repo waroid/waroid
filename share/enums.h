@@ -25,6 +25,7 @@ namespace EMESSAGE
 		UP_TIME_ACK,
 		USAGE_CPU_ACK,
 		FREE_RAM_ACK,
+		TEMPERATURE_CPU_ACK,
 		//----------
 		TOTAL,
 	};

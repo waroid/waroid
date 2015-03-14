@@ -277,6 +277,19 @@ void MainManager::infoLoop()
 			unsigned short freeRam = si.freeram * 10 / 1024 / 1024;
 			tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, freeRam);
 		}
+
+		{
+			FILE* fp = popen("/opt/vc/bin/vcgencmd measure_temp", "r");
+			if (fp != NULL)
+			{
+				float temperature;
+				fscanf(fp, "temp=%f'C", &temperature);
+				pclose(fp);
+
+				unsigned short temperatureCpu = (unsigned short)(temperature * 10);
+				tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
+			}
+		}
 		usleep(500000);	//0.5s
 	}
 }
