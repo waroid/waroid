@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/sysinfo.h>
 
 #include "Crab.h"
 #include "Hydra.h"
@@ -28,7 +29,7 @@ namespace MAIN_MANAGER
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(-1), m_ownerSocket(-1), m_threadId(-1)
+		: m_robot(NULL), m_listenSocket(-1), m_ownerSocket(-1), m_networkThreadId(-1), m_infoThreadId(-1)
 {
 }
 
@@ -46,21 +47,27 @@ bool MainManager::start(int robotIndex)
 	if (m_listenSocket == -1) return false;
 	printf("tcp listen\n");
 
-	pthread_create(&m_threadId, NULL, networkThread, this);
+	pthread_create(&m_networkThreadId, NULL, networkThread, this);
 	printf("create network thread\n");
 
-	pthread_join(m_threadId, NULL);
+	pthread_join(m_networkThreadId, NULL);
 
 	return true;
 }
 
 void MainManager::stop()
 {
-	if (pthread_cancel(m_threadId) == 0)
+	if (pthread_cancel(m_networkThreadId) == 0)
 	{
-		pthread_join(m_threadId, NULL);
+		pthread_join(m_networkThreadId, NULL);
 	}
 	printf("cancel network thread\n");
+
+	if (pthread_cancel(m_infoThreadId) == 0)
+	{
+		pthread_join(m_infoThreadId, NULL);
+	}
+	printf("cancel info thread\n");
 
 	if (m_ownerSocket != -1)
 	{
@@ -90,24 +97,24 @@ Robot* MainManager::createRobot(int robotIndex)
 	Robot* robot = NULL;
 	switch (robotIndex)
 	{
-	case 1:
-	case 2:
-		robot = new Crab(robotIndex);
+		case 1:
+		case 2:
+			robot = new Crab(robotIndex);
 		break;
 
-	case 3:
-	case 4:
-		robot = new Hydra(robotIndex);
+		case 3:
+		case 4:
+			robot = new Hydra(robotIndex);
 		break;
 
-	case 5:
-	case 6:
-		robot = new Turtle(robotIndex);
+		case 5:
+		case 6:
+			robot = new Turtle(robotIndex);
 		break;
 
-	case 7:
-	case 8:
-		robot = new Toad(robotIndex);
+		case 7:
+		case 8:
+			robot = new Toad(robotIndex);
 		break;
 	}
 
@@ -204,8 +211,7 @@ void MainManager::tcpLoop()
 			}
 			else if (recvLen == ROBOT_DATA_SIZE)
 			{
-				printf("recv message. %d %d %d\n", robotData.ID, robotData.Data0, robotData.Data1);
-				m_robot->process(robotData);
+				onProcess(robotData);
 			}
 			else
 			{
@@ -217,13 +223,21 @@ void MainManager::tcpLoop()
 	}
 }
 
-void MainManager::tcpSend(int socket, EMESSAGE::ETYPE emessage, int data0, int data1)
+void MainManager::tcpSend(int socket, EMESSAGE::ETYPE emessage, signed char data0, signed char data1)
 {
-	ROBOT_DATA data;
-	data.ID = (signed char)emessage;
-	data.Data0 = (signed char)data0;
-	data.Data1 = (signed char)data1;
-	send(socket, &data, ROBOT_DATA_SIZE, 0);
+	ROBOT_DATA robotData;
+	robotData.ID = (signed char) emessage;
+	robotData.Data0 = data0;
+	robotData.Data1 = data1;
+	send(socket, &robotData, ROBOT_DATA_SIZE, 0);
+}
+
+void MainManager::tcpSend(int socket, EMESSAGE::ETYPE emessage, unsigned short data)
+{
+	ROBOT_DATA robotData;
+	robotData.ID = (signed char) emessage;
+	robotData.Data = data;
+	send(socket, &robotData, ROBOT_DATA_SIZE, 0);
 }
 
 void MainManager::tcpDisconnect(int socket)
@@ -240,10 +254,73 @@ void MainManager::tcpDisconnect(int socket)
 	}
 }
 
+void MainManager::infoLoop()
+{
+	for (;;)
+	{
+		struct sysinfo si;
+		if (sysinfo(&si) == 0)
+		{
+			unsigned short upTime = si.uptime / 60;
+			tcpSend(m_ownerSocket, EMESSAGE::UP_TIME_ACK, upTime);
+
+			unsigned short usageCpu = si.loads[0] / 100;
+			tcpSend(m_ownerSocket, EMESSAGE::USAGE_CPU_ACK, upTime);
+
+			unsigned short freeRam = si.freeram * 10 / 1024 / 1024;
+			tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, upTime);
+		}
+		usleep(1000000);
+	}
+}
+
+void MainManager::onProcess(const ROBOT_DATA& robotData)
+{
+	printf("recv message. %d %d %d\n", robotData.ID, robotData.Data0, robotData.Data1);
+	switch (robotData.ID)
+	{
+		case EMESSAGE::INFO:
+		{
+			if (robotData.Data0 == 1)
+			{
+				if (m_infoThreadId != (pthread_t)-1)
+				{
+					printf("info thread already on. \n");
+					return;
+				}
+				else
+				{
+					pthread_create(&m_infoThreadId, NULL, infoThread, this);
+					printf("create info thread\n");
+				}
+			}
+			else
+			{
+				pthread_cancel(m_infoThreadId);
+				m_infoThreadId = -1;
+			}
+		}
+		break;
+
+		default:
+		{
+			m_robot->process(robotData);
+		}
+	}
+}
+
 void* MainManager::networkThread(void* param)
 {
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->tcpLoop();
+
+	return NULL;
+}
+
+void* MainManager::infoThread(void* param)
+{
+	MainManager* mainManager = (MainManager*) param;
+	mainManager->infoLoop();
 
 	return NULL;
 }

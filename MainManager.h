@@ -24,19 +24,27 @@ public:
 
 private:
 	Robot* createRobot(int robotIndex);
+
 	int tcpListen();
 	void tcpLoop();
-	void tcpSend(int socket, EMESSAGE::ETYPE emessage, int data0, int data1);
+	void tcpSend(int socket, EMESSAGE::ETYPE emessage, signed char data0, signed char data1);
+	void tcpSend(int socket, EMESSAGE::ETYPE emessage, unsigned short data);
 	void tcpDisconnect(int socket);
+
+	void infoLoop();
+
+	void onProcess(const ROBOT_DATA& robotData);
 
 private:
 	Robot* m_robot;
 	int m_listenSocket;
 	int m_ownerSocket;
-	pthread_t m_threadId;
+	pthread_t m_networkThreadId;
+	pthread_t m_infoThreadId;
 
 protected:
 	static void* networkThread(void* param);
+	static void* infoThread(void* param);
 };
 
 #endif /* MAINMANAGER_H_ */

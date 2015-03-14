@@ -21,6 +21,10 @@ namespace EMESSAGE
 		MOVE,
 		CONTROL_TURRET,
 		ERROR_ACK,
+		INFO,
+		UP_TIME_ACK,
+		USAGE_CPU_ACK,
+		FREE_RAM_ACK,
 		//----------
 		TOTAL,
 	};

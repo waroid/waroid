@@ -6,8 +6,8 @@
 */
 #pragma once
 
-// ===== Áß¿ä =====
-// defines.cs µµ °°ÀÌ ¼öÁ¤ÇØ ÁÖ¾î¾ß ÇÑ´Ù.
+// ===== ï¿½ß¿ï¿½ =====
+// defines.cs ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½.
 // ====================
 
 const int ROBOT_SEND_BUFFER_SIZE = 1024;
@@ -17,6 +17,14 @@ const int ROBOT_DATA_SIZE = 3;
 struct ROBOT_DATA
 {
 	signed char ID;
-	signed char Data0;
-	signed char Data1;
+	union
+	{
+		unsigned short Data;
+		struct
+		{
+			signed char Data0;
+			signed char Data1;
+		};
+	};
+	
 };
