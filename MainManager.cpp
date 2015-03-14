@@ -31,7 +31,7 @@ namespace MAIN_MANAGER
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_networkThreadId(INVALID_THREAD_ID), m_infoThreadId(INVALID_THREAD_ID)
+		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_networkThreadId(INVALID_THREAD_ID), m_infoThreadId(INVALID_THREAD_ID), m_infoSleepMillisecond(0)
 {
 }
 
@@ -286,23 +286,33 @@ void MainManager::infoLoop()
 				fscanf(fp, "temp=%f'C", &temperature);
 				pclose(fp);
 
-				unsigned short temperatureCpu = (unsigned short)(temperature * 10);
+				unsigned short temperatureCpu = (unsigned short) (temperature * 10);
 				tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
 			}
 		}
-		usleep(500000);	//0.5s
+		usleep(m_infoSleepMillisecond * 1000);
 	}
 }
 
 void MainManager::onProcess(const ROBOT_DATA& robotData)
 {
-	printf("recv message. %d %d %d\n", robotData.ID, robotData.Data0, robotData.Data1);
+	printf("recv message. %d: %d,%d or %u\n", robotData.ID, robotData.Data0, robotData.Data1, robotData.Data);
 	switch (robotData.ID)
 	{
 		case EMESSAGE::INFO:
 		{
-			if (robotData.Data0 == 1)
+			if (robotData.Data == 0)
 			{
+				if (m_infoThreadId != INVALID_THREAD_ID)
+				{
+					pthread_cancel(m_infoThreadId);
+					m_infoThreadId = INVALID_THREAD_ID;
+					m_infoSleepMillisecond = 0;
+				}
+			}
+			else
+			{
+				m_infoSleepMillisecond = robotData.Data;
 				if (m_infoThreadId == INVALID_THREAD_ID)
 				{
 					pthread_create(&m_infoThreadId, NULL, infoThread, this);
@@ -311,14 +321,6 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 				else
 				{
 					printf("info thread already on. \n");
-				}
-			}
-			else
-			{
-				if (m_infoThreadId != INVALID_THREAD_ID)
-				{
-					pthread_cancel(m_infoThreadId);
-					m_infoThreadId = INVALID_THREAD_ID;
 				}
 			}
 		}

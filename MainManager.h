@@ -41,6 +41,7 @@ private:
 	int m_ownerSocket;
 	pthread_t m_networkThreadId;
 	pthread_t m_infoThreadId;
+	int m_infoSleepMillisecond;
 
 protected:
 	static void* networkThread(void* param);
