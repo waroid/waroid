@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <wiringPi.h>
 #include <wiringSerial.h>
+#include "Global.h"
 #include "PololuQik.h"
 
 namespace POLOLU_QIK
@@ -46,7 +47,7 @@ bool PololuQik::open()
 	m_fd = serialOpen("/dev/ttyAMA0", 38400);
 	if (m_fd == -1)
 	{
-		printf("Problem opening serial port: %d\n", errno);
+		LOG::line("Problem opening serial port: %d", errno);
 		return false;
 	}
 

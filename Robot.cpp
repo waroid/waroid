@@ -44,20 +44,20 @@ void Robot::process(const ROBOT_DATA& robotData)
 		onControlTurret(robotData.Data0, robotData.Data1);
 		break;
 	default:
-		printf("[%s]invalid message %d(%d,%d)\n", g_robotName[m_erobot], robotData.ID, robotData.Data0, robotData.Data1);
+		LOG::line("[%s]invalid message %d(%d,%d)", g_robotName[m_erobot], robotData.ID, robotData.Data0, robotData.Data1);
 		break;
 	}
 }
 
 bool Robot::onStart()
 {
-	printf("start %s\n", g_robotName[m_erobot]);
+	LOG::line("start %s", g_robotName[m_erobot]);
 	return true;
 }
 
 void Robot::onStop()
 {
-	printf("stop %s\n", g_robotName[m_erobot]);
+	LOG::line("stop %s", g_robotName[m_erobot]);
 }
 
 void Robot::onReset()
@@ -65,7 +65,7 @@ void Robot::onReset()
 	system("killall raspivid");
 	system("killall nc");
 
-	printf("reset %s\n", g_robotName[m_erobot]);
+	LOG::line("reset %s", g_robotName[m_erobot]);
 }
 
 void Robot::onToggleCamera(int data0, int data1)
@@ -84,15 +84,15 @@ void Robot::onToggleCamera(int data0, int data1)
 
 void Robot::onFire(int data0, int data1)
 {
-	printf("[%s]fire %d,%d", g_robotName[m_erobot], data0, data1);
+	LOG::line("[%s]fire %d,%d", g_robotName[m_erobot], data0, data1);
 }
 
 void Robot::onMove(int data0, int data1)
 {
-	printf("[%s]Move %d,%d", g_robotName[m_erobot], data0, data1);
+	LOG::line("[%s]Move %d,%d", g_robotName[m_erobot], data0, data1);
 }
 
 void Robot::onControlTurret(int data0, int data1)
 {
-	printf("[%s]control turret %d,%d", g_robotName[m_erobot], data0, data1);
+	LOG::line("[%s]control turret %d,%d", g_robotName[m_erobot], data0, data1);
 }

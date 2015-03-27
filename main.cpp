@@ -21,17 +21,21 @@ void cleanup(int s);
 
 int main(int argc, char* argv[])
 {
-	if (argc != 2)
+	if (argc < 2)
 	{
-		printf("invalid arg count. argc=%d\n", argc);
+		printf("usage: %s <robot index> [console log on or off]", argv[0]);
 		return -1;
 	}
 
 	int robotIndex = atoi(argv[1]);
+	if (argc > 2)
+	{
+		LOG::enableConsole = atoi(argv[2]) == 1;
+	}
 
 	if (initialize() == false)
 	{
-		printf("failed initialize()\n");
+		LOG::line("failed initialize()");
 		cleanup(0);
 		return -1;
 	}
@@ -52,10 +56,10 @@ bool initialize()
 
 	if (wiringPiSetupGpio() == -1)
 	{
-		printf("Problem setup gpio: %d\n", errno);
+		LOG::line("Problem setup gpio: %d", errno);
 		return false;
 	}
-	printf("setup gpio of wiringPi\n");
+	LOG::line("setup gpio of wiringPi");
 
 	return true;
 }
@@ -63,6 +67,6 @@ bool initialize()
 void cleanup(int s)
 {
 	mainManager.stop();
-	printf("caught signal %d\n", s);
+	LOG::line("caught signal %d", s);
 	if (s != 0) exit(-1);
 }
