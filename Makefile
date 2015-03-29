@@ -15,10 +15,11 @@ LIBS = -lwiringPi -lm -lpthread
 CSOURCES = 
 
 CPPSOURCES = main.cpp \
+	core/Logger.cpp \
+	module/PicoBorgReverse.cpp \
+	module/PololuQik.cpp \
+	module/ServoMotor.cpp \
 	Global.cpp \
-	PicoBorgReverse.cpp \
-	PololuQik.cpp \
-	ServoMotor.cpp \
 	Robot.cpp \
 	Crab.cpp \
 	Hydra.cpp \
@@ -58,7 +59,7 @@ rebuild: clean depend all
 install :
 	mkdir -p $(DATADIR)
 	cp -f $(TARGET) $(BINDIR)
-	cp -f $(SOUNDS) $(DATADIR)
+	cp -f sound/$(SOUNDS) $(DATADIR)
 
 uninstall :
 	- killall $(TARGET)

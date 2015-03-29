@@ -7,15 +7,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <errno.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/sysinfo.h>
-
+#include "core/Logger.h"
 #include "Crab.h"
 #include "Hydra.h"
 #include "Turtle.h"
@@ -42,15 +40,16 @@ MainManager::~MainManager()
 bool MainManager::start(int robotIndex)
 {
 	m_robot = createRobot(robotIndex);
-	if (m_robot == NULL) return false;
-	if (m_robot->start() == false) return false;
+	GCHECK_RETFALSE(m_robot);
+	GCHECK_RETFALSE(m_robot->start());
 
 	m_listenSocket = tcpListen();
-	if (m_listenSocket == INVALID_SOCKET) return false;
-	LOG::line("tcp listen");
+	GCHECK_RETFALSE(m_listenSocket!=INVALID_SOCKET);
+
+	GLOG("tcp listen");
 
 	pthread_create(&m_networkThreadId, NULL, networkThread, this);
-	LOG::line("create network thread");
+	GLOG("create network thread");
 
 	pthread_join(m_networkThreadId, NULL);
 
@@ -65,7 +64,7 @@ void MainManager::stop()
 		{
 			pthread_join(m_networkThreadId, NULL);
 		}
-		LOG::line("cancel network thread");
+		GLOG("cancel network thread");
 	}
 
 	if (m_infoThreadId != INVALID_THREAD_ID)
@@ -74,21 +73,21 @@ void MainManager::stop()
 		{
 			pthread_join(m_infoThreadId, NULL);
 		}
-		LOG::line("cancel info thread");
+		GLOG("cancel info thread");
 	}
 
 	if (m_ownerSocket != INVALID_SOCKET)
 	{
 		close(m_ownerSocket);
 		m_ownerSocket = INVALID_SOCKET;
-		LOG::line("close owner socket");
+		GLOG("close owner socket");
 	}
 
 	if (m_listenSocket != INVALID_SOCKET)
 	{
 		close(m_listenSocket);
 		m_listenSocket = INVALID_SOCKET;
-		LOG::line("close listen socket");
+		GLOG("close listen socket");
 	}
 
 	if (m_robot)
@@ -96,7 +95,7 @@ void MainManager::stop()
 		m_robot->stop();
 		delete m_robot;
 		m_robot = NULL;
-		LOG::line("delete robot");
+		GLOG("delete robot");
 	}
 }
 
@@ -125,11 +124,7 @@ Robot* MainManager::createRobot(int robotIndex)
 			robot = new Toad(robotIndex);
 		break;
 	}
-
-	if (robot == NULL)
-	{
-		LOG::line("invalid robot. index=%d", robotIndex);
-	}
+	GCHECKV_RETNULL(robot, "robot index=%d", robotIndex);
 
 	return robot;
 }
@@ -137,11 +132,7 @@ Robot* MainManager::createRobot(int robotIndex)
 int MainManager::tcpListen()
 {
 	int s = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
-	if (s == INVALID_SOCKET)
-	{
-		LOG::line("failed create socket. err=%s(%d)", strerror(errno), errno);
-		return INVALID_SOCKET;
-	}
+	GCHECK_RETVAL(s!=INVALID_SOCKET, s);
 
 	int optval = 1;
 	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
@@ -152,19 +143,8 @@ int MainManager::tcpListen()
 	sockaddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
 	sockaddrIn.sin_port = htons(5002);
 
-	if (bind(s, (struct sockaddr*) &sockaddrIn, sizeof(sockaddrIn)) < 0)
-	{
-		LOG::line("failed bind(). err=%s(%d)", strerror(errno), errno);
-		close(s);
-		return INVALID_SOCKET;
-	}
-
-	if (listen(s, 3) == -1)
-	{
-		LOG::line("failed listen(). err=%s(%d)", strerror(errno), errno);
-		close(s);
-		return INVALID_SOCKET;
-	}
+	GCHECK_DO(bind(s, (struct sockaddr*) &sockaddrIn, sizeof(sockaddrIn))!=-1, {close(s);return INVALID_SOCKET;});
+	GCHECK_DO(listen(s, 3)!=-1, {close(s); return INVALID_SOCKET;});
 
 	return s;
 }
@@ -179,19 +159,14 @@ void MainManager::tcpLoop()
 	for (;;)
 	{
 		read_fds = master_fds;
-		int ret = select(fd_max + 1, &read_fds, 0, 0, 0);
-		if (ret == -1)
-		{
-			LOG::line("failed select. err=%s(%d)", strerror(errno), errno);
-			return;
-		}
+		GCHECK_RETURN(select(fd_max + 1, &read_fds, 0, 0, 0)!=-1);
 
 		if (FD_ISSET(m_listenSocket, &read_fds))
 		{
 			struct sockaddr_in sockaddrIn;
 			socklen_t socklen = sizeof(sockaddrIn);
 			int s = accept(m_listenSocket, (struct sockaddr*) &sockaddrIn, &socklen);
-			LOG::line("new connection. socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
+			GLOG("new connection. socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
 			if (m_ownerSocket == INVALID_SOCKET)
 			{
 				m_ownerSocket = s;
@@ -201,7 +176,7 @@ void MainManager::tcpLoop()
 			}
 			else
 			{
-				LOG::line("close connection. reason=EXIST_OWNER, socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
+				GLOG("close connection. reason=EXIST_OWNER, socket=%d addr=%s", s, inet_ntoa(sockaddrIn.sin_addr));
 				tcpSend(s, EMESSAGE::ERROR_ACK, EERROR::EXIST_OWNER, 0);
 				tcpDisconnect(s);
 			}
@@ -213,7 +188,7 @@ void MainManager::tcpLoop()
 			int recvLen = recv(m_ownerSocket, &robotData, sizeof(robotData), 0);
 			if (recvLen <= 0)
 			{
-				LOG::line("disconnect. recv=%d err=%s(%d)", recvLen, strerror(errno), errno);
+				GLOG("disconnect. recv=%d err=%s(%d)", recvLen, strerror(errno), errno);
 				FD_CLR(m_ownerSocket, &master_fds);
 				tcpDisconnect(m_ownerSocket);
 			}
@@ -223,7 +198,7 @@ void MainManager::tcpLoop()
 			}
 			else
 			{
-				LOG::line("invalid packet size. size=%d", recvLen);
+				GLOG("invalid packet size. size=%d", recvLen);
 				tcpDisconnect(m_ownerSocket);
 			}
 
@@ -296,7 +271,7 @@ void MainManager::infoLoop()
 
 void MainManager::onProcess(const ROBOT_DATA& robotData)
 {
-	LOG::line("recv message. %d: %d,%d or %u", robotData.ID, robotData.Data0, robotData.Data1, robotData.Data);
+	GLOG("recv message. %d: %d,%d or %u", robotData.ID, robotData.Data0, robotData.Data1, robotData.Data);
 	switch (robotData.ID)
 	{
 		case EMESSAGE::INFO:
@@ -316,11 +291,11 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 				if (m_infoThreadId == INVALID_THREAD_ID)
 				{
 					pthread_create(&m_infoThreadId, NULL, infoThread, this);
-					LOG::line("create info thread");
+					GLOG("create info thread");
 				}
 				else
 				{
-					LOG::line("info thread already on.");
+					GLOG("info thread already on.");
 				}
 			}
 		}

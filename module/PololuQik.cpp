@@ -6,11 +6,9 @@
  */
 
 #include <stdio.h>
-#include <string.h>
-#include <errno.h>
 #include <wiringPi.h>
 #include <wiringSerial.h>
-#include "Global.h"
+#include "../core/Logger.h"
 #include "PololuQik.h"
 
 namespace POLOLU_QIK
@@ -45,11 +43,7 @@ const char* PololuQik::getDescription() const
 bool PololuQik::open()
 {
 	m_fd = serialOpen("/dev/ttyAMA0", 38400);
-	if (m_fd == -1)
-	{
-		LOG::line("Problem opening serial port: %d", errno);
-		return false;
-	}
+	GCHECK_RETFALSE(m_fd!=-1);
 
 	// set timeout to 262ms
 	serialPutchar(m_fd, 0x84);

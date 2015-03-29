@@ -7,11 +7,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <string.h>
 #include <signal.h>
 #include <wiringPi.h>
 
+#include "core/Logger.h"
 #include "MainManager.h"
 
 MainManager mainManager;
@@ -30,12 +29,12 @@ int main(int argc, char* argv[])
 	int robotIndex = atoi(argv[1]);
 	if (argc > 2)
 	{
-		LOG::enableConsole = atoi(argv[2]) == 1;
+		Logger::setConsole(atoi(argv[2]) == 1);
 	}
 
 	if (initialize() == false)
 	{
-		LOG::line("failed initialize()");
+		GLOG("failed initialize()");
 		cleanup(0);
 		return -1;
 	}
@@ -54,12 +53,9 @@ bool initialize()
 	signal(SIGQUIT, cleanup);
 	signal(SIGHUP, cleanup);
 
-	if (wiringPiSetupGpio() == -1)
-	{
-		LOG::line("Problem setup gpio: %d", errno);
-		return false;
-	}
-	LOG::line("setup gpio of wiringPi");
+	GCHECK_RETFALSE(wiringPiSetupGpio()!=-1);
+
+	GLOG("setup gpio of wiringPi");
 
 	return true;
 }
@@ -67,6 +63,6 @@ bool initialize()
 void cleanup(int s)
 {
 	mainManager.stop();
-	LOG::line("caught signal %d", s);
+	GLOG("caught signal %d", s);
 	if (s != 0) exit(-1);
 }

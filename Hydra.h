@@ -8,8 +8,8 @@
 #ifndef HYDRA_H_
 #define HYDRA_H_
 
-#include "PololuQik.h"
-#include "ServoMotor.h"
+#include "module/PololuQik.h"
+#include "module/ServoMotor.h"
 #include "Robot.h"
 
 class Hydra: public Robot

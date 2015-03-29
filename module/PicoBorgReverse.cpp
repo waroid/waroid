@@ -11,7 +11,7 @@
 #include <sys/ioctl.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-#include "Global.h"
+#include "../core/Logger.h"
 #include "PicoBorgReverse.h"
 
 namespace PICO_BORG_REVERSE
@@ -50,17 +50,9 @@ const char* PicoBorgReverse::getDescription() const
 bool PicoBorgReverse::open()
 {
 	m_fd = wiringPiI2CSetup(m_i2cAddress);
-	if (m_fd == -1)
-	{
-		LOG::line("[I2C(%d)]unable to initialize : %s", m_i2cAddress, strerror(errno));
-		return false;
-	}
+	GCHECKV_RETFALSE(m_fd!=-1, "I2C address=%d", m_i2cAddress);
 
-	if (wiringPiI2CWriteReg8(m_fd, COMMAND_RESET_EPO, 0) == -1)
-	{
-		LOG::line("[I2C(%d)]failed reset", m_i2cAddress);
-		return false;
-	}
+	GCHECKV_RETFALSE(wiringPiI2CWriteReg8(m_fd, COMMAND_RESET_EPO, 0)!=-1, "I2C address=%d", m_i2cAddress);
 
 	init();
 

@@ -8,7 +8,7 @@
 #ifndef CRAB_H_
 #define CRAB_H_
 
-#include "PololuQik.h"
+#include "module/PololuQik.h"
 #include "Robot.h"
 
 class Crab: public Robot

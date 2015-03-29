@@ -5,10 +5,8 @@
  *      Author: mirime
  */
 
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-
+#include "core/Logger.h"
 #include "Robot.h"
 
 namespace ROBOT
@@ -44,20 +42,20 @@ void Robot::process(const ROBOT_DATA& robotData)
 		onControlTurret(robotData.Data0, robotData.Data1);
 		break;
 	default:
-		LOG::line("[%s]invalid message %d(%d,%d)", g_robotName[m_erobot], robotData.ID, robotData.Data0, robotData.Data1);
+		GLOG("[%s]invalid message %d(%d,%d)", g_robotName[m_erobot], robotData.ID, robotData.Data0, robotData.Data1);
 		break;
 	}
 }
 
 bool Robot::onStart()
 {
-	LOG::line("start %s", g_robotName[m_erobot]);
+	GLOG("start %s", g_robotName[m_erobot]);
 	return true;
 }
 
 void Robot::onStop()
 {
-	LOG::line("stop %s", g_robotName[m_erobot]);
+	GLOG("stop %s", g_robotName[m_erobot]);
 }
 
 void Robot::onReset()
@@ -65,7 +63,7 @@ void Robot::onReset()
 	system("killall raspivid");
 	system("killall nc");
 
-	LOG::line("reset %s", g_robotName[m_erobot]);
+	GLOG("reset %s", g_robotName[m_erobot]);
 }
 
 void Robot::onToggleCamera(int data0, int data1)
@@ -84,15 +82,15 @@ void Robot::onToggleCamera(int data0, int data1)
 
 void Robot::onFire(int data0, int data1)
 {
-	LOG::line("[%s]fire %d,%d", g_robotName[m_erobot], data0, data1);
+	GLOG("[%s]fire %d,%d", g_robotName[m_erobot], data0, data1);
 }
 
 void Robot::onMove(int data0, int data1)
 {
-	LOG::line("[%s]Move %d,%d", g_robotName[m_erobot], data0, data1);
+	GLOG("[%s]Move %d,%d", g_robotName[m_erobot], data0, data1);
 }
 
 void Robot::onControlTurret(int data0, int data1)
 {
-	LOG::line("[%s]control turret %d,%d", g_robotName[m_erobot], data0, data1);
+	GLOG("[%s]control turret %d,%d", g_robotName[m_erobot], data0, data1);
 }

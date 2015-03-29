@@ -13,12 +13,4 @@
 
 extern const char* g_robotName[EROBOT::TOTAL];
 
-namespace LOG
-{
-	extern bool enableConsole;
-	extern void line(const char* format, ...);
-}
-
-
-
 #endif /* GLOBAL_H_ */
