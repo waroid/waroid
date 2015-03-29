@@ -13,9 +13,9 @@
 
 namespace LOGGER
 {
-	const int MAX_BUFFER_SIZE = 512;
+	const int MAX_BUFFER_SIZE = 1024;
 	const int MAX_BUFFER_COUNT = 8;
-	char buffer[MAX_BUFFER_COUNT][MAX_BUFFER_COUNT];
+	char buffer[MAX_BUFFER_COUNT][MAX_BUFFER_SIZE];
 	int hint = 0;
 }
 using namespace LOGGER;
@@ -30,14 +30,14 @@ void Logger::write(const char* format, ...)
 	va_start(vl, format);
 	int len = vsnprintf(temp, MAX_BUFFER_SIZE - 2, format, vl);
 	va_end(vl);
+
 	if (len > 0)
 	{
-		temp[len] = '\n';
-		temp[len + 1] = 0;
+		temp[len] = 0;
 		syslog(LOG_INFO | LOG_USER, temp);
 		if (s_enableConsole)
 		{
-			printf(temp);
+			printf("%s\n", temp);
 		}
 	}
 }
