@@ -26,6 +26,7 @@ void Logger::write(const char* format, ...)
 {
 	int idx = __sync_fetch_and_add(&hint, 1) & MAX_BUFFER_COUNT;
 	char* temp = buffer[idx];
+
 	va_list vl;
 	va_start(vl, format);
 	int len = vsnprintf(temp, MAX_BUFFER_SIZE - 2, format, vl);

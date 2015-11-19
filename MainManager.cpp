@@ -18,6 +18,7 @@
 #include "Hydra.h"
 #include "Turtle.h"
 #include "Toad.h"
+#include "Scorpio.h"
 #include "MainManager.h"
 
 namespace MAIN_MANAGER
@@ -122,6 +123,11 @@ Robot* MainManager::createRobot(int robotIndex)
 		case 7:
 		case 8:
 			robot = new Toad(robotIndex);
+		break;
+
+		case 9:
+		case 10:
+			robot = new Scorpio(robotIndex);
 		break;
 	}
 	GCHECKV_RETNULL(robot, "robot index=%d", robotIndex);

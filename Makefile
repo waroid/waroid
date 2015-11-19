@@ -25,6 +25,7 @@ CPPSOURCES = main.cpp \
 	Hydra.cpp \
 	Turtle.cpp \
 	Toad.cpp \
+	Scorpio.cpp \
 	MainManager.cpp
 
 OBJECTS = $(CSOURCES:%.c=%.o)

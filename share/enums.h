@@ -58,6 +58,7 @@ namespace EROBOT
 		HYDRA,
 		TURTLE,
 		TOAD,
+		SCORPIO,
 		//----------
 		TOTAL,
 	};
