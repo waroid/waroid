@@ -14,6 +14,8 @@ const int ROBOT_SEND_BUFFER_SIZE = 1024;
 const int ROBOT_RECEIVE_BUFFER_SIZE = 1024;
 const int ROBOT_DATA_SIZE = 3;
 
+const int ROBOT_MAX_SPEED = 5;
+
 #pragma pack(1)
 
 struct ROBOT_DATA

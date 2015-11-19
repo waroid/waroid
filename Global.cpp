@@ -13,4 +13,7 @@
 #include "Global.h"
 
 const char* g_robotName[EROBOT::TOTAL] =
-{ "Unknown", "Crab", "Hydra", "Turtle", "Toad" };
+{ "Unknown", "Crab", "Hydra", "Turtle", "Toad", "Scorpio" };
+
+const float g_speedScale[ROBOT_MAX_SPEED] =
+{ 0.0, 0.25, 0.5, 0.75, 1.0 };

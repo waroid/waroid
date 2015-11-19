@@ -12,5 +12,6 @@
 #include "share/enums.h"
 
 extern const char* g_robotName[EROBOT::TOTAL];
+extern const float g_speedScale[ROBOT_MAX_SPEED];
 
 #endif /* GLOBAL_H_ */

@@ -5,31 +5,29 @@
  *      Author: mirime
  */
 
+#include <wiringPi.h>
 #include "Scorpio.h"
 
 namespace SCORPIO
 {
-	const int DIRECTION_COUNT = 11;
-	const int SPEED_COUNT = 3;
+	const int GPIO_FIRE = 24;
 
+	const int DIRECTION_COUNT = 11;
 	const int DIRECTION_DATA[DIRECTION_COUNT][4] =
 	{
-	//0:motor0, 0:motor1, 1:motor0, 1:motor1
+	//A:motor0, A:motor1, B:motor0, B:motor1
 	{ 0, 0, 0, 0 },		//idle
-	{ -1, -1, 1, 1 },	//forward
-	{ 0, -1, 0, 1 },	//right forward
-	{ 1, -1, -1, 1 },	//right
-	{ 1, 0, -1, 0 },	//right backward
-	{ 1, 1, -1, -1 },	//backward
-	{ 0, 1, 0, -1 },	//left backward
-	{ -1, 1, 1, -1 },	//left
-	{ -1, 0, 1, 0 },	//left forward
-	{ 1, 1, 1, 1 },		//turn right
-	{ -1, -1, -1, -1 },	//turn left
+	{ 1, -1, 0, 0 },		//forward
+	{ 1, 0, -1, 0 },	//right forward
+	{ 1, -1, -1, 0 },	//right
+	{ 0, 1, -1, 0 },	//right backward
+	{ -1, 1, 0, 0 },	//backward
+	{ -1, 0, 1, 0 },	//left backward
+	{ -1, -1, 1, 0 },	//left
+	{ 0, -1, 1, 0 },	//left forward
+	{ 1, 1, 1, 0 },		//turn right
+	{ -1, -1, -1, 0 },	//turn left
 	};
-
-	const float SPEED_DATA[SPEED_COUNT] =
-	{ 0.4, 0.6, 0.8 };
 }
 using namespace SCORPIO;
 
@@ -71,6 +69,12 @@ void Scorpio::onReset()
 	Robot::onReset();
 }
 
+void Scorpio::onFire(int data0, int data1)
+{
+	bool onoff = (data0 == 1);
+	digitalWrite(GPIO_FIRE, onoff ? 1 : 0);
+}
+
 void Scorpio::onMove(int data0, int data1)
 {
 	int dir = data0;
@@ -79,9 +83,9 @@ void Scorpio::onMove(int data0, int data1)
 
 	int speed = data1;
 	if (speed < 0) speed = 0;
-	else if (speed >= SPEED_COUNT) speed = 0;
+	else if (speed >= ROBOT_MAX_SPEED) speed = 0;
 
-	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * SPEED_DATA[speed], DIRECTION_DATA[dir][1] * SPEED_DATA[speed]);
-	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * SPEED_DATA[speed], DIRECTION_DATA[dir][3] * SPEED_DATA[speed]);
+	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * g_speedScale[speed], DIRECTION_DATA[dir][1] * g_speedScale[speed]);
+	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * g_speedScale[speed], DIRECTION_DATA[dir][3] * g_speedScale[speed]);
 }
 
