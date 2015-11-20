@@ -50,6 +50,7 @@ void Robot::process(const ROBOT_DATA& robotData)
 bool Robot::onStart()
 {
 	GLOG("start %s", g_robotName[m_erobot]);
+	system("aplay /usr/local/share/waroid/boot_sentrymode_active.wav");
 	return true;
 }
 

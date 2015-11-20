@@ -6,11 +6,12 @@
  */
 
 #include <wiringPi.h>
+#include <unistd.h>
 #include "Scorpio.h"
 
 namespace SCORPIO
 {
-	const int GPIO_FIRE = 24;
+	const int GPIO_FIRE = 7;
 
 	const int DIRECTION_COUNT = 11;
 	const int DIRECTION_DATA[DIRECTION_COUNT][4] =
@@ -51,19 +52,25 @@ bool Scorpio::onStart()
 
 	if (m_picoBorgReverse1.open() == false) return false;
 
+	pinMode(GPIO_FIRE, OUTPUT);
+	digitalWrite(GPIO_FIRE, 1);
+	sleep(1);
+	digitalWrite(GPIO_FIRE, 0);
+
 	return true;
 }
 
 void Scorpio::onStop()
 {
+	digitalWrite(GPIO_FIRE, 0);
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
-
 	Robot::onStop();
 }
 
 void Scorpio::onReset()
 {
+	digitalWrite(GPIO_FIRE, 0);
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
 	Robot::onReset();
