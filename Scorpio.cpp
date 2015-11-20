@@ -18,16 +18,16 @@ namespace SCORPIO
 	{
 	//A:motor0, A:motor1, B:motor0, B:motor1
 	{ 0, 0, 0, 0 },		//idle
-	{ 1, -1, 0, 0 },		//forward
-	{ 1, 0, -1, 0 },	//right forward
-	{ 1, -1, -1, 0 },	//right
-	{ 0, 1, -1, 0 },	//right backward
-	{ -1, 1, 0, 0 },	//backward
-	{ -1, 0, 1, 0 },	//left backward
-	{ -1, -1, 1, 0 },	//left
-	{ 0, -1, 1, 0 },	//left forward
-	{ 1, 1, 1, 0 },		//turn right
-	{ -1, -1, -1, 0 },	//turn left
+	{ -1, 1, 0, 0 },	//forward
+	{ -1, 0, 1, 0 },	//right forward
+	{ -1, 1, 1, 0 },	//right
+	{ 0, -1, 1, 0 },	//right backward
+	{ 1, -1, 0, 0 },	//backward
+	{ 1, 0, -1, 0 },	//left backward
+	{ 1, 1, -1, 0 },	//left
+	{ 0, 1, -1, 0 },	//left forward
+	{ -1, -1, -1, 0 },	//turn right
+	{ 1, 1, 1, 0 },		//turn left
 	};
 }
 using namespace SCORPIO;
