@@ -15,10 +15,11 @@
 	- sudo apt-get upgrade
 	
 3. driver
-	- url (https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=122695)
-		1) wget https://dl.dropboxusercontent.com/u/80256631/8812au-4.1.7-v7-817.tar.gz
-		2) tar xzf 8812au-4.1.7-v7-817.tar.gz
-		3) ./install.sh
+	- NEXT 510AC mini
+		- url (https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=122695)
+			1) wget https://dl.dropboxusercontent.com/u/80256631/8812au-4.1.7-v7-817.tar.gz
+			2) tar xzf 8812au-4.1.7-v7-817.tar.gz
+			3) ./install.sh
 		
 4. get source
 	- git clone git://git.drogon.net/wiringPi
@@ -33,7 +34,6 @@
 
 7. Piborg
 	- url (https://www.piborg.org/picoborgrev/install)
-
 
 8. etc
 	- sudo apt-get netcat-openbsd libncurses5-dev
