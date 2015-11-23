@@ -323,7 +323,7 @@ void MainManager::batteryLoop()
 
 		float adcValue = static_cast<float>(adcTotal) / 10.0;
 		m_batteryVolts = adcValue * (3.33 / 1024.0) * 2.837;
-		GLOG("adc=%d volt=%f", adcValue, m_batteryVolts);
+		GLOG("adc=%f volt=%f", adcValue, m_batteryVolts);
 
 		sleep(60);
 	}
