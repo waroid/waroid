@@ -59,6 +59,7 @@ void Crab::onFire(int data0, int data1)
 
 void Crab::onMove(int data0, int data1)
 {
+	data1 *= (-1);
 	m_picoBorgReverse0.move(data0 / 100.0f, data1 / 100.0f);
 	m_picoBorgReverse1.move(data0 / 100.0f, data1 / 100.0f);
 }

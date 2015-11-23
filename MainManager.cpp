@@ -45,9 +45,12 @@ bool MainManager::start(int robotIndex)
 	GCHECK_RETFALSE(m_robot->start());
 
 	m_listenSocket = tcpListen();
-	GCHECK_RETFALSE(m_listenSocket!=INVALID_SOCKET);
+	GCHECK_RETFALSE(m_listenSocket != INVALID_SOCKET);
 
 	GLOG("listen tcp");
+
+	GCHECK_RETFALSE(m_batteryChecker.open());
+	GLOG("opened battary cheker");
 
 	pthread_create(&m_networkThreadId, NULL, networkThread, this);
 	GLOG("created network thread");
@@ -90,6 +93,8 @@ void MainManager::stop()
 		m_listenSocket = INVALID_SOCKET;
 		GLOG("close listen socket");
 	}
+
+	m_batteryChecker.close();
 
 	if (m_robot)
 	{
@@ -138,7 +143,7 @@ Robot* MainManager::createRobot(int robotIndex)
 int MainManager::tcpListen()
 {
 	int s = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
-	GCHECK_RETVAL(s!=INVALID_SOCKET, s);
+	GCHECK_RETVAL(s != INVALID_SOCKET, s);
 
 	int optval = 1;
 	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
@@ -149,8 +154,18 @@ int MainManager::tcpListen()
 	sockaddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
 	sockaddrIn.sin_port = htons(5002);
 
-	GCHECK_DO(bind(s, (struct sockaddr*) &sockaddrIn, sizeof(sockaddrIn))!=-1, {close(s);return INVALID_SOCKET;});
-	GCHECK_DO(listen(s, 3)!=-1, {close(s); return INVALID_SOCKET;});
+	GCHECK_DO(bind(s, (struct sockaddr* ) &sockaddrIn, sizeof(sockaddrIn)) != -1,
+	{
+		close(s)
+		;
+		return INVALID_SOCKET;
+	});
+	GCHECK_DO(listen(s, 3) != -1,
+	{
+		close(s)
+		;
+		return INVALID_SOCKET;
+	});
 
 	return s;
 }
@@ -165,7 +180,7 @@ void MainManager::tcpLoop()
 	for (;;)
 	{
 		read_fds = master_fds;
-		GCHECK_RETURN(select(fd_max + 1, &read_fds, 0, 0, 0)!=-1);
+		GCHECK_RETURN(select(fd_max + 1, &read_fds, 0, 0, 0) != -1);
 
 		if (FD_ISSET(m_listenSocket, &read_fds))
 		{
@@ -270,6 +285,11 @@ void MainManager::infoLoop()
 				unsigned short temperatureCpu = (unsigned short) (temperature * 10);
 				tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
 			}
+		}
+
+		{
+			unsigned short batteryVolt = (unsigned short) (m_batteryChecker.volt() * 100);
+			tcpSend(m_ownerSocket, EMESSAGE::BATTERY_VOLT_ACK, batteryVolt);
 		}
 
 		usleep(m_infoSleepMillisecond * 1000);

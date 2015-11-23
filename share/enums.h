@@ -1,4 +1,4 @@
-/* --------------------------------------------------
+﻿/* --------------------------------------------------
  *
  *	Copyright 2015 by Rhaon Ent.
  *
@@ -6,8 +6,8 @@
  */
 #pragma once
 
-// ===== �߿� =====
-// enums.cs �� ���� ������ �־�� �Ѵ�.
+// ===== 중요 =====
+// enums.cs도 같이 수정해 주어야 한다.
 // ====================
 
 namespace EMESSAGE
@@ -26,7 +26,7 @@ namespace EMESSAGE
 		USAGE_CPU_ACK,
 		FREE_RAM_ACK,
 		TEMPERATURE_CPU_ACK,
-		VOLT_ACK,
+		BATTERY_VOLT_ACK,
 		//----------
 		TOTAL,
 	};
