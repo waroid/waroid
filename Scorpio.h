@@ -8,6 +8,7 @@
 #ifndef SCORPIO_H_
 #define SCORPIO_H_
 
+#include "module/RelayMotor.h"
 #include "module/PicoBorgReverse.h"
 #include "Robot.h"
 
@@ -25,6 +26,7 @@ public:
 	virtual void onMove(int data0, int data1);
 
 protected:
+	RelayMotor m_relayMotor;
 	PicoBorgReverse m_picoBorgReverse0;
 	PicoBorgReverse m_picoBorgReverse1;
 };

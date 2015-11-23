@@ -26,6 +26,7 @@ namespace EMESSAGE
 		USAGE_CPU_ACK,
 		FREE_RAM_ACK,
 		TEMPERATURE_CPU_ACK,
+		VOLT_ACK,
 		//----------
 		TOTAL,
 	};
