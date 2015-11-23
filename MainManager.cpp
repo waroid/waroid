@@ -13,6 +13,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/sysinfo.h>
+#include <wiringPi.h>
 #include "core/Logger.h"
 #include "Crab.h"
 #include "Hydra.h"
@@ -26,11 +27,16 @@ namespace MAIN_MANAGER
 	const int MAX_BUFFER_SIZE = 128;
 	const int INVALID_SOCKET = -1;
 	const pthread_t INVALID_THREAD_ID = -1;
+
+	const int GPIO_SPI_CLK = 8;
+	const int GPIO_SPI_MISO = 23;
+	const int GPIO_SPI_MOSI = 24;
+	const int GPIO_SPI_CS = 25;
 }
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_networkThreadId(INVALID_THREAD_ID), m_infoThreadId(INVALID_THREAD_ID), m_infoSleepMillisecond(0)
+		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_batteryVolts(0.0f), m_networkThreadId(INVALID_THREAD_ID), m_infoThreadId(INVALID_THREAD_ID)
 {
 }
 
@@ -46,16 +52,10 @@ bool MainManager::start(int robotIndex)
 
 	m_listenSocket = tcpListen();
 	GCHECK_RETFALSE(m_listenSocket != INVALID_SOCKET);
+	GLOG("listened tcp");
 
-	GLOG("listen tcp");
-
-	GCHECK_RETFALSE(m_batteryChecker.open());
-	GLOG("opened battary cheker");
-
-	pthread_create(&m_networkThreadId, NULL, networkThread, this);
-	GLOG("created network thread");
-
-	pthread_join(m_networkThreadId, NULL);
+	GCHECK_RETFALSE(batteryInitAdc());
+	GLOG("initialized battery adc");
 
 	return true;
 }
@@ -69,6 +69,15 @@ void MainManager::stop()
 			pthread_join(m_networkThreadId, NULL);
 		}
 		GLOG("cancel network thread");
+	}
+
+	if (m_batteryThreadId != INVALID_THREAD_ID)
+	{
+		if (pthread_cancel(m_batteryThreadId) == 0)
+		{
+			pthread_join(m_batteryThreadId, NULL);
+		}
+		GLOG("cancel battery thread");
 	}
 
 	if (m_infoThreadId != INVALID_THREAD_ID)
@@ -93,8 +102,6 @@ void MainManager::stop()
 		m_listenSocket = INVALID_SOCKET;
 		GLOG("close listen socket");
 	}
-
-	m_batteryChecker.close();
 
 	if (m_robot)
 	{
@@ -140,13 +147,13 @@ Robot* MainManager::createRobot(int robotIndex)
 	return robot;
 }
 
-int MainManager::tcpListen()
+bool MainManager::tcpListen()
 {
-	int s = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
-	GCHECK_RETVAL(s != INVALID_SOCKET, s);
+	m_listenSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
+	GCHECK_RETFALSE(m_listenSocket != INVALID_SOCKET);
 
 	int optval = 1;
-	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+	setsockopt(m_listenSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
 	struct sockaddr_in sockaddrIn;
 	memset(&sockaddrIn, 0, sizeof(sockaddrIn));
@@ -154,20 +161,14 @@ int MainManager::tcpListen()
 	sockaddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
 	sockaddrIn.sin_port = htons(5002);
 
-	GCHECK_DO(bind(s, (struct sockaddr* ) &sockaddrIn, sizeof(sockaddrIn)) != -1,
-	{
-		close(s)
-		;
-		return INVALID_SOCKET;
-	});
-	GCHECK_DO(listen(s, 3) != -1,
-	{
-		close(s)
-		;
-		return INVALID_SOCKET;
-	});
+	GCHECK_RETFALSE(bind(m_listenSocket, (struct sockaddr* ) &sockaddrIn, sizeof(sockaddrIn)) != -1);
+	GCHECK_RETFALSE(listen(m_listenSocket, 3) != -1);
 
-	return s;
+	pthread_create(&m_networkThreadId, NULL, networkThread, this);
+	GCHECK_RETFALSE(m_networkThreadId != INVALID_THREAD_ID);
+	pthread_join(m_networkThreadId, NULL);
+
+	return true;
 }
 
 void MainManager::tcpLoop()
@@ -257,6 +258,70 @@ void MainManager::tcpDisconnect(int socket)
 	}
 }
 
+bool MainManager::batteryInitAdc()
+{
+	pinMode(GPIO_SPI_CLK, OUTPUT);
+	pinMode(GPIO_SPI_MISO, INPUT);
+	pinMode(GPIO_SPI_MOSI, OUTPUT);
+	pinMode(GPIO_SPI_CS, OUTPUT);
+
+	pthread_create(&m_batteryThreadId, NULL, batteryThread, this);
+	GCHECK_RETFALSE(m_batteryThreadId != INVALID_THREAD_ID);
+	pthread_join(m_batteryThreadId, NULL);
+
+	return true;
+}
+
+int MainManager::batteryReadAdc()
+{
+	digitalWrite(GPIO_SPI_CS, 1);
+	digitalWrite(GPIO_SPI_CLK, 0);
+	digitalWrite(GPIO_SPI_CS, 0);
+
+	int commandOut = (0x6 << 5);
+
+	for (int i = 0; i < 3; ++i)
+	{
+		digitalWrite(GPIO_SPI_MOSI, (commandOut & 0x80) == 0x80 ? 1 : 0);
+		commandOut <<= 1;
+		digitalWrite(GPIO_SPI_CLK, 1);
+		digitalWrite(GPIO_SPI_CLK, 0);
+	}
+
+	int adcOut = 0;
+	for (int i = 0; i < 12; ++i)
+	{
+		digitalWrite(GPIO_SPI_CLK, 0);
+		digitalWrite(GPIO_SPI_CLK, 1);
+
+		adcOut <<= 1;
+		if (digitalRead(GPIO_SPI_MISO) != 0)
+		{
+			adcOut |= 0x1;
+		}
+	}
+	digitalWrite(GPIO_SPI_CS, 1);
+
+	adcOut /= 2;
+	return adcOut;
+}
+
+void MainManager::batteryLoop()
+{
+	for (;;)
+	{
+		int adcTotal = 0;
+		for (int i = 0; i < 10; ++i)
+		{
+			adcTotal += batteryReadAdc();
+			usleep(50000);
+		}
+		m_batteryVolts = (static_cast<float>(adcTotal) / 10.0) * (3.33 / 1024.0) * 2.837;
+
+		sleep(60);
+	}
+}
+
 void MainManager::infoLoop()
 {
 	for (;;)
@@ -288,11 +353,11 @@ void MainManager::infoLoop()
 		}
 
 		{
-			unsigned short batteryVolt = (unsigned short) (m_batteryChecker.volt() * 100);
+			unsigned short batteryVolt = (unsigned short) (m_batteryVolts * 100);
 			tcpSend(m_ownerSocket, EMESSAGE::BATTERY_VOLT_ACK, batteryVolt);
 		}
 
-		usleep(m_infoSleepMillisecond * 1000);
+		sleep(1);
 	}
 }
 
@@ -309,12 +374,10 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 				{
 					pthread_cancel(m_infoThreadId);
 					m_infoThreadId = INVALID_THREAD_ID;
-					m_infoSleepMillisecond = 0;
 				}
 			}
 			else
 			{
-				m_infoSleepMillisecond = robotData.Data;
 				if (m_infoThreadId == INVALID_THREAD_ID)
 				{
 					pthread_create(&m_infoThreadId, NULL, infoThread, this);
@@ -339,6 +402,14 @@ void* MainManager::networkThread(void* param)
 {
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->tcpLoop();
+
+	return NULL;
+}
+
+void* MainManager::batteryThread(void* param)
+{
+	MainManager* mainManager = (MainManager*) param;
+	mainManager->batteryLoop();
 
 	return NULL;
 }
