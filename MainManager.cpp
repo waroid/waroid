@@ -50,8 +50,7 @@ bool MainManager::start(int robotIndex)
 	GCHECK_RETFALSE(m_robot);
 	GCHECK_RETFALSE(m_robot->start());
 
-	m_listenSocket = tcpListen();
-	GCHECK_RETFALSE(m_listenSocket != INVALID_SOCKET);
+	GCHECK_RETFALSE(tcpListen());
 	GLOG("listened tcp");
 
 	GCHECK_RETFALSE(batteryInitAdc());
@@ -316,7 +315,10 @@ void MainManager::batteryLoop()
 			adcTotal += batteryReadAdc();
 			usleep(50000);
 		}
-		m_batteryVolts = (static_cast<float>(adcTotal) / 10.0) * (3.33 / 1024.0) * 2.837;
+
+		float adcValue = static_cast<float>(adcTotal) / 10.0;
+		m_batteryVolts = adcValue * (3.33 / 1024.0) * 2.837;
+		GLOG("adc=%d volt=%f", adcValue, m_batteryVolts);
 
 		sleep(60);
 	}
@@ -400,6 +402,7 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 
 void* MainManager::networkThread(void* param)
 {
+	GLOG("start network thread");
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->tcpLoop();
 
@@ -408,6 +411,7 @@ void* MainManager::networkThread(void* param)
 
 void* MainManager::batteryThread(void* param)
 {
+	GLOG("start battery thread");
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->batteryLoop();
 
@@ -416,6 +420,7 @@ void* MainManager::batteryThread(void* param)
 
 void* MainManager::infoThread(void* param)
 {
+	GLOG("start info thread");
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->infoLoop();
 
