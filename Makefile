@@ -20,7 +20,6 @@ CPPSOURCES = main.cpp \
 	module/PololuQik.cpp \
 	module/ServoMotor.cpp \
 	module/RelayMotor.cpp \
-	module/BatteryChecker.cpp \
 	Global.cpp \
 	Robot.cpp \
 	Crab.cpp \
