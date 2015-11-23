@@ -49,9 +49,6 @@ bool MainManager::start(int robotIndex)
 
 	GLOG("listen tcp");
 
-	m_battery.open();
-	GLOG("opened battery checker.");
-
 	pthread_create(&m_networkThreadId, NULL, networkThread, this);
 	GLOG("created network thread");
 
@@ -93,8 +90,6 @@ void MainManager::stop()
 		m_listenSocket = INVALID_SOCKET;
 		GLOG("close listen socket");
 	}
-
-	m_battery.close();
 
 	if (m_robot)
 	{
@@ -275,11 +270,6 @@ void MainManager::infoLoop()
 				unsigned short temperatureCpu = (unsigned short) (temperature * 10);
 				tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
 			}
-		}
-
-		{
-			unsigned short volt = (unsigned short) (m_battery.volt() * 10);
-			tcpSend(m_ownerSocket, EMESSAGE::VOLT_ACK, volt);
 		}
 
 		usleep(m_infoSleepMillisecond * 1000);

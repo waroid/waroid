@@ -9,7 +9,6 @@
 #define MAINMANAGER_H_
 
 #include "Global.h"
-#include "module/BatteryChecker.h"
 
 class Robot;
 
@@ -43,7 +42,6 @@ private:
 	pthread_t m_networkThreadId;
 	pthread_t m_infoThreadId;
 	int m_infoSleepMillisecond;
-	BatteryChecker m_battery;
 
 protected:
 	static void* networkThread(void* param);
