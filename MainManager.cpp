@@ -36,7 +36,7 @@ namespace MAIN_MANAGER
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_batteryVolts(0.0f), m_networkThreadId(INVALID_THREAD_ID), m_infoThreadId(INVALID_THREAD_ID)
+		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_networkThreadId(INVALID_THREAD_ID), m_batteryVolts(0.0f), m_batteryThreadId(INVALID_THREAD_ID), m_infoEnableSend(false), m_infoThreadId(INVALID_THREAD_ID)
 {
 }
 
@@ -55,6 +55,13 @@ bool MainManager::start(int robotIndex)
 
 	GCHECK_RETFALSE(batteryInitAdc());
 	GLOG("initialized battery adc");
+
+	GCHECK_RETFALSE(infoInit());
+	GLOG("initialized info");
+
+	pthread_join(m_networkThreadId, NULL);
+	pthread_join(m_batteryThreadId, NULL);
+	pthread_join(m_infoThreadId, NULL);
 
 	return true;
 }
@@ -165,7 +172,6 @@ bool MainManager::tcpListen()
 
 	pthread_create(&m_networkThreadId, NULL, networkThread, this);
 	GCHECK_RETFALSE(m_networkThreadId != INVALID_THREAD_ID);
-	pthread_join(m_networkThreadId, NULL);
 
 	return true;
 }
@@ -266,7 +272,6 @@ bool MainManager::batteryInitAdc()
 
 	pthread_create(&m_batteryThreadId, NULL, batteryThread, this);
 	GCHECK_RETFALSE(m_batteryThreadId != INVALID_THREAD_ID);
-	pthread_join(m_batteryThreadId, NULL);
 
 	return true;
 }
@@ -324,39 +329,50 @@ void MainManager::batteryLoop()
 	}
 }
 
+bool MainManager::infoInit()
+{
+	pthread_create(&m_infoThreadId, NULL, infoThread, this);
+	GCHECK_RETFALSE(m_infoThreadId != INVALID_THREAD_ID);
+
+	return true;
+}
+
 void MainManager::infoLoop()
 {
 	for (;;)
 	{
-		struct sysinfo si;
-		if (sysinfo(&si) == 0)
+		if (m_infoEnableSend)
 		{
-			unsigned short upTime = si.uptime;
-			tcpSend(m_ownerSocket, EMESSAGE::UP_TIME_ACK, upTime);
-
-			unsigned short usageCpu = si.loads[0] / 100;
-			tcpSend(m_ownerSocket, EMESSAGE::USAGE_CPU_ACK, usageCpu);
-
-			unsigned short freeRam = si.freeram * 10 / 1024 / 1024;
-			tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, freeRam);
-		}
-
-		{
-			FILE* fp = popen("/opt/vc/bin/vcgencmd measure_temp", "r");
-			if (fp != NULL)
+			struct sysinfo si;
+			if (sysinfo(&si) == 0)
 			{
-				float temperature;
-				fscanf(fp, "temp=%f'C", &temperature);
-				pclose(fp);
+				unsigned short upTime = si.uptime;
+				tcpSend(m_ownerSocket, EMESSAGE::UP_TIME_ACK, upTime);
 
-				unsigned short temperatureCpu = (unsigned short) (temperature * 10);
-				tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
+				unsigned short usageCpu = si.loads[0] / 100;
+				tcpSend(m_ownerSocket, EMESSAGE::USAGE_CPU_ACK, usageCpu);
+
+				unsigned short freeRam = si.freeram * 10 / 1024 / 1024;
+				tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, freeRam);
 			}
-		}
 
-		{
-			unsigned short batteryVolt = (unsigned short) (m_batteryVolts * 100);
-			tcpSend(m_ownerSocket, EMESSAGE::BATTERY_VOLT_ACK, batteryVolt);
+			{
+				FILE* fp = popen("/opt/vc/bin/vcgencmd measure_temp", "r");
+				if (fp != NULL)
+				{
+					float temperature;
+					fscanf(fp, "temp=%f'C", &temperature);
+					pclose(fp);
+
+					unsigned short temperatureCpu = (unsigned short) (temperature * 10);
+					tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
+				}
+			}
+
+			{
+				unsigned short batteryVolt = (unsigned short) (m_batteryVolts * 100);
+				tcpSend(m_ownerSocket, EMESSAGE::BATTERY_VOLT_ACK, batteryVolt);
+			}
 		}
 
 		sleep(1);
@@ -370,26 +386,7 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 	{
 		case EMESSAGE::INFO:
 		{
-			if (robotData.Data == 0)
-			{
-				if (m_infoThreadId != INVALID_THREAD_ID)
-				{
-					pthread_cancel(m_infoThreadId);
-					m_infoThreadId = INVALID_THREAD_ID;
-				}
-			}
-			else
-			{
-				if (m_infoThreadId == INVALID_THREAD_ID)
-				{
-					pthread_create(&m_infoThreadId, NULL, infoThread, this);
-					GLOG("create info thread");
-				}
-				else
-				{
-					GLOG("info thread already on.");
-				}
-			}
+			m_infoEnableSend = (robotData.Data != 0);
 		}
 		break;
 

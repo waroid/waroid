@@ -35,6 +35,7 @@ private:
 	int batteryReadAdc();
 	void batteryLoop();
 
+	bool infoInit();
 	void infoLoop();
 
 	void onProcess(const ROBOT_DATA& robotData);
@@ -49,6 +50,7 @@ private:
 	float m_batteryVolts;
 	pthread_t m_batteryThreadId;
 
+	bool m_infoEnableSend;
 	pthread_t m_infoThreadId;
 
 protected:
