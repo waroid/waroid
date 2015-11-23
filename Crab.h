@@ -8,7 +8,8 @@
 #ifndef CRAB_H_
 #define CRAB_H_
 
-#include "module/PololuQik.h"
+#include "module/RelayMotor.h"
+#include "module/PicoBorgReverse.h"
 #include "Robot.h"
 
 class Crab: public Robot
@@ -25,7 +26,9 @@ protected:
 	virtual void onMove(int data0, int data1);
 
 protected:
-	PololuQik m_pololuQik;
+	RelayMotor m_relayMotor;
+	PicoBorgReverse m_picoBorgReverse0;
+	PicoBorgReverse m_picoBorgReverse1;
 };
 
 #endif /* CRAB_H_ */
