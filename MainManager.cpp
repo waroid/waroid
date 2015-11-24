@@ -32,6 +32,9 @@ namespace MAIN_MANAGER
 	const int GPIO_SPI_MISO = 23;
 	const int GPIO_SPI_MOSI = 24;
 	const int GPIO_SPI_CS = 25;
+
+	const int MIN_ADC = (6.0 * 1024 / 3.33 / 2.837);
+	const int MAX_ADC = (8.0 * 1024 / 3.33 / 2.837);
 }
 using namespace MAIN_MANAGER;
 
@@ -322,24 +325,22 @@ void MainManager::batteryLoop()
 	for (;;)
 	{
 		int adcTotal = 0;
-		int count = 0;
-		printf("[ ");
+		int adcCount = 0;
+
 		for (int i = 0; i < 10; ++i)
 		{
 			int adcV = batteryReadAdc();
-			printf("%d ", adcV);
-			if (adcV > 542) //  (5v*1024/3.33/2.837)
+			if (adcV > MIN_ADC && adcV < MAX_ADC)
 			{
 				adcTotal += adcV;
-				count ++;
+				adcCount++;
 			}
 			delay(50);
 		}
-		printf("]\n");
 
-		float adcValue = (count > 0) ? adcTotal / count / 1.0 : 0.0;
+		float adcValue = (adcCount > 0) ? adcTotal / adcCount / 1.0 : 0.0;
 		m_batteryVolts = adcValue * (3.33 / 1024.0) * 2.837;
-		GLOG("adc=%f volt=%f count=%d", adcValue, m_batteryVolts, count);
+		GLOG("adc=%f volt=%f count=%d", adcValue, m_batteryVolts, adcCount);
 
 		sleep(30);
 	}
