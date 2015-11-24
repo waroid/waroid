@@ -34,7 +34,7 @@ void Logger::write(const char* format, ...)
 		syslog(LOG_INFO | LOG_USER, temp);
 		if (s_enableConsole)
 		{
-			printf("%s\n", temp);
+			printf("%s", temp);
 		}
 	}
 }

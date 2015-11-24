@@ -279,32 +279,39 @@ bool MainManager::batteryInitAdc()
 int MainManager::batteryReadAdc()
 {
 	digitalWrite(GPIO_SPI_CS, 1);
+	delay(1);
 	digitalWrite(GPIO_SPI_CLK, 0);
+	delay(1);
 	digitalWrite(GPIO_SPI_CS, 0);
+	delay(1);
 
 	int commandOut = (0x6 << 5);
 
 	for (int i = 0; i < 3; ++i)
 	{
 		digitalWrite(GPIO_SPI_MOSI, (commandOut & 0x80) == 0x80 ? 1 : 0);
+		delay(1);
 		commandOut <<= 1;
 		digitalWrite(GPIO_SPI_CLK, 1);
+		delay(1);
 		digitalWrite(GPIO_SPI_CLK, 0);
+		delay(1);
 	}
 
 	int adcOut = 0;
 	for (int i = 0; i < 12; ++i)
 	{
-		digitalWrite(GPIO_SPI_CLK, 0);
 		digitalWrite(GPIO_SPI_CLK, 1);
+		delay(1);
+		digitalWrite(GPIO_SPI_CLK, 0);
+		delay(1);
 
 		adcOut <<= 1;
-		if (digitalRead(GPIO_SPI_MISO) != 0)
-		{
-			adcOut |= 0x1;
-		}
+		if (digitalRead(GPIO_SPI_MISO)) adcOut |= 0x1;
+		delay(1);
 	}
 	digitalWrite(GPIO_SPI_CS, 1);
+	delay(1);
 
 	adcOut /= 2;
 	return adcOut;
@@ -315,17 +322,26 @@ void MainManager::batteryLoop()
 	for (;;)
 	{
 		int adcTotal = 0;
+		int count = 0;
+		printf("[ ");
 		for (int i = 0; i < 10; ++i)
 		{
-			adcTotal += batteryReadAdc();
-			usleep(50000);
+			int adcV = batteryReadAdc();
+			printf("%d ", adcV);
+			if (adcV > 542) //  (5v*1024/3.33/2.837)
+			{
+				adcTotal += adcV;
+				count ++;
+			}
+			delay(50);
 		}
+		printf("]\n");
 
-		float adcValue = static_cast<float>(adcTotal) / 10.0;
+		float adcValue = (count > 0) ? adcTotal / count / 1.0 : 0.0;
 		m_batteryVolts = adcValue * (3.33 / 1024.0) * 2.837;
-		GLOG("adc=%f volt=%f", adcValue, m_batteryVolts);
+		GLOG("adc=%f volt=%f count=%d", adcValue, m_batteryVolts, count);
 
-		sleep(60);
+		sleep(30);
 	}
 }
 
