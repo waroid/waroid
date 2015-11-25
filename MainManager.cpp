@@ -34,7 +34,7 @@ namespace MAIN_MANAGER
 	const int GPIO_SPI_CS = 25;
 
 	const int MIN_ADC = (6.0 * 1024 / 3.33 / 2.837);
-	const int MAX_ADC = (8.0 * 1024 / 3.33 / 2.837);
+	const int MAX_ADC = (9.0 * 1024 / 3.33 / 2.837);
 }
 using namespace MAIN_MANAGER;
 
