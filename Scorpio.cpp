@@ -15,21 +15,21 @@ namespace SCORPIO
 	const float DIRECTION_DATA[DIRECTION_COUNT][4] =
 	{
 	//move matrix
-	//[-0.333, -0.577, 0.333]
-	//[-0.333, 0.577, 0.333]
-	//[0.667, 0.0, 0.333]
-	//A:motor0, A:motor1, B:motor0, B:motor1
-	{ 0.0, 0.0, 0.0, 0.0 },		//idle
-	{ -0.577, 0.577, 0.0, 0.0 },	//forward
-	{ -0.910, 0.244, 0.667, 0 },	//right forward
-	{ -0.333, -0.333, 0.667, 0 },	//right
-	{ 0.244, -0.910, 0.667, 0 },	//right backward
-	{ 0.577, -0.577, 0, 0 },	//backward
-	{ 0.910, -0.244, -0.667, 0 },	//left backward
-	{ 0.333, 0.333, -0.667, 0 },	//left
-	{ -0.244, 0.910, -0.677, 0 },	//left forward
-	{ -0.333, -0.333, -0.333, 0 },	//turn right
-	{ 0.333, 0.333, 0.333, 0 },		//turn left
+	//[-1.0, -1.732, 1.0]
+	//[-1.0, 1.732, 1.0]
+	//[2.0, 0.0, 1.0]
+	//A:motor0, A:motor1, B:motor0, Scale
+	{ 0.0, 0.0, 0.0, 0.0 },			//idle
+	{ -1.732, 1.732, 0.0, 1.732 },	//forward
+	{ -2.732, 0.732, 2.0,  2.732 },	//right forward
+	{ -1.0, -1.0, 2.0, 2.0 },		//right
+	{ 0.732, -2.732, 2.0, 2.732 },	//right backward
+	{ 1.732, -1.732, 0, 1.732 },	//backward
+	{ 2.732, -0.732, -2.0, 2.732 },	//left backward
+	{ 1.0, 1.0, -2.0, 2.0 },		//left
+	{ -0.732, 2.732, -2.0, 2.732 },	//left forward
+	{ -1.0, -1.0, -1.0, 1.0 },		//turn right
+	{ 1.0, 1.0, 1.0, 1.0 },			//turn left
 	};
 }
 using namespace SCORPIO;
@@ -87,26 +87,14 @@ void Scorpio::onMove(int data0, int data1)
 	if (speed < 0) speed = 0;
 	else if (speed >= ROBOT_MAX_SPEED) speed = 0;
 
-	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * g_speedScale[speed], DIRECTION_DATA[dir][1] * g_speedScale[speed]);
-	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * g_speedScale[speed], DIRECTION_DATA[dir][3] * g_speedScale[speed]);
-
-	float motor[4] =
-	{ 0.0, 0.0, 0.0 };
-	bool motorPlus[4] =
-	{ true, true, true };
-
-	for (int i = 0; i < 3; ++i)
+	float motor[3] = { 0.0, 0.0, 0.0 };
+	for (int i = 0; i < 3; ++ i)
 	{
-		motor[i] = DIRECTION_DATA[dir][i] * g_speedScale[speed] * 255;
-		if (motor[i] < 0)
-		{
-			motorPlus[i] = false;
-			motor[i] *= (-1);
-		}
-		motor[i] += 0.5;
+		motor[i] = (DIRECTION_DATA[dir][0] / DIRECTION_DATA[dir][3]) * g_speedScale[speed];
 	}
-	GLOG("motor=%s%d,%s%d,%s%d", motorPlus[0] ? "+" : "-", static_cast<int>(motor[0]),
-	        motorPlus[1] ? "+" : "-", static_cast<int>(motor[1]),
-	        motorPlus[2] ? "+" : "-", static_cast<int>(motor[2]));
+	m_picoBorgReverse0.move(motor[0], motor[1]);
+	m_picoBorgReverse1.move(motor[2], 0);
+
+	GLOG("motor=%f,%f,%f", motor[0], motor[1], motor[2]);
 }
 
