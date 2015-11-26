@@ -11,26 +11,30 @@
 namespace SCORPIO
 {
 	const int DIRECTION_COUNT = 11;
-	const int DIRECTION_DATA[DIRECTION_COUNT][4] =
+	const float DIRECTION_DATA[DIRECTION_COUNT][4] =
 	{
+	//move matrix
+	//[-0.333, -0.577, 0.333]
+	//[-0.333, 0.577, 0.333]
+	//[0.667, 0.0, 0.333]
 	//A:motor0, A:motor1, B:motor0, B:motor1
-	{ 0, 0, 0, 0 },		//idle
-	{ -1, 1, 0, 0 },	//forward
-	{ -1, 0, 1, 0 },	//right forward
-	{ -1, 1, 1, 0 },	//right
-	{ 0, -1, 1, 0 },	//right backward
-	{ 1, -1, 0, 0 },	//backward
-	{ 1, 0, -1, 0 },	//left backward
-	{ 1, 1, -1, 0 },	//left
-	{ 0, 1, -1, 0 },	//left forward
-	{ -1, -1, -1, 0 },	//turn right
-	{ 1, 1, 1, 0 },		//turn left
+	{ 0.0, 0.0, 0.0, 0.0 },		//idle
+	{ -0.577, 0.577, 0.0, 0.0 },	//forward
+	{ -0.910, 0.244, 0.667, 0 },	//right forward
+	{ -0.333, -0.333, 0.667, 0 },	//right
+	{ 0.244, -0.910, 0.667, 0 },	//right backward
+	{ 0.577, -0.577, 0, 0 },	//backward
+	{ 0.910, -0.244, -0.667, 0 },	//left backward
+	{ 0.333, 0.333, -0.667, 0 },	//left
+	{ -0.244, 0.910, -0.677, 0 },	//left forward
+	{ -0.333, -0.333, -0.333, 0 },	//turn right
+	{ 0.333, 0.333, 0.333, 0 },		//turn left
 	};
 }
 using namespace SCORPIO;
 
 Scorpio::Scorpio(int index)
-	: Robot(EROBOT::SCORPIO, index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
+		: Robot(EROBOT::SCORPIO, index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
 {
 	// TODO Auto-generated constructor stub
 
