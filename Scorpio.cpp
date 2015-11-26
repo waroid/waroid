@@ -87,15 +87,13 @@ void Scorpio::onMove(int data0, int data1)
 	if (speed < 0) speed = 0;
 	else if (speed >= ROBOT_MAX_SPEED) speed = 0;
 
-	//m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * g_speedScale[speed], DIRECTION_DATA[dir][1] * g_speedScale[speed]);
-	//m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * g_speedScale[speed], DIRECTION_DATA[dir][3] * g_speedScale[speed]);
+	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * g_speedScale[speed], DIRECTION_DATA[dir][1] * g_speedScale[speed]);
+	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * g_speedScale[speed], DIRECTION_DATA[dir][3] * g_speedScale[speed]);
 
-	float motorA1 = DIRECTION_DATA[dir][0] * g_speedScale[speed];
-	float motorA2 = DIRECTION_DATA[dir][1] * g_speedScale[speed];
-	float motorB1 = DIRECTION_DATA[dir][2] * g_speedScale[speed];
-	float motorB2 = DIRECTION_DATA[dir][3] * g_speedScale[speed];
-	GLOG("motorA=%f,%f motorB=%f,%f", motorA1, motorA2, motorB1, motorB2);
-	m_picoBorgReverse0.move(motorA1, motorA2);
-	m_picoBorgReverse1.move(motorB1, motorB2);
+	int motorA1 = DIRECTION_DATA[dir][0] * g_speedScale[speed] * 255 + 0.5;
+	int motorA2 = DIRECTION_DATA[dir][1] * g_speedScale[speed] * 255 + 0.5;;
+	int motorB1 = DIRECTION_DATA[dir][2] * g_speedScale[speed] * 255 + 0.5;;
+	int motorB2 = DIRECTION_DATA[dir][3] * g_speedScale[speed] * 255 + 0.5;;
+	GLOG("motorA=%d,%d motorB=%d,%d", motorA1, motorA2, motorB1, motorB2);
 }
 

@@ -75,8 +75,9 @@ void PicoBorgReverse::init()
 
 void PicoBorgReverse::move(float power0, float power1)
 {
-	setMotor0(power0 * PWM_MAX);
-	setMotor1(power1 * PWM_MAX);
+	//round
+	setMotor0(power0 * PWM_MAX + 0.5);
+	setMotor1(power1 * PWM_MAX + 0.5);
 }
 
 void PicoBorgReverse::setMotor0(int power)
