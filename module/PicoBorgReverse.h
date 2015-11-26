@@ -36,8 +36,8 @@ public:
 	void move(float power0, float power1);
 
 protected:
-	void setMotor0(int power);
-	void setMotor1(int power);
+	void setMotor0(float power);
+	void setMotor1(float power);
 
 protected:
 	int m_fd;

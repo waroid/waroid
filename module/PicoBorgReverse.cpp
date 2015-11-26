@@ -76,11 +76,11 @@ void PicoBorgReverse::init()
 void PicoBorgReverse::move(float power0, float power1)
 {
 	//round
-	setMotor0(power0 * PWM_MAX + 0.5);
-	setMotor1(power1 * PWM_MAX + 0.5);
+	setMotor0(power0 * PWM_MAX);
+	setMotor1(power1 * PWM_MAX);
 }
 
-void PicoBorgReverse::setMotor0(int power)
+void PicoBorgReverse::setMotor0(float power)
 {
 	int command = 0;
 	if (power < 0)
@@ -94,11 +94,12 @@ void PicoBorgReverse::setMotor0(int power)
 	}
 
 	if (power > PWM_MAX) power = PWM_MAX;
+	power += 0.5; //round
 
-	wiringPiI2CWriteReg8(m_fd, command, power);
+	wiringPiI2CWriteReg8(m_fd, command, static_cast<int>(power));
 }
 
-void PicoBorgReverse::setMotor1(int power)
+void PicoBorgReverse::setMotor1(float power)
 {
 	int command = 0;
 	if (power < 0)
@@ -112,5 +113,7 @@ void PicoBorgReverse::setMotor1(int power)
 	}
 
 	if (power > PWM_MAX) power = PWM_MAX;
-	wiringPiI2CWriteReg8(m_fd, command, power);
+	power += 0.5; //round
+
+	wiringPiI2CWriteReg8(m_fd, command, static_cast<int>(power));
 }

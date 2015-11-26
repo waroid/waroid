@@ -90,10 +90,23 @@ void Scorpio::onMove(int data0, int data1)
 	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * g_speedScale[speed], DIRECTION_DATA[dir][1] * g_speedScale[speed]);
 	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * g_speedScale[speed], DIRECTION_DATA[dir][3] * g_speedScale[speed]);
 
-	int motorA1 = DIRECTION_DATA[dir][0] * g_speedScale[speed] * 255 + 0.5;
-	int motorA2 = DIRECTION_DATA[dir][1] * g_speedScale[speed] * 255 + 0.5;;
-	int motorB1 = DIRECTION_DATA[dir][2] * g_speedScale[speed] * 255 + 0.5;;
-	int motorB2 = DIRECTION_DATA[dir][3] * g_speedScale[speed] * 255 + 0.5;;
-	GLOG("motorA=%d,%d motorB=%d,%d", motorA1, motorA2, motorB1, motorB2);
+	float motor[4] =
+	{ 0.0, 0.0, 0.0 };
+	bool motorPlus[4] =
+	{ true, true, true };
+
+	for (int i = 0; i < 3; ++i)
+	{
+		motor[i] = DIRECTION_DATA[dir][i] * g_speedScale[speed] * 255;
+		if (motor[i] < 0)
+		{
+			motorPlus[i] = false;
+			motor[i] *= (-1);
+		}
+		motor[i] += 0.5;
+	}
+	GLOG("motor=%s%d,%s%d,%s%d", motorPlus[0] ? "+" : "-", static_cast<int>(motor[0]),
+	        motorPlus[1] ? "+" : "-", static_cast<int>(motor[1]),
+	        motorPlus[2] ? "+" : "-", static_cast<int>(motor[2]));
 }
 
