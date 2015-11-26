@@ -19,7 +19,7 @@ namespace SCORPIO
 	//[-1.0, 1.732, 1.0]
 	//[2.0, 0.0, 1.0]
 	//A:motor0, A:motor1, B:motor0, Scale
-	{ 0.0, 0.0, 0.0, 0.0 },			//idle
+	{ 0.0, 0.0, 0.0, 1.0 },			//idle
 	{ -1.732, 1.732, 0.0, 1.732 },	//forward
 	{ -2.732, 0.732, 2.0,  2.732 },	//right forward
 	{ -1.0, -1.0, 2.0, 2.0 },		//right
@@ -90,7 +90,7 @@ void Scorpio::onMove(int data0, int data1)
 	float motor[3] = { 0.0, 0.0, 0.0 };
 	for (int i = 0; i < 3; ++ i)
 	{
-		motor[i] = (DIRECTION_DATA[dir][0] / DIRECTION_DATA[dir][3]) * g_speedScale[speed];
+		motor[i] = (DIRECTION_DATA[dir][i] / DIRECTION_DATA[dir][3]) * g_speedScale[speed];
 	}
 	m_picoBorgReverse0.move(motor[0], motor[1]);
 	m_picoBorgReverse1.move(motor[2], 0);
