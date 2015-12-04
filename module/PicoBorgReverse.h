@@ -24,7 +24,7 @@ protected:
 		}
 	};
 public:
-	PicoBorgReverse(int i2cAddress);
+	PicoBorgReverse(int i2cAddress=68);
 	virtual ~PicoBorgReverse();
 
 public:

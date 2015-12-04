@@ -94,7 +94,6 @@ void PicoBorgReverse::setMotor0(float power)
 	}
 
 	if (power > PWM_MAX) power = PWM_MAX;
-	power += 0.5; //round
 
 	wiringPiI2CWriteReg8(m_fd, command, static_cast<int>(power));
 }
@@ -113,7 +112,6 @@ void PicoBorgReverse::setMotor1(float power)
 	}
 
 	if (power > PWM_MAX) power = PWM_MAX;
-	power += 0.5; //round
 
 	wiringPiI2CWriteReg8(m_fd, command, static_cast<int>(power));
 }

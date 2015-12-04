@@ -27,8 +27,7 @@ protected:
 
 protected:
 	RelayMotor m_relayMotor;
-	PicoBorgReverse m_picoBorgReverse0;
-	PicoBorgReverse m_picoBorgReverse1;
+	PicoBorgReverse m_picoBorgReverse;
 };
 
 #endif /* CRAB_H_ */
