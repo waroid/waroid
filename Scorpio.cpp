@@ -31,16 +31,30 @@ namespace SCORPIO
 	//{ -1.0, -1.0, -1.0, 1.0 },		//turn right
 	//{ 1.0, 1.0, 1.0, 1.0 },			//turn left
 	{ 0.0, 0.0, 0.0 },			//idle
-	{ -0.99, 0.995, 0.0 },		//forward
-	{ -0.99, 0.316, 0.746 },	//right forward
-	{ -0.5, -0.5, 0.995 },		//right
-	{ 0.316, -0.99, 0.746 },	//right backward
-	{ 0.995, -0.99, 0 },		//backward
-	{ 0.995, -0.3, -0.733 },	//left backward
-	{ 0.509, 0.509, -0.99 },	//left
-	{ -0.3, 0.995, -0.733 },	//left forward
-	{ -0.99, -0.99, -0.99 },	//turn right
-	{ 0.995, 0.995, 0.995 },	//turn left
+	{ 1.0, 1.0, 0.0 },		//forward
+	{ 0.995, 0.316, 0.746 },	//right forward
+	{ 0.509, -0.5, 0.995 },		//right
+	{ -0.3, -0.99, 0.746 },	//right backward
+	{ -1.0, -1.0, 0 },		//backward
+	{ -0.99, -0.3, -0.733 },	//left backward
+	{ -0.5, 0.509, -0.99 },	//left
+	{ 0.316, 0.995, -0.733 },	//left forward
+	{ 0.995, -0.99, -0.99 },	//turn right
+	{ -0.99, 0.995, 0.995 },	//turn left
+	};
+	const float DIRECTION_SPEED[DIRECTION_COUNT][ROBOT_MAX_SPEED] =
+	{
+	{ 0.0, 0.0, 0.0, 0.0, 0.0 },			//idle
+	{ 0.0, 0.25, 0.5, 0.75, 1.0 },		//forward
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//right forward
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },		//right
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//right backward
+	{ 0.0, 0.25, 0.5, 0.75, 1.0 },		//backward
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//left backward
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//left
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//left forward
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//turn right
+	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//turn left
 	};
 }
 using namespace SCORPIO;
@@ -96,13 +110,13 @@ void Scorpio::onMove(int data0, int data1)
 
 	int speed = data1;
 	if (speed < 0) speed = 0;
-	else if (speed >= ROBOT_MAX_SPEED) speed = 0;
+	else if (speed >= ROBOT_MAX_SPEED) speed = ROBOT_MAX_SPEED - 1;
 
 	float motor[3] =
 	{ 0.0, 0.0, 0.0 };
 	for (int i = 0; i < 3; ++i)
 	{
-		motor[i] = DIRECTION_DATA[dir][i];
+		motor[i] = DIRECTION_DATA[dir][i] * DIRECTION_SPEED[dir][speed];
 	}
 	m_picoBorgReverse0.move(motor[0], motor[1]);
 	m_picoBorgReverse1.move(motor[2], 0);
