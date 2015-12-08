@@ -12,50 +12,31 @@
 namespace SCORPIO
 {
 	const int DIRECTION_COUNT = 11;
-	const float DIRECTION_DATA[DIRECTION_COUNT][3] =
+
+	const float DIRECTION_SPEED[ROBOT_MAX_SPEED][9] =
 	{
-	//move matrix
-	//[-1.0, -1.732, 1.0]
-	//[-1.0, 1.732, 1.0]
-	//[2.0, 0.0, 1.0]
-	//A:motor0, A:motor1, B:motor0, Scale
-	//{ 0.0, 0.0, 0.0, 1.0 },			//idle
-	//{ -1.732, 1.732, 0.0, 1.732 },	//forward
-	//{ -2.732, 0.732, 2.0,  2.732 },	//right forward
-	//{ -1.0, -1.0, 2.0, 2.0 },		//right
-	//{ 0.732, -2.732, 2.0, 2.732 },	//right backward
-	//{ 1.732, -1.732, 0, 1.732 },	//backward
-	//{ 2.732, -0.732, -2.0, 2.732 },	//left backward
-	//{ 1.0, 1.0, -2.0, 2.0 },		//left
-	//{ -0.732, 2.732, -2.0, 2.732 },	//left forward
-	//{ -1.0, -1.0, -1.0, 1.0 },		//turn right
-	//{ 1.0, 1.0, 1.0, 1.0 },			//turn left
-	{ 0.0, 0.0, 0.0 },			//idle
-	{ 1.0, 1.0, 0.0 },		//forward
-	{ 0.995, 0.316, 0.746 },	//right forward
-	{ 0.509, -0.5, 0.995 },		//right
-	{ -0.3, -0.99, 0.746 },	//right backward
-	{ -1.0, -1.0, 0 },		//backward
-	{ -0.99, -0.3, -0.733 },	//left backward
-	{ -0.5, 0.509, -0.99 },	//left
-	{ 0.316, 0.995, -0.733 },	//left forward
-	{ 0.995, -0.99, -0.99 },	//turn right
-	{ -0.99, 0.995, 0.995 },	//turn left
+	{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },				//speed 0
+	{ 0.0, 0.995, -0.99, 0.746, -0.733, 0.509, -0.5, 0.316, -0.3 },	//speed 1
+	{ 0.0, 0.995, -0.99, 0.746, -0.733, 0.509, -0.5, 0.316, -0.3 },	//speed 2
+	{ 0.0, 0.995, -0.99, 0.746, -0.733, 0.509, -0.5, 0.316, -0.3 },	//speed 3
+	{ 0.0, 0.995, -0.99, 0.746, -0.733, 0.509, -0.5, 0.316, -0.3 },	//speed 4
 	};
-	const float DIRECTION_SPEED[DIRECTION_COUNT][ROBOT_MAX_SPEED] =
+
+	const int DIRECTION_DATA[DIRECTION_COUNT][3] =
 	{
-	{ 0.0, 0.0, 0.0, 0.0, 0.0 },			//idle
-	{ 0.0, 0.25, 0.5, 0.75, 1.0 },		//forward
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//right forward
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },		//right
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//right backward
-	{ 0.0, 0.25, 0.5, 0.75, 1.0 },		//backward
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//left backward
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//left
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//left forward
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//turn right
-	{ 0.0, 1.0, 1.0, 1.0, 1.0 },	//turn left
+	{ 0, 0, 0 },			//idle
+	{ 1, 1, 0 },			//forward
+	{ 1, 7, 3 },	//right forward
+	{ 5, 6, 1 },		//right
+	{ 8, 2, 3 },	//right backward
+	{ 2, 2, 0 },		//backward
+	{ 2, 8, 4 },	//left backward
+	{ 6, 5, 2 },	//left
+	{ 7, 1, 4 },	//left forward
+	{ 1, 2, 2 },	//turn right
+	{ 2, 1, 1 },	//turn left
 	};
+
 }
 using namespace SCORPIO;
 
@@ -116,7 +97,7 @@ void Scorpio::onMove(int data0, int data1)
 	{ 0.0, 0.0, 0.0 };
 	for (int i = 0; i < 3; ++i)
 	{
-		motor[i] = DIRECTION_DATA[dir][i] * DIRECTION_SPEED[dir][speed];
+		motor[i] =  DIRECTION_SPEED[speed][DIRECTION_DATA[dir][i]];
 	}
 	m_picoBorgReverse0.move(motor[0], motor[1]);
 	m_picoBorgReverse1.move(motor[2], 0);
