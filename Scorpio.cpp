@@ -16,9 +16,9 @@ namespace SCORPIO
 	const float DIRECTION_SPEED[ROBOT_MAX_SPEED][5] =
 	{
 	{ 0.0, 0.0, 0.0, 0.0, 0.0 },			//speed 0
-	{ 0.0, 0.31, -0.291, 0.21, -0.197 },	//speed 1
-	{ 0.0, 0.505, -0.495, 0.31, -0.291 },	//speed 1
-	{ 0.0, 0.776, -0.747, 0.40, -0.39 },	//speed 1
+	{ 0.0, 0.3, -0.291, 0.21, -0.197 },	//speed 1
+	{ 0.0, 0.5, -0.495, 0.31, -0.291 },	//speed 1
+	{ 0.0, 0.77, -0.747, 0.40, -0.39 },	//speed 1
 	{ 0.0, 0.997, -0.992, 0.505, -0.495 },	//speed 1
 	};
 
@@ -31,7 +31,7 @@ namespace SCORPIO
 	{ 0, 2, 1 },	//right backward
 	{ 2, 2, 0 },		//backward
 	{ 2, 0, 2 },	//left backward
-	{ 3, 4, 2 },	//left
+	{ 4, 3, 2 },	//left
 	{ 0, 1, 2 },	//left forward
 	{ 1, 2, 2 },	//turn right
 	{ 2, 1, 1 },	//turn left
