@@ -47,6 +47,8 @@ namespace EDIRECTION
 		LEFT_FORWARD,
 		TURN_RIGHT,
 		TURN_LEFT,
+		//----------
+		TOTAL,
 	};
 }
 

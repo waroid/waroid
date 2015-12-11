@@ -11,7 +11,7 @@
 
 namespace SCORPIO
 {
-	const int DIRECTION_COUNT = 11;
+	const int MOTOR_COUNT = 3;
 
 	const float DIRECTION_SPEED[ROBOT_MAX_SPEED][5] =
 	{
@@ -22,14 +22,14 @@ namespace SCORPIO
 	{ 0.0, 0.997, -0.992, 0.505, -0.495 },	//speed 1
 	};
 
-	const int DIRECTION_DATA[DIRECTION_COUNT][3] =
+	const int DIRECTION_DATA[EDIRECTION::TOTAL][MOTOR_COUNT] =
 	{
-	{ 0, 0, 0 },			//idle
-	{ 1, 1, 0 },			//forward
+	{ 0, 0, 0 },	//idle
+	{ 1, 1, 0 },	//forward
 	{ 1, 0, 1 },	//right forward
-	{ 3, 4, 1 },		//right
+	{ 3, 4, 1 },	//right
 	{ 0, 2, 1 },	//right backward
-	{ 2, 2, 0 },		//backward
+	{ 2, 2, 0 },	//backward
 	{ 2, 0, 2 },	//left backward
 	{ 4, 3, 2 },	//left
 	{ 0, 1, 2 },	//left forward
@@ -87,7 +87,7 @@ void Scorpio::onMove(int data0, int data1)
 {
 	int dir = data0;
 	if (dir < 0) dir = 0;
-	else if (dir >= DIRECTION_COUNT) dir = 0;
+	else if (dir >= EDIRECTION::TOTAL) dir = 0;
 
 	int speed = data1;
 	if (speed < 0) speed = 0;
@@ -97,7 +97,7 @@ void Scorpio::onMove(int data0, int data1)
 	{ 0.0, 0.0, 0.0 };
 	for (int i = 0; i < 3; ++i)
 	{
-		motor[i] =  DIRECTION_SPEED[speed][DIRECTION_DATA[dir][i]];
+		motor[i] = DIRECTION_SPEED[speed][DIRECTION_DATA[dir][i]];
 	}
 	m_picoBorgReverse0.move(motor[0], motor[1]);
 	m_picoBorgReverse1.move(motor[2], 0);
