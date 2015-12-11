@@ -26,7 +26,6 @@ namespace MAIN_MANAGER
 {
 	const int MAX_BUFFER_SIZE = 128;
 	const int INVALID_SOCKET = -1;
-	const pthread_t INVALID_THREAD_ID = -1;
 
 	const int GPIO_SPI_CLK = 8;
 	const int GPIO_SPI_MISO = 23;
@@ -39,7 +38,7 @@ namespace MAIN_MANAGER
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_networkThreadId(INVALID_THREAD_ID), m_batteryVolts(0.0f), m_batteryThreadId(INVALID_THREAD_ID), m_infoEnableSend(false), m_infoThreadId(INVALID_THREAD_ID)
+		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_batteryVolts(0.0f), m_infoEnableSend(false)
 {
 }
 
@@ -62,38 +61,38 @@ bool MainManager::start(int robotIndex)
 	GCHECK_RETFALSE(infoInit());
 	GLOG("initialized info");
 
-	pthread_join(m_networkThreadId, NULL);
-	pthread_join(m_batteryThreadId, NULL);
-	pthread_join(m_infoThreadId, NULL);
+	pthread_join(m_networkThread, NULL);
+	pthread_join(m_batteryThread, NULL);
+	pthread_join(m_infoThread, NULL);
 
 	return true;
 }
 
 void MainManager::stop()
 {
-	if (m_networkThreadId != INVALID_THREAD_ID)
+	if (m_networkThread >= 0)
 	{
-		if (pthread_cancel(m_networkThreadId) == 0)
+		if (pthread_cancel(m_networkThread) == 0)
 		{
-			pthread_join(m_networkThreadId, NULL);
+			pthread_join(m_networkThread, NULL);
 		}
 		GLOG("cancel network thread");
 	}
 
-	if (m_batteryThreadId != INVALID_THREAD_ID)
+	if (m_batteryThread >= 0)
 	{
-		if (pthread_cancel(m_batteryThreadId) == 0)
+		if (pthread_cancel(m_batteryThread) == 0)
 		{
-			pthread_join(m_batteryThreadId, NULL);
+			pthread_join(m_batteryThread, NULL);
 		}
 		GLOG("cancel battery thread");
 	}
 
-	if (m_infoThreadId != INVALID_THREAD_ID)
+	if (m_infoThread >= 0)
 	{
-		if (pthread_cancel(m_infoThreadId) == 0)
+		if (pthread_cancel(m_infoThread) == 0)
 		{
-			pthread_join(m_infoThreadId, NULL);
+			pthread_join(m_infoThread, NULL);
 		}
 		GLOG("cancel info thread");
 	}
@@ -173,8 +172,7 @@ bool MainManager::tcpListen()
 	GCHECK_RETFALSE(bind(m_listenSocket, (struct sockaddr* ) &sockaddrIn, sizeof(sockaddrIn)) != -1);
 	GCHECK_RETFALSE(listen(m_listenSocket, 3) != -1);
 
-	pthread_create(&m_networkThreadId, NULL, networkThread, this);
-	GCHECK_RETFALSE(m_networkThreadId != INVALID_THREAD_ID);
+	GCHECK_RETFALSE(pthread_create(&m_networkThread, NULL, networkWorker, this)==0);
 
 	return true;
 }
@@ -273,8 +271,7 @@ bool MainManager::batteryInitAdc()
 	pinMode(GPIO_SPI_MOSI, OUTPUT);
 	pinMode(GPIO_SPI_CS, OUTPUT);
 
-	pthread_create(&m_batteryThreadId, NULL, batteryThread, this);
-	GCHECK_RETFALSE(m_batteryThreadId != INVALID_THREAD_ID);
+	GCHECK_RETFALSE(pthread_create(&m_batteryThread, NULL, batteryWorker, this)==0);
 
 	return true;
 }
@@ -348,8 +345,7 @@ void MainManager::batteryLoop()
 
 bool MainManager::infoInit()
 {
-	pthread_create(&m_infoThreadId, NULL, infoThread, this);
-	GCHECK_RETFALSE(m_infoThreadId != INVALID_THREAD_ID);
+	GCHECK_RETFALSE(pthread_create(&m_infoThread, NULL, infoWorker, this)==0);
 
 	return true;
 }
@@ -414,29 +410,32 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 	}
 }
 
-void* MainManager::networkThread(void* param)
+void* MainManager::networkWorker(void* param)
 {
 	GLOG("start network thread");
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->tcpLoop();
+	GLOG("stop network thread");
 
 	return NULL;
 }
 
-void* MainManager::batteryThread(void* param)
+void* MainManager::batteryWorker(void* param)
 {
 	GLOG("start battery thread");
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->batteryLoop();
+	GLOG("stop battery thread");
 
 	return NULL;
 }
 
-void* MainManager::infoThread(void* param)
+void* MainManager::infoWorker(void* param)
 {
 	GLOG("start info thread");
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->infoLoop();
+	GLOG("stop info thread");
 
 	return NULL;
 }

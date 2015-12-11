@@ -45,18 +45,18 @@ private:
 
 	int m_listenSocket;
 	int m_ownerSocket;
-	pthread_t m_networkThreadId;
+	pthread_t m_networkThread;
 
 	float m_batteryVolts;
-	pthread_t m_batteryThreadId;
+	pthread_t m_batteryThread;
 
 	bool m_infoEnableSend;
-	pthread_t m_infoThreadId;
+	pthread_t m_infoThread;
 
 protected:
-	static void* networkThread(void* param);
-	static void* batteryThread(void* param);
-	static void* infoThread(void* param);
+	static void* networkWorker(void* param);
+	static void* batteryWorker(void* param);
+	static void* infoWorker(void* param);
 };
 
 #endif /* MAINMANAGER_H_ */

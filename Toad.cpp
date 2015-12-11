@@ -44,9 +44,8 @@ Toad::~Toad()
 bool Toad::onStart()
 {
 	if (Robot::onStart() == false) return false;
-
+	if (m_plasmaCannon.open() == false) return false;
 	if (m_picoBorgReverse0.open() == false) return false;
-
 	if (m_picoBorgReverse1.open() == false) return false;
 
 	return true;
@@ -56,16 +55,24 @@ void Toad::onStop()
 {
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
+	m_plasmaCannon.close();
 
 	Robot::onStop();
 }
 
 void Toad::onReset()
 {
+	m_plasmaCannon.init();
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
 	Robot::onReset();
 }
+
+void Toad::onFire(int data0, int data1)
+{
+	(data0 == 1) ? m_plasmaCannon.on() : m_plasmaCannon.off();
+}
+
 
 void Toad::onMove(int data0, int data1)
 {
