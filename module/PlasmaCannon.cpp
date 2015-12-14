@@ -42,13 +42,6 @@ bool PlasmaCannon::open()
 
 	init();
 
-	on();
-	sleep(1);
-	off();
-
-	pthread_join(m_thread, NULL);
-	GLOG("ready plasma cannon!!");
-
 	return true;
 }
 
