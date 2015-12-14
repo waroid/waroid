@@ -38,7 +38,7 @@ bool PlasmaCannon::open()
 
 	GCHECK_RETFALSE(pthread_mutex_init(&m_threadMutex, NULL)==0);
 	GCHECK_RETFALSE(pthread_cond_init(&m_threadCond, NULL)==0);
-	GCHECK_RETFALSE(pthread_create(&m_thread, NULL, worker, NULL)==0);
+	GCHECK_RETFALSE(pthread_create(&m_thread, NULL, worker, this)==0);
 
 	init();
 
