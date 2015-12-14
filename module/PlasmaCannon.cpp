@@ -47,6 +47,7 @@ bool PlasmaCannon::open()
 	off();
 
 	pthread_join(m_thread, NULL);
+	GLOG("ready plasma cannon!!");
 
 	return true;
 }
