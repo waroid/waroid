@@ -55,7 +55,7 @@ Scorpio::~Scorpio()
 bool Scorpio::onStart()
 {
 	if (Robot::onStart() == false) return false;
-	if (m_relayMotor.open() == false) return false;
+	if (m_gatlingGun.open() == false) return false;
 	if (m_picoBorgReverse0.open() == false) return false;
 	if (m_picoBorgReverse1.open() == false) return false;
 
@@ -66,13 +66,13 @@ void Scorpio::onStop()
 {
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
-	m_relayMotor.close();
+	m_gatlingGun.close();
 	Robot::onStop();
 }
 
 void Scorpio::onReset()
 {
-	m_relayMotor.init();
+	m_gatlingGun.init();
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
 	Robot::onReset();
@@ -80,7 +80,7 @@ void Scorpio::onReset()
 
 void Scorpio::onFire(int data0, int data1)
 {
-	(data0 == 1) ? m_relayMotor.on() : m_relayMotor.off();
+	(data0 == 1) ? m_gatlingGun.on() : m_gatlingGun.off();
 }
 
 void Scorpio::onMove(int data0, int data1)

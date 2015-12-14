@@ -8,8 +8,8 @@
 #ifndef SCORPIO_H_
 #define SCORPIO_H_
 
-#include "module/RelayMotor.h"
 #include "module/PicoBorgReverse.h"
+#include "module/GatlingGun.h"
 #include "Robot.h"
 
 class Scorpio: public Robot
@@ -26,7 +26,7 @@ public:
 	virtual void onMove(int data0, int data1);
 
 protected:
-	RelayMotor m_relayMotor;
+	GatlingGun m_gatlingGun;
 	PicoBorgReverse m_picoBorgReverse0;
 	PicoBorgReverse m_picoBorgReverse1;
 };

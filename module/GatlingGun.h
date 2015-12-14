@@ -1,22 +1,21 @@
 /*
- * RelayMotor.h
+ * GatlingGun.h
  *
- *  Created on: Nov 20, 2015
+ *  Created on: Dec 14, 2015
  *      Author: mirime
  */
 
-#ifndef RELAYMOTOR_H_
-#define RELAYMOTOR_H_
+#ifndef GATLINGGUN_H_
+#define GATLINGGUN_H_
 
 #include "IModule.h"
 
-class RelayMotor: public IModule
+class GatlingGun: public IModule
 {
 public:
-	RelayMotor();
-	virtual ~RelayMotor();
+	GatlingGun();
+	virtual ~GatlingGun();
 
-public:
 	virtual const char* getDescription() const;
 	virtual bool open();
 	virtual void close();
@@ -26,4 +25,4 @@ public:
 	void off();
 };
 
-#endif /* RELAYMOTOR_H_ */
+#endif /* GATLINGGUN_H_ */

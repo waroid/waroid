@@ -8,8 +8,8 @@
 #ifndef CRAB_H_
 #define CRAB_H_
 
-#include "module/RelayMotor.h"
 #include "module/PicoBorgReverse.h"
+#include "module/GatlingGun.h"
 #include "Robot.h"
 
 class Crab: public Robot
@@ -26,7 +26,7 @@ protected:
 	virtual void onMove(int data0, int data1);
 
 protected:
-	RelayMotor m_relayMotor;
+	GatlingGun m_gatlingGun;
 	PicoBorgReverse m_picoBorgReverse;
 };
 

@@ -6,7 +6,6 @@
  */
 
 #include <wiringPi.h>
-
 #include "Crab.h"
 
 namespace CRAB
@@ -29,7 +28,7 @@ Crab::~Crab()
 bool Crab::onStart()
 {
 	if (Robot::onStart() == false) return false;
-	if (m_relayMotor.open() == false) return false;
+	if (m_gatlingGun.open() == false) return false;
 	if (m_picoBorgReverse.open() == false) return false;
 
 	return true;
@@ -38,20 +37,20 @@ bool Crab::onStart()
 void Crab::onStop()
 {
 	m_picoBorgReverse.close();
-	m_relayMotor.close();
+	m_gatlingGun.close();
 	Robot::onStop();
 }
 
 void Crab::onReset()
 {
-	m_relayMotor.init();
+	m_gatlingGun.init();
 	m_picoBorgReverse.init();
 	Robot::onReset();
 }
 
 void Crab::onFire(int data0, int data1)
 {
-	(data0 == 1) ? m_relayMotor.on() : m_relayMotor.off();
+	(data0 == 1) ? m_gatlingGun.on() : m_gatlingGun.off();
 }
 
 void Crab::onMove(int data0, int data1)

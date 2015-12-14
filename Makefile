@@ -19,7 +19,7 @@ CPPSOURCES = main.cpp \
 	module/PicoBorgReverse.cpp \
 	module/PololuQik.cpp \
 	module/ServoMotor.cpp \
-	module/RelayMotor.cpp \
+	module/GatlingGun.cpp \
 	module/PlasmaCannon.cpp \
 	Global.cpp \
 	Robot.cpp \
