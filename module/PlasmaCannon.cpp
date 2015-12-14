@@ -83,6 +83,7 @@ void PlasmaCannon::loop()
 	for (int i = 0; i < 3; ++ i)
 	{
 		shoot();
+		delay(500);
 	}
 
 	for (;;)
