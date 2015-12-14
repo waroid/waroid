@@ -87,6 +87,11 @@ void PlasmaCannon::off()
 
 void PlasmaCannon::loop()
 {
+	for (int i = 0; i < 3; ++ i)
+	{
+		shoot();
+	}
+
 	for (;;)
 	{
 		pthread_mutex_lock(&m_threadMutex);
@@ -95,19 +100,23 @@ void PlasmaCannon::loop()
 
 		while (m_repeat)
 		{
-			digitalWrite(GPIO_NUM, 1);
-			delay(100);
-			digitalWrite(GPIO_NUM, 0);
-			delay(100);
+			shoot();
+			delay(500);
 		}
 	}
+}
+
+void PlasmaCannon::shoot()
+{
+	digitalWrite(GPIO_NUM, 1);
+	delay(50);
+	digitalWrite(GPIO_NUM, 0);
 }
 
 void* PlasmaCannon::worker(void* param)
 {
 	GLOG("start PlasmaCannon thread");
-	PlasmaCannon* plasmaCannon = (PlasmaCannon*) param;
-	plasmaCannon->loop();
+	((PlasmaCannon*) param)->loop();
 	GLOG("stop PlasmaCannon thread");
 
 	return NULL;

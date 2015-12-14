@@ -28,6 +28,7 @@ public:
 
 protected:
 	void loop();
+	void shoot();
 
 protected:
 	bool m_repeat;
