@@ -16,18 +16,19 @@ CSOURCES =
 
 CPPSOURCES = main.cpp \
 	core/Logger.cpp \
+	module/BatteryChecker.cpp \
+	module/GatlingGun.cpp \
 	module/PicoBorgReverse.cpp \
+	module/PlasmaCannon.cpp \
 	module/PololuQik.cpp \
 	module/ServoMotor.cpp \
-	module/GatlingGun.cpp \
-	module/PlasmaCannon.cpp \
 	Global.cpp \
-	Robot.cpp \
-	Crab.cpp \
-	Hydra.cpp \
-	Turtle.cpp \
-	Toad.cpp \
-	Scorpio.cpp \
+	robot/Robot.cpp \
+	robot/Crab.cpp \
+	robot/Hydra.cpp \
+	robot/Scorpio.cpp \
+	robot/Toad.cpp \
+	robot/Turtle.cpp \
 	MainManager.cpp
 
 OBJECTS = $(CSOURCES:%.c=%.o)

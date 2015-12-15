@@ -10,35 +10,26 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <sys/sysinfo.h>
 #include <wiringPi.h>
 #include "core/Logger.h"
-#include "Crab.h"
-#include "Hydra.h"
-#include "Turtle.h"
-#include "Toad.h"
-#include "Scorpio.h"
+#include "robot/Crab.h"
+#include "robot/Hydra.h"
+#include "robot/Turtle.h"
+#include "robot/Toad.h"
+#include "robot/Scorpio.h"
 #include "MainManager.h"
 
 namespace MAIN_MANAGER
 {
 	const int MAX_BUFFER_SIZE = 128;
 	const int INVALID_SOCKET = -1;
-
-	const int GPIO_SPI_CLK = 8;
-	const int GPIO_SPI_MISO = 23;
-	const int GPIO_SPI_MOSI = 24;
-	const int GPIO_SPI_CS = 25;
-
-	const int MIN_ADC = (6.0 * 1024 / 3.33 / 2.837);
-	const int MAX_ADC = (9.0 * 1024 / 3.33 / 2.837);
 }
 using namespace MAIN_MANAGER;
 
 MainManager::MainManager()
-		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_batteryVolts(0.0f), m_infoEnableSend(false)
+		: m_robot(NULL), m_listenSocket(INVALID_SOCKET), m_ownerSocket(INVALID_SOCKET), m_networkThread(-1), m_infoEnableSend(false), m_infoThread(-1)
 {
 }
 
@@ -55,14 +46,13 @@ bool MainManager::start(int robotIndex)
 	GCHECK_RETFALSE(tcpListen());
 	GLOG("listened tcp");
 
-	GCHECK_RETFALSE(batteryInitAdc());
+	GCHECK_RETFALSE(m_batteryChecker.open());
 	GLOG("initialized battery adc");
 
 	GCHECK_RETFALSE(infoInit());
 	GLOG("initialized info");
 
 	pthread_join(m_networkThread, NULL);
-	pthread_join(m_batteryThread, NULL);
 	pthread_join(m_infoThread, NULL);
 
 	return true;
@@ -77,15 +67,6 @@ void MainManager::stop()
 			pthread_join(m_networkThread, NULL);
 		}
 		GLOG("cancel network thread");
-	}
-
-	if (m_batteryThread >= 0)
-	{
-		if (pthread_cancel(m_batteryThread) == 0)
-		{
-			pthread_join(m_batteryThread, NULL);
-		}
-		GLOG("cancel battery thread");
 	}
 
 	if (m_infoThread >= 0)
@@ -110,6 +91,8 @@ void MainManager::stop()
 		m_listenSocket = INVALID_SOCKET;
 		GLOG("close listen socket");
 	}
+
+	m_batteryChecker.close();
 
 	if (m_robot)
 	{
@@ -264,85 +247,6 @@ void MainManager::tcpDisconnect(int socket)
 	}
 }
 
-bool MainManager::batteryInitAdc()
-{
-	pinMode(GPIO_SPI_CLK, OUTPUT);
-	pinMode(GPIO_SPI_MISO, INPUT);
-	pinMode(GPIO_SPI_MOSI, OUTPUT);
-	pinMode(GPIO_SPI_CS, OUTPUT);
-
-	GCHECK_RETFALSE(pthread_create(&m_batteryThread, NULL, batteryWorker, this)==0);
-
-	return true;
-}
-
-int MainManager::batteryReadAdc()
-{
-	digitalWrite(GPIO_SPI_CS, 1);
-	delay(1);
-	digitalWrite(GPIO_SPI_CLK, 0);
-	delay(1);
-	digitalWrite(GPIO_SPI_CS, 0);
-	delay(1);
-
-	int commandOut = (0x6 << 5);
-
-	for (int i = 0; i < 3; ++i)
-	{
-		digitalWrite(GPIO_SPI_MOSI, (commandOut & 0x80) == 0x80 ? 1 : 0);
-		delay(1);
-		commandOut <<= 1;
-		digitalWrite(GPIO_SPI_CLK, 1);
-		delay(1);
-		digitalWrite(GPIO_SPI_CLK, 0);
-		delay(1);
-	}
-
-	int adcOut = 0;
-	for (int i = 0; i < 12; ++i)
-	{
-		digitalWrite(GPIO_SPI_CLK, 1);
-		delay(1);
-		digitalWrite(GPIO_SPI_CLK, 0);
-		delay(1);
-
-		adcOut <<= 1;
-		if (digitalRead(GPIO_SPI_MISO)) adcOut |= 0x1;
-		delay(1);
-	}
-	digitalWrite(GPIO_SPI_CS, 1);
-	delay(1);
-
-	adcOut /= 2;
-	return adcOut;
-}
-
-void MainManager::batteryLoop()
-{
-	for (;;)
-	{
-		int adcTotal = 0;
-		int adcCount = 0;
-
-		for (int i = 0; i < 10; ++i)
-		{
-			int adcV = batteryReadAdc();
-			if (adcV > MIN_ADC && adcV < MAX_ADC)
-			{
-				adcTotal += adcV;
-				adcCount++;
-			}
-			delay(50);
-		}
-
-		float adcValue = (adcCount > 0) ? adcTotal / adcCount / 1.0 : 0.0;
-		m_batteryVolts = adcValue * (3.33 / 1024.0) * 2.837;
-		GLOG("adc=%f volt=%f count=%d", adcValue, m_batteryVolts, adcCount);
-
-		sleep(30);
-	}
-}
-
 bool MainManager::infoInit()
 {
 	GCHECK_RETFALSE(pthread_create(&m_infoThread, NULL, infoWorker, this)==0);
@@ -383,7 +287,7 @@ void MainManager::infoLoop()
 			}
 
 			{
-				unsigned short batteryVolt = (unsigned short) (m_batteryVolts * 100);
+				unsigned short batteryVolt = (unsigned short) (m_batteryChecker.getVolts() * 100);
 				tcpSend(m_ownerSocket, EMESSAGE::BATTERY_VOLT_ACK, batteryVolt);
 			}
 		}
@@ -416,16 +320,6 @@ void* MainManager::networkWorker(void* param)
 	MainManager* mainManager = (MainManager*) param;
 	mainManager->tcpLoop();
 	GLOG("stop network thread");
-
-	return NULL;
-}
-
-void* MainManager::batteryWorker(void* param)
-{
-	GLOG("start battery thread");
-	MainManager* mainManager = (MainManager*) param;
-	mainManager->batteryLoop();
-	GLOG("stop battery thread");
 
 	return NULL;
 }

@@ -6,7 +6,7 @@
  */
 
 #include <wiringPi.h>
-#include "core/Logger.h"
+#include "../core/Logger.h"
 #include "Scorpio.h"
 
 namespace SCORPIO
@@ -54,10 +54,10 @@ Scorpio::~Scorpio()
 
 bool Scorpio::onStart()
 {
-	if (Robot::onStart() == false) return false;
-	if (m_gatlingGun.open() == false) return false;
-	if (m_picoBorgReverse0.open() == false) return false;
-	if (m_picoBorgReverse1.open() == false) return false;
+	GCHECK_RETFALSE(Robot::onStart());
+	GCHECK_RETFALSE(m_gatlingGun.open());
+	GCHECK_RETFALSE(m_picoBorgReverse0.open());
+	GCHECK_RETFALSE(m_picoBorgReverse1.open());
 
 	return true;
 }

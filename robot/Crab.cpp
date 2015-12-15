@@ -6,6 +6,7 @@
  */
 
 #include <wiringPi.h>
+#include "../core/Logger.h"
 #include "Crab.h"
 
 namespace CRAB
@@ -27,9 +28,9 @@ Crab::~Crab()
 
 bool Crab::onStart()
 {
-	if (Robot::onStart() == false) return false;
-	if (m_gatlingGun.open() == false) return false;
-	if (m_picoBorgReverse.open() == false) return false;
+	GCHECK_RETFALSE(Robot::onStart());
+	GCHECK_RETFALSE(m_gatlingGun.open());
+	GCHECK_RETFALSE(m_picoBorgReverse.open());
 
 	return true;
 }

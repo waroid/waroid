@@ -8,7 +8,6 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
-#include <pthread.h>
 #include "share/defines.h"
 #include "share/enums.h"
 

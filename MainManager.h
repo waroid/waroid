@@ -9,6 +9,7 @@
 #define MAINMANAGER_H_
 
 #include "Global.h"
+#include "module/BatteryChecker.h"
 
 class Robot;
 
@@ -31,10 +32,6 @@ private:
 	void tcpSend(int socket, EMESSAGE::ETYPE emessage, unsigned short data);
 	void tcpDisconnect(int socket);
 
-	bool batteryInitAdc();
-	int batteryReadAdc();
-	void batteryLoop();
-
 	bool infoInit();
 	void infoLoop();
 
@@ -42,20 +39,17 @@ private:
 
 private:
 	Robot* m_robot;
+	BatteryChecker m_batteryChecker;
 
 	int m_listenSocket;
 	int m_ownerSocket;
 	pthread_t m_networkThread;
-
-	float m_batteryVolts;
-	pthread_t m_batteryThread;
 
 	bool m_infoEnableSend;
 	pthread_t m_infoThread;
 
 protected:
 	static void* networkWorker(void* param);
-	static void* batteryWorker(void* param);
 	static void* infoWorker(void* param);
 };
 

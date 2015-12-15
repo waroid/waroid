@@ -17,7 +17,7 @@ namespace PLASMA_CANNON
 using namespace PLASMA_CANNON;
 
 PlasmaCannon::PlasmaCannon()
-		: m_repeat(false)
+		: m_repeat(false), m_thread(-1)
 {
 	// TODO Auto-generated constructor stub
 }

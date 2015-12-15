@@ -6,7 +6,7 @@
  */
 
 #include <stdlib.h>
-#include "core/Logger.h"
+#include "../core/Logger.h"
 #include "Robot.h"
 
 namespace ROBOT

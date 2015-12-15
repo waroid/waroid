@@ -6,7 +6,7 @@
  */
 
 #include <wiringPi.h>
-
+#include "../core/Logger.h"
 #include "Hydra.h"
 
 namespace HYDRA
@@ -30,9 +30,9 @@ Hydra::~Hydra()
 
 bool Hydra::onStart()
 {
-	if (Robot::onStart() == false) return false;
-	if (m_pololuQik.open() == false) return false;
-	if (m_servoMotor.open() == false) return false;
+	GCHECK_RETFALSE(Robot::onStart());
+	GCHECK_RETFALSE(m_pololuQik.open());
+	GCHECK_RETFALSE(m_servoMotor.open());
 
 	return true;
 }

@@ -8,8 +8,8 @@
 #ifndef CRAB_H_
 #define CRAB_H_
 
-#include "module/PicoBorgReverse.h"
-#include "module/GatlingGun.h"
+#include "../module/PicoBorgReverse.h"
+#include "../module/GatlingGun.h"
 #include "Robot.h"
 
 class Crab: public Robot

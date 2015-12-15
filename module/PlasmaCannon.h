@@ -8,7 +8,7 @@
 #ifndef PLASMACANNON_H_
 #define PLASMACANNON_H_
 
-#include "../Global.h"
+#include <pthread.h>
 #include "IModule.h"
 
 class PlasmaCannon: public IModule

@@ -1,22 +1,22 @@
 /*
- * Scorpio.h
+ * Toad.h
  *
- *  Created on: Nov 19, 2015
+ *  Created on: 2015. 2. 16.
  *      Author: mirime
  */
 
-#ifndef SCORPIO_H_
-#define SCORPIO_H_
+#ifndef TOAD_H_
+#define TOAD_H_
 
-#include "module/PicoBorgReverse.h"
-#include "module/GatlingGun.h"
+#include "../module/PicoBorgReverse.h"
+#include "../module/PlasmaCannon.h"
 #include "Robot.h"
 
-class Scorpio: public Robot
+class Toad: public Robot
 {
 public:
-	Scorpio(int index);
-	virtual ~Scorpio();
+	Toad(int index);
+	virtual ~Toad();
 
 public:
 	virtual bool onStart();
@@ -26,9 +26,9 @@ public:
 	virtual void onMove(int data0, int data1);
 
 protected:
-	GatlingGun m_gatlingGun;
+	PlasmaCannon m_plasmaCannon;
 	PicoBorgReverse m_picoBorgReverse0;
 	PicoBorgReverse m_picoBorgReverse1;
 };
 
-#endif /* SCORPIO_H_ */
+#endif /* TOAD_H_ */

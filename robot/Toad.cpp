@@ -1,13 +1,14 @@
 /*
- * Turtle.cpp
+ * Toad.cpp
  *
- *  Created on: 2015. 2. 14.
+ *  Created on: 2015. 2. 16.
  *      Author: mirime
  */
 
-#include "Turtle.h"
+#include "../core/Logger.h"
+#include "Toad.h"
 
-namespace TURTLE
+namespace TOAD
 {
 	const int MOTOR_COUNT = 4;
 
@@ -16,51 +17,50 @@ namespace TURTLE
 	//0:motor0, 0:motor1, 1:motor0, 1:motor1
 	{ 0, 0, 0, 0 },		//idle
 	{ 1, 1, 1, 1 },	//forward
-	{ 1, 0, 0, 1 },	//right forward
+	{ 0, 0, 0, 0 },	//right forward
 	{ 1, -1, -1, 1 },	//right
-	{ 0, -1, -1, 0 },	//right backward
+	{ 0, 0, 0, 0 },	//right backward
 	{ -1, -1, -1, -1 },	//backward
-	{ -1, 0, 0, -1 },	//left backward
+	{ 0, 0, 0, 0 },	//left backward
 	{ -1, 1, 1, -1 },	//left
-	{ 0, 1, 1, 0 },	//left forward
+	{ 0, 0, 0, 0 },	//left forward
 	{ 1, -1, 1, -1 },		//turn right
 	{ -1, 1, -1, 1 },	//turn left
 	};
 }
-using namespace TURTLE;
+using namespace TOAD;
 
-Turtle::Turtle(int index)
-		: Robot(EROBOT::TURTLE, index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
+Toad::Toad(int index)
+		: Robot(EROBOT::TOAD, index), m_picoBorgReverse0(10), m_picoBorgReverse1(11)
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-Turtle::~Turtle()
+Toad::~Toad()
 {
 	// TODO Auto-generated destructor stub
 }
 
-bool Turtle::onStart()
+bool Toad::onStart()
 {
-	if (Robot::onStart() == false) return false;
-	if (m_plasmaCannon.open() == false) return false;
-	if (m_picoBorgReverse0.open() == false) return false;
-	if (m_picoBorgReverse1.open() == false) return false;
+	GCHECK_RETFALSE(Robot::onStart());
+	GCHECK_RETFALSE(m_plasmaCannon.open());
+	GCHECK_RETFALSE(m_picoBorgReverse0.open());
+	GCHECK_RETFALSE(m_picoBorgReverse1.open());
 
 	return true;
 }
 
-void Turtle::onStop()
+void Toad::onStop()
 {
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
 	m_plasmaCannon.close();
-
 	Robot::onStop();
 }
 
-void Turtle::onReset()
+void Toad::onReset()
 {
 	m_plasmaCannon.init();
 	m_picoBorgReverse0.init();
@@ -68,12 +68,13 @@ void Turtle::onReset()
 	Robot::onReset();
 }
 
-void Turtle::onFire(int data0, int data1)
+void Toad::onFire(int data0, int data1)
 {
 	(data0 == 1) ? m_plasmaCannon.on() : m_plasmaCannon.off();
 }
 
-void Turtle::onMove(int data0, int data1)
+
+void Toad::onMove(int data0, int data1)
 {
 	int dir = data0;
 	if (dir < 0) dir = 0;
@@ -86,4 +87,3 @@ void Turtle::onMove(int data0, int data1)
 	m_picoBorgReverse0.move(DIRECTION_DATA[dir][0] * g_speedScale[speed], DIRECTION_DATA[dir][1] * g_speedScale[speed]);
 	m_picoBorgReverse1.move(DIRECTION_DATA[dir][2] * g_speedScale[speed], DIRECTION_DATA[dir][3] * g_speedScale[speed]);
 }
-
