@@ -16,6 +16,7 @@ CSOURCES =
 
 CPPSOURCES = main.cpp \
 	core/Logger.cpp \
+	module/AdafruitAudioFxSoundBoard.cpp \
 	module/BatteryChecker.cpp \
 	module/GatlingGun.cpp \
 	module/PicoBorgReverse.cpp \
