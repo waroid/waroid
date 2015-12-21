@@ -11,13 +11,13 @@
 
 namespace HYDRA
 {
-	const int TURRET_OFFSET_ANGLE = 14;
-	const int TURRET_MAX_ANGLE = 30;
+	const int TURRET_OFFSET_ANGLE = 0;
+	const int TURRET_MAX_ANGLE = 45;
 }
 using namespace HYDRA;
 
 Hydra::Hydra(int index)
-		: Robot(EROBOT::HYDRA, index), m_servoMotor(TURRET_OFFSET_ANGLE)
+		: Robot(EROBOT::HYDRA, index), m_missileTurret(TURRET_OFFSET_ANGLE)
 {
 	// TODO Auto-generated constructor stub
 
@@ -31,29 +31,29 @@ Hydra::~Hydra()
 bool Hydra::onStart()
 {
 	GCHECK_RETFALSE(Robot::onStart());
-	GCHECK_RETFALSE(m_pololuQik.open());
-	GCHECK_RETFALSE(m_servoMotor.open());
+	GCHECK_RETFALSE(m_picoBorgReverse.open());
+	GCHECK_RETFALSE(m_missileTurret.open());
 
 	return true;
 }
 
 void Hydra::onStop()
 {
-	m_servoMotor.close();
-	m_pololuQik.close();
+	m_missileTurret.close();
+	m_picoBorgReverse.close();
 	Robot::onStop();
 }
 
 void Hydra::onReset()
 {
-	m_pololuQik.init();
-	m_servoMotor.init();
+	m_picoBorgReverse.init();
+	m_missileTurret.init();
 	Robot::onReset();
 }
 
 void Hydra::onMove(int data0, int data1)
 {
-	m_pololuQik.move(data0 / 100.0f, data1 / 100.0f);
+	m_picoBorgReverse.move(data0 / 100.0f, data1 / 100.0f);
 }
 
 void Hydra::onControlTurret(int data0, int data1)
@@ -66,5 +66,5 @@ void Hydra::controlTurret(int angle)
 	if (angle < 0) angle = 0;
 	else if (angle > TURRET_MAX_ANGLE) angle = TURRET_MAX_ANGLE;
 
-	m_servoMotor.rotate(angle);
+	m_missileTurret.rotate(angle);
 }

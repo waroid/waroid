@@ -19,10 +19,10 @@ CPPSOURCES = main.cpp \
 	module/AdafruitAudioFxSoundBoard.cpp \
 	module/BatteryChecker.cpp \
 	module/GatlingGun.cpp \
+	module/MissileTurret.cpp \
 	module/PicoBorgReverse.cpp \
 	module/PlasmaCannon.cpp \
 	module/PololuQik.cpp \
-	module/ServoMotor.cpp \
 	Global.cpp \
 	robot/Robot.cpp \
 	robot/Crab.cpp \

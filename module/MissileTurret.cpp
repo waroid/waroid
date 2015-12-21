@@ -1,42 +1,39 @@
 /*
- * ServoMotor.cpp
+ * MissileTurret.cpp
  *
- *  Created on: Mar 9, 2015
+ *  Created on: Dec 21, 2015
  *      Author: mirime
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
 #include <wiringPi.h>
-#include "ServoMotor.h"
+#include "MissileTurret.h"
 
-namespace SERVO_MOTOR
+namespace MISSILE_TURRET
 {
 	const int GPIO_NUM = 18;
 	const int PWM_CLOCK = 400;
 	const int PWM_RANGE = 1024;
 }
-using namespace SERVO_MOTOR;
+using namespace MISSILE_TURRET;
 
-ServoMotor::ServoMotor(int offset)
+MissileTurret::MissileTurret(int offset)
 		: m_offset(offset)
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-ServoMotor::~ServoMotor()
+MissileTurret::~MissileTurret()
 {
 	// TODO Auto-generated destructor stub
 }
 
-const char* ServoMotor::getDescription() const
+const char* MissileTurret::getDescription() const
 {
-	return "Common Server Motor Controller";
+	return "Missile turret Controller";
 }
 
-bool ServoMotor::open()
+bool MissileTurret::open()
 {
 	pinMode(GPIO_NUM, PWM_OUTPUT);
 	pwmSetMode(PWM_MODE_MS);
@@ -48,17 +45,17 @@ bool ServoMotor::open()
 	return true;
 }
 
-void ServoMotor::close()
+void MissileTurret::close()
 {
 	init();
 }
 
-void ServoMotor::init()
+void MissileTurret::init()
 {
 	rotate(0);
 }
 
-void ServoMotor::rotate(int angle)
+void MissileTurret::rotate(int angle)
 {
 	if ((angle < 0) || (angle > 180)) return;
 

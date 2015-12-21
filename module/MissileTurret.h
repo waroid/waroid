@@ -1,21 +1,22 @@
 /*
- * ServoMotor.h
+ * MissileTurret.h
  *
- *  Created on: Mar 9, 2015
+ *  Created on: Dec 21, 2015
  *      Author: mirime
  */
 
-#ifndef SERVOMOTOR_H_
-#define SERVOMOTOR_H_
+#ifndef MISSILETURRET_H_
+#define MISSILETURRET_H_
 
 #include "IModule.h"
 
-class ServoMotor: public IModule
+class MissileTurret: public IModule
 {
 public:
-	ServoMotor(int offset);
-	virtual ~ServoMotor();
+	MissileTurret(int offset);
+	virtual ~MissileTurret();
 
+public:
 	virtual const char* getDescription() const;
 	virtual bool open();
 	virtual void close();
@@ -27,4 +28,4 @@ protected:
 	int m_offset;
 };
 
-#endif /* SERVOMOTOR_H_ */
+#endif /* MISSILETURRET_H_ */

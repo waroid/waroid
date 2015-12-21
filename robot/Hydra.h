@@ -8,8 +8,8 @@
 #ifndef HYDRA_H_
 #define HYDRA_H_
 
-#include "../module/PololuQik.h"
-#include "../module/ServoMotor.h"
+#include "../module/PicoBorgReverse.h"
+#include "../module/MissileTurret.h"
 #include "Robot.h"
 
 class Hydra: public Robot
@@ -29,8 +29,8 @@ private:
 	void controlTurret(int angle);
 
 protected:
-	PololuQik m_pololuQik;
-	ServoMotor m_servoMotor;
+	PicoBorgReverse m_picoBorgReverse;
+	MissileTurret m_missileTurret;
 };
 
 #endif /* HYDRA_H_ */
