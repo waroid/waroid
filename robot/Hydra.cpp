@@ -12,7 +12,6 @@
 namespace HYDRA
 {
 	const int TURRET_OFFSET_ANGLE = 0;
-	const int TURRET_MAX_ANGLE = 45;
 }
 using namespace HYDRA;
 
@@ -63,8 +62,8 @@ void Hydra::onControlTurret(int data0, int data1)
 
 void Hydra::controlTurret(int angle)
 {
-	if (angle < 0) angle = 0;
-	else if (angle > TURRET_MAX_ANGLE) angle = TURRET_MAX_ANGLE;
+	if (angle < ROBOT_MIN_TURRET_ANGLE) angle = ROBOT_MIN_TURRET_ANGLE;
+	else if (angle > ROBOT_MAX_TURRET_ANGLE) angle = ROBOT_MAX_TURRET_ANGLE;
 
 	m_missileTurret.rotate(angle);
 }
