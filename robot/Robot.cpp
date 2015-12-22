@@ -72,10 +72,12 @@ void Robot::onToggleCamera(int data0, int data1)
 	bool onoff = (data0 == 1);
 	if (onoff)
 	{
+		GLOG("open camera");
 		system("raspivid -o - -t 0 -fps 25 -b 2500000 -w 1280 -h 720 | nc -l -p 5001 &");
 	}
 	else
 	{
+		GLOG("close camera");
 		system("killall raspivid");
 		system("killall nc");
 	}

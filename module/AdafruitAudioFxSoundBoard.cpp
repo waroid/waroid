@@ -63,6 +63,13 @@ void AdafruitAudioFxSoundBoard::play(int track)
 	serialPuts(m_fd, buffer);
 }
 
+void AdafruitAudioFxSoundBoard::play(const char* trackName)
+{
+	char buffer[32] = {0};
+	sprintf(buffer, "P%s\n", trackName);
+	serialPuts(m_fd, buffer);
+}
+
 void AdafruitAudioFxSoundBoard::volumeUp()
 {
 	serialPuts(m_fd, "+\n");

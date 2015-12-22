@@ -24,6 +24,7 @@ public:
 	virtual void init();
 
 	void play(int track);
+	void play(const char* trackName);
 	void volumeUp();
 	void volumeDown();
 

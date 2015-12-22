@@ -11,7 +11,7 @@
 
 namespace HYDRA
 {
-	const int TURRET_OFFSET_ANGLE = 0;
+	const int TURRET_OFFSET_ANGLE = 5;
 
 	const int MOTOR_COUNT = 2;
 
@@ -47,12 +47,12 @@ Hydra::~Hydra()
 
 bool Hydra::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
+	//GCHECK_RETFALSE(Robot::onStart());
 	GCHECK_RETFALSE(m_picoBorgReverse.open());
 	GCHECK_RETFALSE(m_missileTurret.open());
 	GCHECK_RETFALSE(m_adfruitAudioFxSoundBoard.open());
 
-	m_adfruitAudioFxSoundBoard.play(17);
+	m_adfruitAudioFxSoundBoard.play("01BOOT  WAV");
 
 	return true;
 }
@@ -75,6 +75,13 @@ void Hydra::onReset()
 
 void Hydra::onMove(int data0, int data1)
 {
+	if (data0 >= EDIRECTION::TOTAL || data0 < 0 || data1 >= ROBOT_MAX_SPEED || data1 < 0)
+	{
+		GLOG("move %d %d", data0, data1);
+		m_picoBorgReverse.move(data0 / 100.f, data1 / 100.f);
+		return;
+	} 
+
 	int dir = data0;
 	if (dir < 0) dir = 0;
 	else if (dir >= EDIRECTION::TOTAL) dir = 0;
