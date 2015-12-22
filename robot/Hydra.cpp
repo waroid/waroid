@@ -14,7 +14,6 @@ namespace HYDRA
 	const int TURRET_OFFSET_ANGLE = 5;
 
 	const int MOTOR_COUNT = 2;
-
 	const int DIRECTION_DATA[EDIRECTION::TOTAL][MOTOR_COUNT] =
 	{
 	//0:motor0, 0:motor1
