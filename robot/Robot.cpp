@@ -72,7 +72,7 @@ void Robot::onToggleCamera(int data0, int data1)
 	bool onoff = (data0 == 1);
 	if (onoff)
 	{
-		system("raspivid -o - -rot 90 -t 0 -fps 20 -b 2500000 -h 1280 -w 720 | nc -l -p 5001 &");
+		system("raspivid -o - -t 0 -fps 25 -b 2500000 -w 1280 -h 720 | nc -l -p 5001 &");
 	}
 	else
 	{
