@@ -50,12 +50,16 @@ bool Hydra::onStart()
 	GCHECK_RETFALSE(Robot::onStart());
 	GCHECK_RETFALSE(m_picoBorgReverse.open());
 	GCHECK_RETFALSE(m_missileTurret.open());
+	GCHECK_RETFALSE(m_adfruitAudioFxSoundBoard.open());
+
+	m_adfruitAudioFxSoundBoard.play(17);
 
 	return true;
 }
 
 void Hydra::onStop()
 {
+	m_adfruitAudioFxSoundBoard.close();
 	m_missileTurret.close();
 	m_picoBorgReverse.close();
 	Robot::onStop();
@@ -63,6 +67,7 @@ void Hydra::onStop()
 
 void Hydra::onReset()
 {
+	m_adfruitAudioFxSoundBoard.init();
 	m_picoBorgReverse.init();
 	m_missileTurret.init();
 	Robot::onReset();
