@@ -27,7 +27,6 @@ public:
 
 	void stop()
 	{
-		onReset();
 		onStop();
 	}
 
