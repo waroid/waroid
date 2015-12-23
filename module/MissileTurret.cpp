@@ -47,7 +47,6 @@ bool MissileTurret::open()
 
 void MissileTurret::close()
 {
-	init();
 }
 
 void MissileTurret::init()

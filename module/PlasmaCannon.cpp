@@ -47,8 +47,6 @@ bool PlasmaCannon::open()
 
 void PlasmaCannon::close()
 {
-	init();
-
 	if (m_thread >= 0)
 	{
 		if (pthread_cancel(m_thread) == 0)

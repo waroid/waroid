@@ -35,18 +35,18 @@ bool GatlingGun::open()
 {
 	pinMode(GPIO_NUM, OUTPUT);
 
-	init();
-
+	delay(10);
 	on();
 	delay(500);
 	off();
+
+	init();
 
 	return true;
 }
 
 void GatlingGun::close()
 {
-	init();
 }
 
 void GatlingGun::init()

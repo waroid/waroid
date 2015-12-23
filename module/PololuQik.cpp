@@ -59,7 +59,6 @@ bool PololuQik::open()
 
 void PololuQik::close()
 {
-	init();
 	if (m_fd != -1)
 	{
 		serialClose(m_fd);

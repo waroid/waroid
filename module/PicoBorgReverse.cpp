@@ -61,7 +61,6 @@ bool PicoBorgReverse::open()
 
 void PicoBorgReverse::close()
 {
-	init();
 	m_fd = -1;
 }
 

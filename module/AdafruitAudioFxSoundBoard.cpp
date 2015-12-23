@@ -59,7 +59,6 @@ bool AdafruitAudioFxSoundBoard::open()
 
 void AdafruitAudioFxSoundBoard::close()
 {
-	init();
 	if (m_fd != -1)
 	{
 		serialClose(m_fd);
