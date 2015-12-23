@@ -8,6 +8,7 @@
 #include <wiringPi.h>
 #include <wiringSerial.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "../core/Logger.h"
 #include "AdafruitAudioFxSoundBoard.h"
@@ -18,8 +19,8 @@ namespace ADAFRUIT_AUDIO_FX_SOUND_BOARD
 }
 using namespace ADAFRUIT_AUDIO_FX_SOUND_BOARD;
 
-AdafruitAudioFxSoundBoard::AdafruitAudioFxSoundBoard()
-		: m_fd(-1), m_thread(-1)
+AdafruitAudioFxSoundBoard::AdafruitAudioFxSoundBoard(int volume)
+		: m_fd(-1), m_volume(volume), m_currentVolume(0), m_thread(-1)
 {
 	// TODO Auto-generated constructor stub
 
@@ -49,6 +50,7 @@ bool AdafruitAudioFxSoundBoard::open()
 	pinMode(GPIO_RESET, INPUT);
 	delay(10);
 	serialPuts(m_fd, "L\n");
+	delay(1000);
 
 	init();
 
@@ -67,18 +69,44 @@ void AdafruitAudioFxSoundBoard::close()
 
 void AdafruitAudioFxSoundBoard::init()
 {
+	m_currentVolume = 0;
+	volumeUp();
+	delay(1000);
+	if (m_currentVolume > 0)
+	{
+		int count = (m_volume - m_currentVolume) / 2;
+		if (count > 0)
+		{
+			for (int i = 0; i < count; ++i)
+			{
+				volumeUp();
+				delay(100);
+			}
+		}
+		else
+		{
+			count *= -1;
+			for (int i = 0; i < count; ++i)
+			{
+				volumeDown();
+				delay(100);
+			}
+		}
+	}
 }
 
 void AdafruitAudioFxSoundBoard::play(int track)
 {
-	char buffer[32] = {0};
+	char buffer[32] =
+	{ 0 };
 	sprintf(buffer, "#%d\n", track);
 	serialPuts(m_fd, buffer);
 }
 
 void AdafruitAudioFxSoundBoard::play(const char* trackName)
 {
-	char buffer[32] = {0};
+	char buffer[32] =
+	{ 0 };
 	sprintf(buffer, "P%s\n", trackName);
 	serialPuts(m_fd, buffer);
 }
@@ -109,6 +137,11 @@ void AdafruitAudioFxSoundBoard::loop()
 				{
 					buffer[len] = 0;
 					GLOG("%s", buffer);
+
+					if (len == 5 && buffer[0] == '0' && buffer[1] == '0')
+					{
+						m_currentVolume = atoi(buffer);
+					}
 					len = 0;
 				}
 			}

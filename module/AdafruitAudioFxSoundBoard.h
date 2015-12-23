@@ -14,7 +14,7 @@
 class AdafruitAudioFxSoundBoard: public IModule
 {
 public:
-	AdafruitAudioFxSoundBoard();
+	AdafruitAudioFxSoundBoard(int volume=150);
 	virtual ~AdafruitAudioFxSoundBoard();
 
 public:
@@ -33,6 +33,8 @@ protected:
 
 protected:
 	int m_fd;
+	int m_volume;
+	int m_currentVolume;
 	pthread_t m_thread;
 
 protected:
