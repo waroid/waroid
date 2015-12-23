@@ -12,6 +12,12 @@
 #include "../core/Logger.h"
 #include "AdafruitAudioFxSoundBoard.h"
 
+namespace ADAFRUIT_AUDIO_FX_SOUND_BOARD
+{
+	const int GPIO_RESET = 27;
+}
+using namespace ADAFRUIT_AUDIO_FX_SOUND_BOARD;
+
 AdafruitAudioFxSoundBoard::AdafruitAudioFxSoundBoard()
 		: m_fd(-1), m_thread(-1)
 {
@@ -36,6 +42,14 @@ bool AdafruitAudioFxSoundBoard::open()
 
 	GCHECK_RETFALSE(pthread_create(&m_thread, NULL, worker, this) == 0);
 
+	pullUpDnControl(GPIO_RESET, PUD_UP);
+	delay(10);
+	pullUpDnControl(GPIO_RESET, PUD_OFF);
+	delay(10);
+	pinMode(GPIO_RESET, INPUT);
+	delay(10);
+	serialPuts(m_fd, "L\n");
+
 	init();
 
 	return true;
@@ -53,7 +67,6 @@ void AdafruitAudioFxSoundBoard::close()
 
 void AdafruitAudioFxSoundBoard::init()
 {
-	serialPuts(m_fd, "L\n");
 }
 
 void AdafruitAudioFxSoundBoard::play(int track)

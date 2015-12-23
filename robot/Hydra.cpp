@@ -17,7 +17,7 @@ namespace HYDRA
 	const int DIRECTION_DATA[EDIRECTION::TOTAL][MOTOR_COUNT] =
 	{
 	//0:motor0, 0:motor1
-	{ 0, 0 },		//idle
+	{ 0, 0 },	//idle
 	{ 1, 1 },	//forward
 	{ 0, 0 },	//right forward
 	{ 1, -1 },	//right
@@ -26,7 +26,7 @@ namespace HYDRA
 	{ 0, 0 },	//left backward
 	{ -1, 1 },	//left
 	{ 0, 0 },	//left forward
-	{ 0, 0 },		//turn right
+	{ 0, 0 },	//turn right
 	{ 0, 0 },	//turn left
 	};
 }
@@ -51,7 +51,7 @@ bool Hydra::onStart()
 	GCHECK_RETFALSE(m_missileTurret.open());
 	GCHECK_RETFALSE(m_adfruitAudioFxSoundBoard.open());
 
-	m_adfruitAudioFxSoundBoard.play("01BOOT  WAV");
+	m_adfruitAudioFxSoundBoard.play("01BOOT__WAV");
 
 	return true;
 }
