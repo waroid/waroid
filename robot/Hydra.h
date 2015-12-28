@@ -10,7 +10,6 @@
 
 #include "../module/PicoBorgReverse.h"
 #include "../module/MissileTurret.h"
-#include "../module/AdafruitAudioFxSoundBoard.h"
 #include "Robot.h"
 
 class Hydra: public Robot
@@ -32,7 +31,6 @@ private:
 protected:
 	PicoBorgReverse m_picoBorgReverse;
 	MissileTurret m_missileTurret;
-	AdafruitAudioFxSoundBoard m_adfruitAudioFxSoundBoard;
 };
 
 #endif /* HYDRA_H_ */
