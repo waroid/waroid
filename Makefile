@@ -46,14 +46,14 @@ TARGET = WaroidServer
 .cpp.o: $(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ $<
 .c.o: $(CC) -c $(CFLAGS) $(INCPATH) -o $@ $<
 
-.PHONY: all clean depend install uninstall
+.PHONY: all clean depend install uninstall kill
 
 all : $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(LINK) -o $@ $(OBJECTS) $(LIBS)
 
-clean :
+clean:
 	rm -f $(OBJECTS) $(TARGET) $(DEPEND_FILE)
 
 depend:
@@ -62,15 +62,18 @@ depend:
 
 rebuild: clean depend all
 
-install :
+install:
 	mkdir -p $(DATADIR)
 	cp -f $(TARGET) $(BINDIR)
 	cp -f sound/$(SOUNDS) $(DATADIR)
 
-uninstall :
+uninstall:
 	- killall $(TARGET)
 	rm -fr $(DATADIR)
 	rm -f $(BINDIR)/$(TARGET)
+
+kill:
+	- killall $(TARGET)
 
 ifneq ($(MAKECMDGOALS), clean)
 ifneq ($(MAKECMDGOALS), depend)
