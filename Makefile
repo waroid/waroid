@@ -26,9 +26,9 @@ CPPSOURCES = main.cpp \
 	Global.cpp \
 	robot/Robot.cpp \
 	robot/Crab.cpp \
-	robot/Hellcat.cpp \
 	robot/Hydra.cpp \
 	robot/Scorpio.cpp \
+	robot/Taurus.cpp \
 	robot/Toad.cpp \
 	robot/Turtle.cpp \
 	MainManager.cpp

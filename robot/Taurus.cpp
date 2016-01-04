@@ -1,15 +1,15 @@
 /*
- * Hellcat.cpp
+ * Taurus.cpp
  *
- *  Created on: Dec 30, 2015
+ *  Created on: Jan 4, 2016
  *      Author: mirime
  */
 
-#include "Hellcat.h"
-
 #include <wiringPi.h>
 #include "../core/Logger.h"
-namespace HELLCAT
+#include "Taurus.h"
+
+namespace TAURUS
 {
 	const int MOTOR_COUNT = 2;
 	const int DIRECTION_DATA[EDIRECTION::TOTAL][MOTOR_COUNT] =
@@ -28,21 +28,21 @@ namespace HELLCAT
 	{ 0, 0 },	//turn left
 	};
 }
-using namespace HELLCAT;
+using namespace TAURUS;
 
-Hellcat::Hellcat(int index)
-: Robot(EROBOT::HELLCAT, index)
+Taurus::Taurus(int index)
+		: Robot(EROBOT::TAURUS, index)
 {
 	// TODO Auto-generated constructor stub
 
 }
 
-Hellcat::~Hellcat()
+Taurus::~Taurus()
 {
 	// TODO Auto-generated destructor stub
 }
 
-bool Hellcat::onStart()
+bool Taurus::onStart()
 {
 	GCHECK_RETFALSE(Robot::onStart());
 	GCHECK_RETFALSE(m_gatlingGun.open());
@@ -51,26 +51,26 @@ bool Hellcat::onStart()
 	return true;
 }
 
-void Hellcat::onStop()
+void Taurus::onStop()
 {
 	m_picoBorgReverse.close();
 	m_gatlingGun.close();
 	Robot::onStop();
 }
 
-void Hellcat::onReset()
+void Taurus::onReset()
 {
 	m_gatlingGun.init();
 	m_picoBorgReverse.init();
 	Robot::onReset();
 }
 
-void Hellcat::onFire(int data0, int data1)
+void Taurus::onFire(int data0, int data1)
 {
 	(data0 == 1) ? m_gatlingGun.on() : m_gatlingGun.off();
 }
 
-void Hellcat::onMove(int data0, int data1)
+void Taurus::onMove(int data0, int data1)
 {
 	int dir = data0;
 	if (dir < 0) dir = 0;
@@ -82,3 +82,4 @@ void Hellcat::onMove(int data0, int data1)
 
 	m_picoBorgReverse.move(DIRECTION_DATA[dir][0] * g_speedScale[speed], DIRECTION_DATA[dir][1] * g_speedScale[speed]);
 }
+

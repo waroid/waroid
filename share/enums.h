@@ -62,7 +62,7 @@ namespace EROBOT
 		TURTLE,
 		TOAD,
 		SCORPIO,
-		HELLCAT,
+		TAURUS,
 		//----------
 		TOTAL,
 	};

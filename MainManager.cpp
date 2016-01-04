@@ -19,7 +19,7 @@
 #include "robot/Turtle.h"
 #include "robot/Toad.h"
 #include "robot/Scorpio.h"
-#include "robot/Hellcat.h"
+#include "robot/Taurus.h"
 #include "MainManager.h"
 
 namespace MAIN_MANAGER
@@ -136,7 +136,7 @@ Robot* MainManager::createRobot(int robotIndex)
 
 		case 11:
 		case 12:
-			robot = new Hellcat(robotIndex);
+			robot = new Taurus(robotIndex);
 		break;
 	}
 	GCHECKV_RETNULL(robot, "robot index=%d", robotIndex);

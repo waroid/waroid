@@ -1,22 +1,22 @@
 /*
- * Hellcat.h
+ * Taurus.h
  *
- *  Created on: Dec 30, 2015
+ *  Created on: Jan 4, 2016
  *      Author: mirime
  */
 
-#ifndef HELLCAT_H_
-#define HELLCAT_H_
+#ifndef TAURUS_H_
+#define TAURUS_H_
 
 #include "../module/PicoBorgReverse.h"
 #include "../module/GatlingGun.h"
 #include "Robot.h"
 
-class Hellcat: public Robot
+class Taurus: public Robot
 {
 public:
-	Hellcat(int index);
-	virtual ~Hellcat();
+	Taurus(int index);
+	virtual ~Taurus();
 
 protected:
 	virtual bool onStart();
@@ -30,4 +30,4 @@ protected:
 	PicoBorgReverse m_picoBorgReverse;
 };
 
-#endif /* HELLCAT_H_ */
+#endif /* TAURUS_H_ */
