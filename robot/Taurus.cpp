@@ -72,6 +72,13 @@ void Taurus::onFire(int data0, int data1)
 
 void Taurus::onMove(int data0, int data1)
 {
+	if (data0 >= EDIRECTION::TOTAL || data0 < 0 || data1 >= ROBOT_MAX_SPEED || data1 < 0)
+	{
+		GLOG("move %d %d", data0, data1);
+		m_picoBorgReverse.move(data0 / 100.f, data1 / 100.f);
+		return;
+	}
+
 	int dir = data0;
 	if (dir < 0) dir = 0;
 	else if (dir >= EDIRECTION::TOTAL) dir = 0;
