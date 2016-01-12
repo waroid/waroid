@@ -14,6 +14,7 @@
 #include <sys/sysinfo.h>
 #include <wiringPi.h>
 #include "core/Logger.h"
+#include "robot/TestRobot.h"
 #include "robot/Crab.h"
 #include "robot/Hydra.h"
 #include "robot/Turtle.h"
@@ -109,6 +110,10 @@ Robot* MainManager::createRobot(int robotIndex)
 	Robot* robot = NULL;
 	switch (robotIndex)
 	{
+		case 0:
+			robot = new TestRobot(robotIndex);
+		break;
+
 		case 1:
 		case 2:
 			robot = new Crab(robotIndex);

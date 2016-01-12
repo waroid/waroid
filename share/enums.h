@@ -56,7 +56,7 @@ namespace EROBOT
 {
 	enum ETYPE
 	{
-		NONE = 0,
+		TEST = 0,
 		CRAB,
 		HYDRA,
 		TURTLE,

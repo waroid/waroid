@@ -16,6 +16,7 @@ CSOURCES =
 
 CPPSOURCES = main.cpp \
 	core/Logger.cpp \
+	module/TestModule.cpp \
 	module/AdafruitAudioFxSoundBoard.cpp \
 	module/BatteryChecker.cpp \
 	module/GatlingGun.cpp \
@@ -24,6 +25,7 @@ CPPSOURCES = main.cpp \
 	module/PlasmaCannon.cpp \
 	module/PololuQik.cpp \
 	Global.cpp \
+	robot/TestRobot.cpp \
 	robot/Robot.cpp \
 	robot/Crab.cpp \
 	robot/Hydra.cpp \
