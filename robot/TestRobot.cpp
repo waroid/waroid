@@ -41,6 +41,11 @@ void TestRobot::onReset()
 	Robot::onReset();
 }
 
+void TestRobot::onFire(int data0, int data1)
+{
+	GLOG("fire = %d", data0);
+}
+
 void TestRobot::onMove(int data0, int data1)
 {
 	int dir = data0;
@@ -51,6 +56,5 @@ void TestRobot::onMove(int data0, int data1)
 	if (speed < 0) speed = 0;
 	else if (speed >= ROBOT_MAX_SPEED) speed = ROBOT_MAX_SPEED - 1;
 
-	//dir, speed => move data
-	//m_testModule.move();
+	GLOG("move dir=%d speed=%d", dir, speed);
 }
