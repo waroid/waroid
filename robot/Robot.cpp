@@ -6,6 +6,8 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
 #include "../core/Logger.h"
 #include "Robot.h"
 
@@ -15,9 +17,10 @@ namespace ROBOT
 }
 using namespace ROBOT;
 
-Robot::Robot(EROBOT::ETYPE erobot, int index)
-		: m_erobot(erobot), m_index(index)
+Robot::Robot(EROBOT::ETYPE erobot, char team)
+		: m_erobot(erobot), m_team(toupper(team))
 {
+	sprintf(m_robotName, "%s_%c", g_robotName[m_erobot], team);
 }
 
 Robot::~Robot()
@@ -49,14 +52,14 @@ void Robot::process(const ROBOT_DATA& robotData)
 
 bool Robot::onStart()
 {
-	GLOG("start %s", g_robotName[m_erobot]);
+	GLOG("start %s", m_robotName);
 	system("aplay /usr/local/share/waroid/boot_sentrymode_active.wav");
 	return true;
 }
 
 void Robot::onStop()
 {
-	GLOG("stop %s", g_robotName[m_erobot]);
+	GLOG("stop %s", m_robotName);
 }
 
 void Robot::onReset()
@@ -64,7 +67,7 @@ void Robot::onReset()
 	system("killall raspivid");
 	system("killall nc");
 
-	GLOG("reset %s", g_robotName[m_erobot]);
+	GLOG("reset %s", m_robotName);
 }
 
 void Robot::onToggleCamera(int data0, int data1)
@@ -85,15 +88,15 @@ void Robot::onToggleCamera(int data0, int data1)
 
 void Robot::onFire(int data0, int data1)
 {
-	GLOG("[%s]fire %d,%d", g_robotName[m_erobot], data0, data1);
+	GLOG("fire %d,%d", data0, data1);
 }
 
 void Robot::onMove(int data0, int data1)
 {
-	GLOG("[%s]Move %d,%d", g_robotName[m_erobot], data0, data1);
+	GLOG("Move %d,%d", data0, data1);
 }
 
 void Robot::onControlTurret(int data0, int data1)
 {
-	GLOG("[%s]control turret %d,%d", g_robotName[m_erobot], data0, data1);
+	GLOG("control turret %d,%d", data0, data1);
 }

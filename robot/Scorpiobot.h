@@ -1,22 +1,22 @@
 /*
- * Scorpio.h
+ * Scorpiobot.h
  *
  *  Created on: Nov 19, 2015
  *      Author: mirime
  */
 
-#ifndef SCORPIO_H_
-#define SCORPIO_H_
+#ifndef SCORPIOBOT_H_
+#define SCORPIOBOT_H_
 
 #include "../module/PicoBorgReverse.h"
 #include "../module/GatlingGun.h"
 #include "Robot.h"
 
-class Scorpio: public Robot
+class Scorpiobot: public Robot
 {
 public:
-	Scorpio(int index);
-	virtual ~Scorpio();
+	Scorpiobot(char team);
+	virtual ~Scorpiobot();
 
 public:
 	virtual bool onStart();
@@ -31,4 +31,4 @@ protected:
 	PicoBorgReverse m_picoBorgReverse1;
 };
 
-#endif /* SCORPIO_H_ */
+#endif /* SCORPIOBOT_H_ */

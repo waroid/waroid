@@ -1,22 +1,22 @@
 /*
- * Hydra.h
+ * Hydrabot.h
  *
  *  Created on: 2015. 2. 14.
  *      Author: mirime
  */
 
-#ifndef HYDRA_H_
-#define HYDRA_H_
+#ifndef HYDRABOT_H_
+#define HYDRABOT_H_
 
 #include "../module/PicoBorgReverse.h"
 #include "../module/MissileTurret.h"
 #include "Robot.h"
 
-class Hydra: public Robot
+class Hydrabot: public Robot
 {
 public:
-	Hydra(int index);
-	virtual ~Hydra();
+	Hydrabot(char team);
+	virtual ~Hydrabot();
 
 protected:
 	virtual bool onStart();
@@ -33,4 +33,4 @@ protected:
 	MissileTurret m_missileTurret;
 };
 
-#endif /* HYDRA_H_ */
+#endif /* HYDRABOT_H_ */

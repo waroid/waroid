@@ -13,7 +13,7 @@
 class Robot
 {
 public:
-	Robot(EROBOT::ETYPE erobot, int index);
+	Robot(EROBOT::ETYPE erobot, char team);
 	virtual ~Robot();
 
 public:
@@ -35,14 +35,19 @@ public:
 		onReset();
 	}
 
-	EROBOT::ETYPE getType() const
+	EROBOT::ETYPE getRobot() const
 	{
 		return m_erobot;
 	}
 
-	int getIndex() const
+	char getTeam() const
 	{
-		return m_index;
+		return m_team;
+	}
+
+	const char* getRobotName() const
+	{
+		return m_robotName;
 	}
 
 	void process(const ROBOT_DATA& robotData);
@@ -59,7 +64,8 @@ protected:
 
 protected:
 	EROBOT::ETYPE m_erobot;
-	int m_index;
+	char m_team;
+	char m_robotName[100];
 };
 
 #endif /* ROBOT_H_ */

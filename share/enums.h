@@ -15,7 +15,7 @@ namespace EMESSAGE
 	enum ETYPE
 	{
 		NONE = 0,
-		ROBOT_INDEX_ACK,
+		ROBOT_ACK,
 		TOGGLE_CAMERA,
 		FIRE,
 		MOVE,
@@ -27,6 +27,28 @@ namespace EMESSAGE
 		FREE_RAM_ACK,
 		TEMPERATURE_CPU_ACK,
 		BATTERY_VOLT_ACK,
+		PING,
+		PING_ACK,
+		//----------
+		TOTAL,
+	};
+}
+
+namespace EROBOT
+{
+	enum ETYPE
+	{
+		TESTBOT = 0,
+		CRABBOT,
+		HYDRABOT,
+		TAURUSBOT,
+		TURTLEBOT,
+		SCORPIOBOT,
+		TOADBOT,
+		WARTHOGBOT,
+		SPIDERBOT,
+		THORBOT,
+		HARPYBOT,
 		//----------
 		TOTAL,
 	};
@@ -52,17 +74,14 @@ namespace EDIRECTION
 	};
 }
 
-namespace EROBOT
+namespace ESPEED
 {
 	enum ETYPE
 	{
-		TEST = 0,
-		CRAB,
-		HYDRA,
-		TURTLE,
-		TOAD,
-		SCORPIO,
-		TAURUS,
+		NONE = 0,
+		SNAKE,
+		NORMAL,
+		BOOST,
 		//----------
 		TOTAL,
 	};

@@ -18,6 +18,7 @@ CPPSOURCES = main.cpp \
 	core/Logger.cpp \
 	module/TestModule.cpp \
 	module/AdafruitAudioFxSoundBoard.cpp \
+	module/AduinoBoard.cpp \
 	module/BatteryChecker.cpp \
 	module/GatlingGun.cpp \
 	module/MissileTurret.cpp \
@@ -25,14 +26,18 @@ CPPSOURCES = main.cpp \
 	module/PlasmaCannon.cpp \
 	module/PololuQik.cpp \
 	Global.cpp \
-	robot/TestRobot.cpp \
 	robot/Robot.cpp \
-	robot/Crab.cpp \
-	robot/Hydra.cpp \
-	robot/Scorpio.cpp \
-	robot/Taurus.cpp \
-	robot/Toad.cpp \
-	robot/Turtle.cpp \
+	robot/Testbot.cpp \
+	robot/Crabbot.cpp \
+	robot/Hydrabot.cpp \
+	robot/Taurusbot.cpp \
+	robot/Turtlebot.cpp \
+	robot/Scorpiobot.cpp \
+	robot/Toadbot.cpp \
+	robot/Warthogbot.cpp \
+	robot/Spiderbot.cpp \
+	robot/Thorbot.cpp \
+	robot/Harpybot.cpp \
 	MainManager.cpp
 
 OBJECTS = $(CSOURCES:%.c=%.o)

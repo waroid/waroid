@@ -20,11 +20,11 @@ public:
 	virtual ~MainManager();
 
 public:
-	bool start(int robotIndex);
+	bool start(EROBOT::ETYPE erobot, char team);
 	void stop();
 
 private:
-	Robot* createRobot(int robotIndex);
+	Robot* createRobot(EROBOT::ETYPE erobot, char team);
 
 	bool tcpListen();
 	void tcpLoop();

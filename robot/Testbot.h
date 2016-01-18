@@ -5,17 +5,17 @@
  *      Author: mirime
  */
 
-#ifndef TESTROBOT_H_
-#define TESTROBOT_H_
+#ifndef TESTBOT_H_
+#define TESTBOT_H_
 
 #include "../module/TestModule.h"
 #include "Robot.h"
 
-class TestRobot: public Robot
+class Testbot: public Robot
 {
 public:
-	TestRobot(int index);
-	virtual ~TestRobot();
+	Testbot(int index);
+	virtual ~Testbot();
 
 protected:
 	virtual bool onStart();
@@ -28,4 +28,4 @@ protected:
 	TestModule m_testModule;
 };
 
-#endif /* TESTROBOT_H_ */
+#endif /* TESTBOT_H_ */

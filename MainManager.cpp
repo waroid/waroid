@@ -14,13 +14,18 @@
 #include <sys/sysinfo.h>
 #include <wiringPi.h>
 #include "core/Logger.h"
-#include "robot/TestRobot.h"
-#include "robot/Crab.h"
-#include "robot/Hydra.h"
-#include "robot/Turtle.h"
-#include "robot/Toad.h"
-#include "robot/Scorpio.h"
-#include "robot/Taurus.h"
+#include "robot/Testbot.h"
+#include "robot/Crabbot.h"
+#include "robot/Hydrabot.h"
+#include "robot/Taurusbot.h"
+#include "robot/Turtlebot.h"
+#include "robot/Scorpiobot.h"
+#include "robot/Toadbot.h"
+#include "robot/Warthogbot.h"
+#include "robot/Spiderbot.h"
+#include "robot/Thorbot.h"
+#include "robot/Harpybot.h"
+
 #include "MainManager.h"
 
 namespace MAIN_MANAGER
@@ -39,9 +44,9 @@ MainManager::~MainManager()
 {
 }
 
-bool MainManager::start(int robotIndex)
+bool MainManager::start(EROBOT::ETYPE erobot, char team)
 {
-	m_robot = createRobot(robotIndex);
+	m_robot = createRobot(erobot, team);
 	GCHECK_RETFALSE(m_robot);
 	GCHECK_RETFALSE(m_robot->start());
 
@@ -105,46 +110,60 @@ void MainManager::stop()
 	}
 }
 
-Robot* MainManager::createRobot(int robotIndex)
+Robot* MainManager::createRobot(EROBOT::ETYPE erobot, char team)
 {
 	Robot* robot = NULL;
-	switch (robotIndex)
+	switch (erobot)
 	{
-		case 0:
-			robot = new TestRobot(robotIndex);
+		case EROBOT::TESTBOT:
+			robot = new Testbot(team);
 		break;
 
-		case 1:
-		case 2:
-			robot = new Crab(robotIndex);
+		case EROBOT::CRABBOT:
+			robot = new Crabbot(team);
 		break;
 
-		case 3:
-		case 4:
-			robot = new Hydra(robotIndex);
+		case EROBOT::HYDRABOT:
+			robot = new Hydrabot(team);
 		break;
 
-		case 5:
-		case 6:
-			robot = new Turtle(robotIndex);
+		case EROBOT::TAURUSBOT:
+			robot = new Taurusbot(team);
 		break;
 
-		case 7:
-		case 8:
-			robot = new Toad(robotIndex);
+		case EROBOT::TURTLEBOT:
+			robot = new Turtlebot(team);
 		break;
 
-		case 9:
-		case 10:
-			robot = new Scorpio(robotIndex);
+		case EROBOT::SCORPIOBOT:
+			robot = new Scorpiobot(team);
 		break;
 
-		case 11:
-		case 12:
-			robot = new Taurus(robotIndex);
+		case EROBOT::TOADBOT:
+			robot = new Toadbot(team);
+		break;
+
+		case EROBOT::WARTHOGBOT:
+			robot = new Warthogbot(team);
+		break;
+
+		case EROBOT::SPIDERBOT:
+			robot = new Spiderbot(team);
+		break;
+
+		case EROBOT::THORBOT:
+			robot = new Thorbot(team);
+		break;
+
+		case EROBOT::HARPYBOT:
+			robot = new Harpybot(team);
+		break;
+
+		default:
+			;
 		break;
 	}
-	GCHECKV_RETNULL(robot, "robot index=%d", robotIndex);
+	GCHECKV_RETNULL(robot, "invalid robot. type=%d team=%c", erobot, team)
 
 	return robot;
 }
@@ -194,7 +213,7 @@ void MainManager::tcpLoop()
 				m_ownerSocket = s;
 				FD_SET(s, &master_fds);
 				if (s > fd_max) fd_max = s;
-				tcpSend(s, EMESSAGE::ROBOT_INDEX_ACK, m_robot->getIndex(), 0);
+				tcpSend(s, EMESSAGE::ROBOT_ACK, m_robot->getRobot(), m_robot->getTeam());
 			}
 			else
 			{
@@ -315,6 +334,11 @@ void MainManager::onProcess(const ROBOT_DATA& robotData)
 		case EMESSAGE::INFO:
 		{
 			m_infoEnableSend = (robotData.Data != 0);
+		}
+		break;
+		case EMESSAGE::PING:
+		{
+			tcpSend(m_ownerSocket, EMESSAGE::PING_ACK, robotData.Data);
 		}
 		break;
 

@@ -1,22 +1,22 @@
 /*
- * Turtle.h
+ * Toadbot.h
  *
- *  Created on: 2015. 2. 14.
+ *  Created on: 2015. 2. 16.
  *      Author: mirime
  */
 
-#ifndef TURTLE_H_
-#define TURTLE_H_
+#ifndef TOADBOT_H_
+#define TOADBOT_H_
 
 #include "../module/PicoBorgReverse.h"
 #include "../module/PlasmaCannon.h"
 #include "Robot.h"
 
-class Turtle: public Robot
+class Toadbot: public Robot
 {
 public:
-	Turtle(int index);
-	virtual ~Turtle();
+	Toadbot(char team);
+	virtual ~Toadbot();
 
 public:
 	virtual bool onStart();
@@ -31,4 +31,4 @@ protected:
 	PicoBorgReverse m_picoBorgReverse1;
 };
 
-#endif /* TURTLE_H_ */
+#endif /* TOADBOT_H_ */

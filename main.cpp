@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <ctype.h>
 #include <wiringPi.h>
 
 #include "core/Logger.h"
@@ -20,16 +21,34 @@ void cleanup(int s);
 
 int main(int argc, char* argv[])
 {
-	if (argc < 2)
+	bool enableConsole = (argc > 3) ? atoi(argv[2]) == 1 : false;
+	Logger::setConsole(enableConsole);
+
+	if (argc < 3)
 	{
-		printf("usage: %s <robot index> [console log on or off]", argv[0]);
+		GLOG("usage: %s <robot name> <team char> [console log on or off]", argv[0]);
 		return -1;
 	}
 
-	int robotIndex = atoi(argv[1]);
-	if (argc > 2)
+	EROBOT::ETYPE erobot = EROBOT::TOTAL;
+	for (int i = 0; i < EROBOT::TOTAL; ++i)
 	{
-		Logger::setConsole(atoi(argv[2]) == 1);
+		if (strcasecmp(argv[1], g_robotName[i]) == 0)
+		{
+			erobot = (EROBOT::ETYPE)i;
+			break;
+		}
+	}
+	if (erobot == EROBOT::TOTAL)
+	{
+		GLOG("invalid robot name. name=%s team=%s", argv[1], argv[2]);
+		return -1;
+	}
+
+	if (isalnum(argv[2][0]) == false)
+	{
+		GLOG("invalid team char. name=%s team=%s", argv[1], argv[2]);
+		return -1;
 	}
 
 	if (initialize() == false)
@@ -39,7 +58,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	mainManager.start(robotIndex);
+	mainManager.start(erobot, argv[2][0]);
 
 	cleanup(0);
 
@@ -53,7 +72,7 @@ bool initialize()
 	signal(SIGQUIT, cleanup);
 	signal(SIGHUP, cleanup);
 
-	GCHECK_RETFALSE(wiringPiSetupGpio()!=-1);
+	GCHECK_RETFALSE(wiringPiSetupGpio() != -1);
 
 	GLOG("setup gpio of wiringPi");
 

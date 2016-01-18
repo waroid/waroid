@@ -1,22 +1,22 @@
 /*
- * Taurus.h
+ * Crabbot.h
  *
- *  Created on: Jan 4, 2016
+ *  Created on: 2015. 2. 13.
  *      Author: mirime
  */
 
-#ifndef TAURUS_H_
-#define TAURUS_H_
+#ifndef CRABBOT_H_
+#define CRABBOT_H_
 
 #include "../module/PicoBorgReverse.h"
 #include "../module/GatlingGun.h"
 #include "Robot.h"
 
-class Taurus: public Robot
+class Crabbot: public Robot
 {
 public:
-	Taurus(int index);
-	virtual ~Taurus();
+	Crabbot(char team);
+	virtual ~Crabbot();
 
 protected:
 	virtual bool onStart();
@@ -30,4 +30,4 @@ protected:
 	PicoBorgReverse m_picoBorgReverse;
 };
 
-#endif /* TAURUS_H_ */
+#endif /* CRABBOT_H_ */
