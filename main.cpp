@@ -21,7 +21,7 @@ void cleanup(int s);
 
 int main(int argc, char* argv[])
 {
-	bool enableConsole = (argc > 3) ? atoi(argv[2]) == 1 : false;
+	bool enableConsole = (argc > 3) ? atoi(argv[3]) == 1 : false;
 	Logger::setConsole(enableConsole);
 
 	if (argc < 3)
