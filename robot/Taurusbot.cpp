@@ -28,7 +28,7 @@ namespace TAURUSBOT
 	{ 0.0, 0.0 },	//turn left
 	};
 	const float SPEED_DATA[ESPEED::TOTAL] =
-	{ 0.0, 0.35, 0.5, 1.0 };
+	{ 0.0, 0.4, 0.7, 1.0 };
 }
 using namespace TAURUSBOT;
 
