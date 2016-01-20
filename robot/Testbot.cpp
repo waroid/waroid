@@ -28,8 +28,9 @@ Testbot::~Testbot()
 
 bool Testbot::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
 	GCHECK_RETFALSE(m_testModule.open());
+
+	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
 }
@@ -46,11 +47,6 @@ void Testbot::onReset()
 	Robot::onReset();
 }
 
-void Testbot::onFire(int data0, int data1)
-{
-	GLOG("fire = %d", data0);
-}
-
 void Testbot::onMove(int data0, int data1)
 {
 	int dir = data0;
@@ -61,5 +57,5 @@ void Testbot::onMove(int data0, int data1)
 	if (speed < 0) speed = 0;
 	else if (speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
 
-	GLOG("move dir=%d speed=%d", dir, speed);
+	//m_testModule.move();
 }

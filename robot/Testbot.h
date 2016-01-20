@@ -21,7 +21,6 @@ protected:
 	virtual bool onStart();
 	virtual void onStop();
 	virtual void onReset();
-	virtual void onFire(int data0, int data1);
 	virtual void onMove(int data0, int data1);
 
 protected:

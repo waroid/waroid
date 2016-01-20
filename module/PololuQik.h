@@ -8,7 +8,7 @@
 #ifndef POLOLUQIK_H_
 #define POLOLUQIK_H_
 
-#include "IModule.h"
+#include "Module.h"
 
 class PololuQik: public IModule
 {

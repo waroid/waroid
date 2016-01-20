@@ -1,12 +1,12 @@
 /*
- * IModule.h
+ * Module.h
  *
  *  Created on: 2015. 2. 13.
  *      Author: mirime
  */
 
-#ifndef IMODULE_H_
-#define IMODULE_H_
+#ifndef MODULE_H_
+#define MODULE_H_
 
 class IModule
 {
@@ -21,4 +21,4 @@ public:
 	virtual void init() = 0;
 };
 
-#endif /* IMODULE_H_ */
+#endif /* MODULE_H_ */

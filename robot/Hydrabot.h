@@ -9,7 +9,6 @@
 #define HYDRABOT_H_
 
 #include "../module/PicoBorgReverse.h"
-#include "../module/MissileTurret.h"
 #include "Robot.h"
 
 class Hydrabot: public Robot
@@ -25,12 +24,8 @@ protected:
 	virtual void onMove(int data0, int data1);
 	virtual void onControlTurret(int data0, int data1);
 
-private:
-	void controlTurret(int angle);
-
 protected:
 	PicoBorgReverse m_picoBorgReverse;
-	MissileTurret m_missileTurret;
 };
 
 #endif /* HYDRABOT_H_ */

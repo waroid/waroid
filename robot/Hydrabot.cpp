@@ -7,12 +7,11 @@
 
 #include <wiringPi.h>
 #include "../core/Logger.h"
+#include "../weapon/Rocket.h"
 #include "Hydrabot.h"
 
 namespace HYDRABOT
 {
-	const int TURRET_OFFSET_ANGLE = 5;
-
 	const int MOTOR_COUNT = 2;
 	const float DIRECTION_DATA[EDIRECTION::TOTAL][MOTOR_COUNT] =
 	{
@@ -35,7 +34,7 @@ namespace HYDRABOT
 using namespace HYDRABOT;
 
 Hydrabot::Hydrabot(char team)
-		: Robot(EROBOT::HYDRABOT, team), m_missileTurret(TURRET_OFFSET_ANGLE)
+		: Robot(EROBOT::HYDRABOT, team)
 {
 	// TODO Auto-generated constructor stub
 
@@ -48,16 +47,19 @@ Hydrabot::~Hydrabot()
 
 bool Hydrabot::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
 	GCHECK_RETFALSE(m_picoBorgReverse.open());
-	GCHECK_RETFALSE(m_missileTurret.open());
+
+	m_weapons[0] = createWeapon(EWEAPON::STARSTREAK_AVENGER, true);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
+	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
 }
 
 void Hydrabot::onStop()
 {
-	m_missileTurret.close();
 	m_picoBorgReverse.close();
 	Robot::onStop();
 }
@@ -65,7 +67,6 @@ void Hydrabot::onStop()
 void Hydrabot::onReset()
 {
 	m_picoBorgReverse.init();
-	m_missileTurret.init();
 	Robot::onReset();
 }
 
@@ -84,13 +85,7 @@ void Hydrabot::onMove(int data0, int data1)
 
 void Hydrabot::onControlTurret(int data0, int data1)
 {
-	controlTurret(data0);
-}
-
-void Hydrabot::controlTurret(int angle)
-{
-	if (angle < ROBOT_MIN_TURRET_ANGLE) angle = ROBOT_MIN_TURRET_ANGLE;
-	else if (angle > ROBOT_MAX_TURRET_ANGLE) angle = ROBOT_MAX_TURRET_ANGLE;
-
-	m_missileTurret.rotate(angle);
+	GCHECK_RETURN(data0>=ROBOT_MIN_TURRET_ANGLE&&data0<=ROBOT_MAX_TURRET_ANGLE);
+	GCHECK_RETURN(m_weapons[0]&&m_weapons[0]->getKind()==EWEAPONKIND::ROCKET);
+	((Rocket*)m_weapons[0])->tilt(data0);
 }

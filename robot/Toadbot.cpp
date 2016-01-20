@@ -46,10 +46,14 @@ Toadbot::~Toadbot()
 
 bool Toadbot::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
-	GCHECK_RETFALSE(m_plasmaCannon.open());
 	GCHECK_RETFALSE(m_picoBorgReverse0.open());
 	GCHECK_RETFALSE(m_picoBorgReverse1.open());
+
+	m_weapons[0] = createWeapon(EWEAPON::M242_CHAINGUN, true);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
+	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
 }
@@ -58,21 +62,14 @@ void Toadbot::onStop()
 {
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
-	m_plasmaCannon.close();
 	Robot::onStop();
 }
 
 void Toadbot::onReset()
 {
-	m_plasmaCannon.init();
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
 	Robot::onReset();
-}
-
-void Toadbot::onFire(int data0, int data1)
-{
-	(data0 == 1) ? m_plasmaCannon.on() : m_plasmaCannon.off();
 }
 
 void Toadbot::onMove(int data0, int data1)

@@ -47,10 +47,14 @@ Scorpiobot::~Scorpiobot()
 
 bool Scorpiobot::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
-	GCHECK_RETFALSE(m_gatlingGun.open());
 	GCHECK_RETFALSE(m_picoBorgReverse0.open());
 	GCHECK_RETFALSE(m_picoBorgReverse1.open());
+
+	m_weapons[0] = createWeapon(EWEAPON::XM214_MICROGUN, true);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
+	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
 }
@@ -59,21 +63,14 @@ void Scorpiobot::onStop()
 {
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
-	m_gatlingGun.close();
 	Robot::onStop();
 }
 
 void Scorpiobot::onReset()
 {
-	m_gatlingGun.init();
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
 	Robot::onReset();
-}
-
-void Scorpiobot::onFire(int data0, int data1)
-{
-	(data0 == 1) ? m_gatlingGun.on() : m_gatlingGun.off();
 }
 
 void Scorpiobot::onMove(int data0, int data1)

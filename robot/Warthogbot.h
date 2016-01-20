@@ -8,6 +8,7 @@
 #ifndef WARTHOGBOT_H_
 #define WARTHOGBOT_H_
 
+#include "../module/AduinoBoard.h"
 #include "Robot.h"
 
 class Warthogbot: public Robot
@@ -20,6 +21,10 @@ protected:
 	virtual bool onStart();
 	virtual void onStop();
 	virtual void onReset();
+	virtual void onMove(int data0, int data1);
+
+protected:
+	AduinoBoard m_aduinoBoard;
 };
 
 #endif /* WARTHOGBOT_H_ */

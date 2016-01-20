@@ -8,7 +8,7 @@
 #ifndef PICOBORGREVERSE_H_
 #define PICOBORGREVERSE_H_
 
-#include "IModule.h"
+#include "Module.h"
 
 class PicoBorgReverse: public IModule
 {

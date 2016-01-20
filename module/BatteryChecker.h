@@ -9,7 +9,7 @@
 #define BATTERYCHECKER_H_
 
 #include <pthread.h>
-#include "IModule.h"
+#include "Module.h"
 
 class BatteryChecker: public IModule
 {

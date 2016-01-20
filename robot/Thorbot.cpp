@@ -27,6 +27,12 @@ Thorbot::~Thorbot()
 
 bool Thorbot::onStart()
 {
+	GCHECK_RETFALSE(m_aduinoBoard.open());
+
+	m_weapons[0] = createWeapon(EWEAPON::M61_VULCAN, true);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
 	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
@@ -34,10 +40,25 @@ bool Thorbot::onStart()
 
 void Thorbot::onStop()
 {
+	m_aduinoBoard.close();
 	Robot::onStop();
 }
 
 void Thorbot::onReset()
 {
+	m_aduinoBoard.init();
 	Robot::onReset();
+}
+
+void Thorbot::onMove(int data0, int data1)
+{
+	int dir = data0;
+	if (dir < 0) dir = 0;
+	else if (dir >= EDIRECTION::TOTAL) dir = EDIRECTION::IDLE;
+
+	int speed = data1;
+	if (speed < 0) speed = 0;
+	else if (speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
+
+	//m_aduinoBoard.move(dir, speed);
 }

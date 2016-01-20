@@ -9,7 +9,7 @@
 #define ADAFRUITAUDIOFXSOUNDBOARD_H_
 
 #include <pthread.h>
-#include "IModule.h"
+#include "Module.h"
 
 class AdafruitAudioFxSoundBoard: public IModule
 {

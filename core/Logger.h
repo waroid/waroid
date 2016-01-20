@@ -14,15 +14,19 @@
 class Logger
 {
 public:
-	static void setConsole(bool enable)
+	static bool isDev()
 	{
-		s_enableConsole = enable;
+		return s_dev;
+	}
+	static void setDev(bool dev)
+	{
+		s_dev = dev;
 	}
 
 	static void write(const char* format, ...);
 
 private:
-	static bool s_enableConsole;
+	static bool s_dev;
 };
 
 #define GACTION_NONE
@@ -44,5 +48,6 @@ private:
 #define GCHECKV_RETZERO(exp,fmt,...)	GCHECKV_DO(exp,GACTION_RETVAL(0),fmt,__VA_ARGS__)
 
 #define GLOG(fmt,...)	Logger::write(fmt "\n", ##__VA_ARGS__)
+#define GDEV(fmt,...)	if (Logger::isDev()) GLOG(fmt,__VA_ARGS__);
 
 #endif /* LOGGER_H_ */

@@ -17,7 +17,7 @@ namespace LOGGER
 }
 using namespace LOGGER;
 
-bool Logger::s_enableConsole = false;
+bool Logger::s_dev = false;
 
 void Logger::write(const char* format, ...)
 {
@@ -32,7 +32,7 @@ void Logger::write(const char* format, ...)
 	{
 		temp[len] = 0;
 		syslog(LOG_INFO | LOG_USER, temp);
-		if (s_enableConsole)
+		if (s_dev)
 		{
 			printf("%s", temp);
 		}

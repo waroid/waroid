@@ -9,7 +9,6 @@
 #define CRABBOT_H_
 
 #include "../module/PicoBorgReverse.h"
-#include "../module/GatlingGun.h"
 #include "Robot.h"
 
 class Crabbot: public Robot
@@ -22,11 +21,9 @@ protected:
 	virtual bool onStart();
 	virtual void onStop();
 	virtual void onReset();
-	virtual void onFire(int data0, int data1);
 	virtual void onMove(int data0, int data1);
 
 protected:
-	GatlingGun m_gatlingGun;
 	PicoBorgReverse m_picoBorgReverse;
 };
 

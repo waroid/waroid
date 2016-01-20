@@ -8,7 +8,7 @@
 #ifndef TESTMODULE_H_
 #define TESTMODULE_H_
 
-#include "IModule.h"
+#include "Module.h"
 
 class TestModule: public IModule
 {

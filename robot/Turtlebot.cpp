@@ -12,7 +12,7 @@ namespace TURTLEBOT
 {
 	const int MOTOR_COUNT = 4;
 
-	const int DIRECTION_DATA[EDIRECTION::TOTAL][MOTOR_COUNT] =
+	const float DIRECTION_DATA[EDIRECTION::TOTAL][MOTOR_COUNT] =
 	{
 	//0:motor0, 0:motor1, 1:motor0, 1:motor1
 	{ 0.0, 0.0, 0.0, 0.0 },		//idle
@@ -46,10 +46,14 @@ Turtlebot::~Turtlebot()
 
 bool Turtlebot::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
-	GCHECK_RETFALSE(m_plasmaCannon.open());
 	GCHECK_RETFALSE(m_picoBorgReverse0.open());
 	GCHECK_RETFALSE(m_picoBorgReverse1.open());
+
+	m_weapons[0] = createWeapon(EWEAPON::_2A72_AUTOCANNON, true);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
+	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
 }
@@ -58,22 +62,14 @@ void Turtlebot::onStop()
 {
 	m_picoBorgReverse0.close();
 	m_picoBorgReverse1.close();
-	m_plasmaCannon.close();
-
 	Robot::onStop();
 }
 
 void Turtlebot::onReset()
 {
-	m_plasmaCannon.init();
 	m_picoBorgReverse0.init();
 	m_picoBorgReverse1.init();
 	Robot::onReset();
-}
-
-void Turtlebot::onFire(int data0, int data1)
-{
-	(data0 == 1) ? m_plasmaCannon.on() : m_plasmaCannon.off();
 }
 
 void Turtlebot::onMove(int data0, int data1)

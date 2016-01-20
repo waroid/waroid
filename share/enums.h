@@ -29,6 +29,7 @@ namespace EMESSAGE
 		BATTERY_VOLT_ACK,
 		PING,
 		PING_ACK,
+		EQUIP_WEAPON,
 		//----------
 		TOTAL,
 	};
@@ -51,6 +52,39 @@ namespace EROBOT
 		HARPYBOT,
 		//----------
 		TOTAL,
+	};
+}
+
+namespace EWEAPON
+{
+	enum ETYPE
+	{
+		NONE = 0,
+
+		//----------
+
+		PRIMARY_START = 1,
+		M134D_MINIGUN = PRIMARY_START,
+		STARSTREAK_AVENGER,
+		GAU_19_B_HMG,
+		_2A72_AUTOCANNON,
+		XM214_MICROGUN,
+		M242_CHAINGUN,
+		BOFORS_L60,
+		M61_VULCAN,
+		PRIMARY_END = M61_VULCAN,
+
+		//----------
+
+		SECONDARY_START,
+		PLASMA_GUN = SECONDARY_START,
+		ENERGY_CANNON,
+		LASER_CANNON,
+		SECONDARY_END = LASER_CANNON,
+
+		//----------
+
+		TOTAL
 	};
 }
 
@@ -78,10 +112,7 @@ namespace ESPEED
 {
 	enum ETYPE
 	{
-		NONE = 0,
-		SNAKE,
-		NORMAL,
-		BOOST,
+		NONE = 0, SNAKE, NORMAL, BOOST,
 		//----------
 		TOTAL,
 	};
@@ -91,8 +122,7 @@ namespace EERROR
 {
 	enum ETYPE
 	{
-		SUCCESS = 0,
-		EXIST_OWNER,
+		SUCCESS = 0, EXIST_OWNER,
 		//----------
 		TOTAL,
 	};

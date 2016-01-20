@@ -8,6 +8,7 @@
 #ifndef ROBOT_H_
 #define ROBOT_H_
 
+#include "../weapon/Weapon.h"
 #include "../Global.h"
 
 class Robot
@@ -17,42 +18,29 @@ public:
 	virtual ~Robot();
 
 public:
-	bool start()
-	{
-		if (onStart() == false) return false;
-
-		onReset();
-		return true;
-	}
-
-	void stop()
-	{
-		onStop();
-	}
-
-	void reset()
-	{
-		onReset();
-	}
-
 	EROBOT::ETYPE getRobot() const
-	{
-		return m_erobot;
-	}
+		{
+			return m_erobot;
+		}
 
-	char getTeam() const
-	{
-		return m_team;
-	}
+		char getTeam() const
+		{
+			return m_team;
+		}
 
-	const char* getRobotName() const
-	{
-		return m_robotName;
-	}
+		const char* getName() const
+		{
+			return m_name;
+		}
 
+	bool start();
+	void stop();
+	void reset();
 	void process(const ROBOT_DATA& robotData);
 
 protected:
+	Weapon* createWeapon(EWEAPON::ETYPE eweapon, bool real);
+
 	virtual bool onStart();
 	virtual void onStop();
 	virtual void onReset();
@@ -61,11 +49,13 @@ protected:
 	virtual void onFire(int data0, int data1);
 	virtual void onMove(int data0, int data1);
 	virtual void onControlTurret(int data0, int data1);
+	virtual void onEquipWeapon(int data0, int data1);
 
 protected:
 	EROBOT::ETYPE m_erobot;
 	char m_team;
-	char m_robotName[100];
+	char m_name[100];
+	Weapon* m_weapons[ROBOT_MAX_WEAPON_SLOT];
 };
 
 #endif /* ROBOT_H_ */

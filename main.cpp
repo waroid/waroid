@@ -21,19 +21,18 @@ void cleanup(int s);
 
 int main(int argc, char* argv[])
 {
-	bool enableConsole = (argc > 3) ? atoi(argv[3]) == 1 : false;
-	Logger::setConsole(enableConsole);
+	Logger::setDev(argc > 3 ? atoi(argv[3]) == 1 : false);
 
 	if (argc < 3)
 	{
-		GLOG("usage: %s <robot name> <team char> [console log on or off]", argv[0]);
+		GLOG("usage: %s <robot name> <team char> [dev 0 or 1]", argv[0]);
 		return -1;
 	}
 
 	EROBOT::ETYPE erobot = EROBOT::TOTAL;
 	for (int i = 0; i < EROBOT::TOTAL; ++i)
 	{
-		if (strcasecmp(argv[1], g_robotName[i]) == 0)
+		if (strcasecmp(argv[1], g_robotTypeNames[i]) == 0)
 		{
 			erobot = (EROBOT::ETYPE)i;
 			break;

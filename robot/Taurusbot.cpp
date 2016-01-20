@@ -46,9 +46,13 @@ Taurusbot::~Taurusbot()
 
 bool Taurusbot::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
-	GCHECK_RETFALSE(m_gatlingGun.open());
 	GCHECK_RETFALSE(m_picoBorgReverse.open());
+
+	m_weapons[0] = createWeapon(EWEAPON::GAU_19_B_HMG, true);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
+	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
 }
@@ -56,20 +60,13 @@ bool Taurusbot::onStart()
 void Taurusbot::onStop()
 {
 	m_picoBorgReverse.close();
-	m_gatlingGun.close();
 	Robot::onStop();
 }
 
 void Taurusbot::onReset()
 {
-	m_gatlingGun.init();
 	m_picoBorgReverse.init();
 	Robot::onReset();
-}
-
-void Taurusbot::onFire(int data0, int data1)
-{
-	(data0 == 1) ? m_gatlingGun.on() : m_gatlingGun.off();
 }
 
 void Taurusbot::onMove(int data0, int data1)

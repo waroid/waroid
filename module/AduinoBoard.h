@@ -8,7 +8,7 @@
 #ifndef ADUINOBOARD_H_
 #define ADUINOBOARD_H_
 
-#include "IModule.h"
+#include "Module.h"
 
 class AduinoBoard: public IModule
 {

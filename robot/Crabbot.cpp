@@ -28,7 +28,7 @@ namespace CRABBOT
 	{ 0.0, 0.0 },	//turn left
 	};
 	const float SPEED_DATA[ESPEED::TOTAL] =
-	{ 0.0, 0.25, 0.5, 1.0 };
+	{ 0.0, 0.35, 0.5, 1.0 };
 }
 using namespace CRABBOT;
 
@@ -46,9 +46,13 @@ Crabbot::~Crabbot()
 
 bool Crabbot::onStart()
 {
-	GCHECK_RETFALSE(Robot::onStart());
-	GCHECK_RETFALSE(m_gatlingGun.open());
 	GCHECK_RETFALSE(m_picoBorgReverse.open());
+
+	m_weapons[0] = createWeapon(EWEAPON::M134D_MINIGUN, true);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
+	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
 }
@@ -56,20 +60,13 @@ bool Crabbot::onStart()
 void Crabbot::onStop()
 {
 	m_picoBorgReverse.close();
-	m_gatlingGun.close();
 	Robot::onStop();
 }
 
 void Crabbot::onReset()
 {
-	m_gatlingGun.init();
 	m_picoBorgReverse.init();
 	Robot::onReset();
-}
-
-void Crabbot::onFire(int data0, int data1)
-{
-	(data0 == 1) ? m_gatlingGun.on() : m_gatlingGun.off();
 }
 
 void Crabbot::onMove(int data0, int data1)
