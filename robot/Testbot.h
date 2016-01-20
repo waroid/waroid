@@ -14,14 +14,18 @@
 class Testbot: public Robot
 {
 public:
-	Testbot(int index);
+	Testbot(char team);
 	virtual ~Testbot();
 
 protected:
 	virtual bool onStart();
 	virtual void onStop();
 	virtual void onReset();
+	virtual void onToggleCamera(int data0, int data1);
+	virtual void onFire(int data0, int data1);
 	virtual void onMove(int data0, int data1);
+	virtual void onControlTurret(int data0, int data1);
+	virtual void onEquipWeapon(int data0, int data1);
 
 protected:
 	TestModule m_testModule;

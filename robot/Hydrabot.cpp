@@ -73,19 +73,17 @@ void Hydrabot::onReset()
 void Hydrabot::onMove(int data0, int data1)
 {
 	int dir = data0;
-	if (dir < 0) dir = 0;
-	else if (dir >= EDIRECTION::TOTAL) dir = EDIRECTION::IDLE;
+	if (dir < 0 || dir >= EDIRECTION::TOTAL) dir = EDIRECTION::IDLE;
 
 	int speed = data1;
-	if (speed < 0) speed = 0;
-	else if (speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
+	if (speed < 0 || speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
 
 	m_picoBorgReverse.move(DIRECTION_DATA[dir][0] * SPEED_DATA[speed], DIRECTION_DATA[dir][1] * SPEED_DATA[speed]);
 }
 
 void Hydrabot::onControlTurret(int data0, int data1)
 {
-	GCHECK_RETURN(data0>=ROBOT_MIN_TURRET_ANGLE&&data0<=ROBOT_MAX_TURRET_ANGLE);
-	GCHECK_RETURN(m_weapons[0]&&m_weapons[0]->getKind()==EWEAPONKIND::ROCKET);
-	((Rocket*)m_weapons[0])->tilt(data0);
+	GCHECK_RETURN(data0 >= ROBOT_MIN_TURRET_ANGLE && data0 <= ROBOT_MAX_TURRET_ANGLE);
+	GCHECK_RETURN(m_weapons[0] && m_weapons[0]->getKind() == EWEAPONKIND::ROCKET);
+	((Rocket*) m_weapons[0])->tilt(data0);
 }

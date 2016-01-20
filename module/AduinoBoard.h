@@ -9,6 +9,7 @@
 #define ADUINOBOARD_H_
 
 #include "Module.h"
+#include "../Global.h"
 
 class AduinoBoard: public IModule
 {
@@ -16,10 +17,16 @@ public:
 	AduinoBoard();
 	virtual ~AduinoBoard();
 
+public:
 	virtual const char* getDescription() const;
 	virtual bool open();
 	virtual void close();
 	virtual void init();
+
+	void move(int dir, int speed);
+
+protected:
+	void motion(char command, char option);
 
 protected:
 	int m_fd;

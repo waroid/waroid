@@ -14,8 +14,8 @@ namespace TESTBOT
 }
 using namespace TESTBOT;
 
-Testbot::Testbot(int index)
-		: Robot(EROBOT::TESTBOT, index)
+Testbot::Testbot(char team)
+		: Robot(EROBOT::TESTBOT, team)
 {
 	// TODO Auto-generated constructor stub
 
@@ -29,7 +29,6 @@ Testbot::~Testbot()
 bool Testbot::onStart()
 {
 	GCHECK_RETFALSE(m_testModule.open());
-
 	GCHECK_RETFALSE(Robot::onStart());
 
 	return true;
@@ -47,15 +46,27 @@ void Testbot::onReset()
 	Robot::onReset();
 }
 
+void Testbot::onToggleCamera(int data0, int data1)
+{
+	GDEV("[%s]camera is %s", getName(), (data0==1)?"on":"off");
+}
+
+void Testbot::onFire(int data0, int data1)
+{
+	GDEV("[%s]fire switch of %d slot weapon is %s", getName(), data1, (data0==1)?"on":"off");
+}
+
 void Testbot::onMove(int data0, int data1)
 {
-	int dir = data0;
-	if (dir < 0) dir = 0;
-	else if (dir >= EDIRECTION::TOTAL) dir = EDIRECTION::IDLE;
+	GDEV("[%s]move to %d. speed is %d", getName(), data0, data1);
+}
 
-	int speed = data1;
-	if (speed < 0) speed = 0;
-	else if (speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
+void Testbot::onControlTurret(int data0, int data1)
+{
+	GDEV("[%s]turret angle is %d", getName(), data0);
+}
 
-	//m_testModule.move();
+void Testbot::onEquipWeapon(int data0, int data1)
+{
+	GLOG("[%s]%d weapon is equip ", getName(), data0);
 }

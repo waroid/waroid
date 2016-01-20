@@ -72,12 +72,10 @@ void Crabbot::onReset()
 void Crabbot::onMove(int data0, int data1)
 {
 	int dir = data0;
-	if (dir < 0) dir = 0;
-	else if (dir >= EDIRECTION::TOTAL) dir = EDIRECTION::IDLE;
+	if (dir < 0 || dir >= EDIRECTION::TOTAL) dir = EDIRECTION::IDLE;
 
 	int speed = data1;
-	if (speed < 0) speed = 0;
-	else if (speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
+	if (speed < 0 || speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
 
 	m_picoBorgReverse.move(DIRECTION_DATA[dir][0] * SPEED_DATA[speed], DIRECTION_DATA[dir][1] * SPEED_DATA[speed]);
 }

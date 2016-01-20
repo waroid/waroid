@@ -198,7 +198,7 @@ void Robot::onToggleCamera(int data0, int data1)
 
 void Robot::onFire(int data0, int data1)
 {
-	GCHECK_RETURN(data1>=0&&data1<ROBOT_MAX_WEAPON_SLOT);
+	GCHECK_RETURN(data1 >= 0 && data1 < ROBOT_MAX_WEAPON_SLOT);
 	GCHECK_RETURN(m_weapons[data1]);
 	m_weapons[data1]->fire(data0 == 1);
 }
@@ -213,7 +213,7 @@ void Robot::onControlTurret(int data0, int data1)
 
 void Robot::onEquipWeapon(int data0, int data1)
 {
-	GCHECK_RETURN(data0>=0&&data0<EWEAPON::TOTAL);
+	GCHECK_RETURN(data0 >= 0 && data0 < EWEAPON::TOTAL);
 
 	//secondary weapon
 	if (m_weapons[1])
