@@ -290,29 +290,32 @@ void MainManager::infoLoop()
 	{
 		if (m_infoEnableSend)
 		{
-			struct sysinfo si;
-			if (sysinfo(&si) == 0)
+			if (Logger::isDev())
 			{
-				unsigned short upTime = si.uptime;
-				tcpSend(m_ownerSocket, EMESSAGE::UP_TIME_ACK, upTime);
-
-				unsigned short usageCpu = si.loads[0] / 100;
-				tcpSend(m_ownerSocket, EMESSAGE::USAGE_CPU_ACK, usageCpu);
-
-				unsigned short freeRam = si.freeram * 10 / 1024 / 1024;
-				tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, freeRam);
-			}
-
-			{
-				FILE* fp = popen("/opt/vc/bin/vcgencmd measure_temp", "r");
-				if (fp != NULL)
+				struct sysinfo si;
+				if (sysinfo(&si) == 0)
 				{
-					float temperature;
-					fscanf(fp, "temp=%f'C", &temperature);
-					pclose(fp);
+					unsigned short upTime = si.uptime;
+					tcpSend(m_ownerSocket, EMESSAGE::UP_TIME_ACK, upTime);
 
-					unsigned short temperatureCpu = (unsigned short) (temperature * 10);
-					tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
+					unsigned short usageCpu = si.loads[0] / 100;
+					tcpSend(m_ownerSocket, EMESSAGE::USAGE_CPU_ACK, usageCpu);
+
+					unsigned short freeRam = si.freeram * 10 / 1024 / 1024;
+					tcpSend(m_ownerSocket, EMESSAGE::FREE_RAM_ACK, freeRam);
+				}
+
+				{
+					FILE* fp = popen("/opt/vc/bin/vcgencmd measure_temp", "r");
+					if (fp != NULL)
+					{
+						float temperature;
+						fscanf(fp, "temp=%f'C", &temperature);
+						pclose(fp);
+
+						unsigned short temperatureCpu = (unsigned short) (temperature * 10);
+						tcpSend(m_ownerSocket, EMESSAGE::TEMPERATURE_CPU_ACK, temperatureCpu);
+					}
 				}
 			}
 
@@ -328,7 +331,7 @@ void MainManager::infoLoop()
 
 void MainManager::onProcess(const ROBOT_DATA& robotData)
 {
-	GLOG("recv message. %d: %d,%d or %u", robotData.ID, robotData.Data0, robotData.Data1, robotData.Data);
+	GDEV("recv message. %d: %d,%d or %u", robotData.ID, robotData.Data0, robotData.Data1, robotData.Data);
 	switch (robotData.ID)
 	{
 		case EMESSAGE::INFO:
