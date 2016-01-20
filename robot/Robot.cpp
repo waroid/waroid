@@ -164,11 +164,16 @@ void Robot::onReset()
 	system("killall raspivid");
 	system("killall nc");
 
-	m_weapons[0]->init();
+	if (m_weapons[0])
+	{
+		m_weapons[0]->init();
+	}
+
 	for (int i = 1; i < ROBOT_MAX_WEAPON_SLOT; ++i)
 	{
 		if (m_weapons[i])
 		{
+			m_weapons[i]->close();
 			delete m_weapons[i];
 			m_weapons[i] = NULL;
 		}

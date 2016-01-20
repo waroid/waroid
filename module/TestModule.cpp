@@ -12,7 +12,7 @@
 #include "TestModule.h"
 
 TestModule::TestModule()
-: m_fd(-1)
+		: m_fd(-1)
 {
 	// TODO Auto-generated constructor stub
 
@@ -30,8 +30,8 @@ const char* TestModule::getDescription() const
 
 bool TestModule::open()
 {
-	m_fd = serialOpen("/dev/ttyAMA0", 38400);
-	GCHECK_RETFALSE(m_fd!=-1);
+	m_fd = serialOpen("/dev/ttyAMA0", 9600);
+	GCHECK_RETFALSE(m_fd != -1);
 
 	init();
 
@@ -57,5 +57,4 @@ void TestModule::init()
 void TestModule::move()
 {
 }
-
 
