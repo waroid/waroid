@@ -35,9 +35,6 @@ bool Weapon::open()
 	GCHECK_RETFALSE(onOpen());
 	GLOG("[%s]opened", getName());
 
-	onInit();
-	GLOG("[%s]initialized", getName());
-
 	return true;
 }
 
