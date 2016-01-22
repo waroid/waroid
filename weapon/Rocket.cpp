@@ -6,14 +6,17 @@
  */
 
 #include <wiringPi.h>
+#include <softPwm.h>
 #include "../core/Logger.h"
 #include "Rocket.h"
 
 namespace ROCKET
 {
 	const int GPIO_NUM = 18;
-	const int PWM_CLOCK = 400;
-	const int PWM_RANGE = 1024;
+	const int PWM_RANGE = 200;
+	const int PWM_MIN = 5;
+	const int PWM_NEUTRAL = 15;
+	const int PWM_MAX = 25;
 }
 using namespace ROCKET;
 
@@ -36,8 +39,8 @@ void Rocket::tilt(int angle)
 
 	if (isReal())
 	{
-		int v = (angle + m_offset + 45) * PWM_RANGE / 1800;
-		pwmWrite(GPIO_NUM, v);
+		int pwm = (PWM_MAX - PWM_MIN) * (angle + m_offset) / 180 + PWM_NEUTRAL;
+		softPwmWrite(GPIO_NUM, pwm);
 	}
 }
 
@@ -45,10 +48,9 @@ bool Rocket::onOpen()
 {
 	if (isReal())
 	{
-		pinMode(GPIO_NUM, PWM_OUTPUT);
-		pwmSetMode(PWM_MODE_MS);
-		pwmSetClock(PWM_CLOCK);
-		pwmSetRange(PWM_RANGE);
+		pinMode(GPIO_NUM, OUTPUT);
+		digitalWrite(GPIO_NUM, 0);
+		softPwmCreate(GPIO_NUM, PWM_NEUTRAL, PWM_RANGE);
 	}
 
 	return true;
@@ -56,7 +58,7 @@ bool Rocket::onOpen()
 
 void Rocket::onClose()
 {
-
+	if (isReal()) softPwmStop(GPIO_NUM);
 }
 
 void Rocket::onInit()
