@@ -13,7 +13,7 @@
 class Rocket: public Weapon
 {
 public:
-	Rocket(EWEAPON::ETYPE eweapon, bool real, int offset = 5);
+	Rocket(EWEAPON::ETYPE eweapon, bool real);
 	virtual ~Rocket();
 
 public:
@@ -25,9 +25,6 @@ protected:
 	virtual void onInit();
 	virtual void onFireStart();
 	virtual void onFireEnd();
-
-protected:
-	int m_offset;
 };
 
 #endif /* ROCKET_H_ */

@@ -15,13 +15,13 @@ namespace ROCKET
 	const int GPIO_NUM = 18;
 	const int PWM_RANGE = 200;
 	const int PWM_MIN = 5;
-	const int PWM_NEUTRAL = 15;
 	const int PWM_MAX = 25;
+	const int OFFSET_ANGLE = 10;
 }
 using namespace ROCKET;
 
-Rocket::Rocket(EWEAPON::ETYPE eweapon, bool real, int offset)
-		: Weapon(eweapon, real), m_offset(offset)
+Rocket::Rocket(EWEAPON::ETYPE eweapon, bool real)
+		: Weapon(eweapon, real)
 {
 	// TODO Auto-generated constructor stub
 
@@ -39,7 +39,7 @@ void Rocket::tilt(int angle)
 
 	if (isReal())
 	{
-		int pwm = (PWM_MAX - PWM_MIN) * (angle + m_offset) / 180 + PWM_NEUTRAL;
+		int pwm = (PWM_MAX - PWM_MIN) * (angle + OFFSET_ANGLE) / 180 + PWM_MIN;
 		softPwmWrite(GPIO_NUM, pwm);
 	}
 }
@@ -50,7 +50,7 @@ bool Rocket::onOpen()
 	{
 		pinMode(GPIO_NUM, OUTPUT);
 		digitalWrite(GPIO_NUM, 0);
-		softPwmCreate(GPIO_NUM, PWM_NEUTRAL, PWM_RANGE);
+		softPwmCreate(GPIO_NUM, PWM_MIN, PWM_RANGE);
 	}
 
 	return true;
