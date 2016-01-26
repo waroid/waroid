@@ -24,11 +24,11 @@ namespace TOADBOT
 	{ 0.0, 0.0, 0.0, 0.0 },		//left backward
 	{ -1.0, 1.0, 1.0, -1.0 },	//left
 	{ 0.0, 0.0, 0.0, 0.0 },		//left forward
-	{ 1.0, -1.0, 1.0, -1.0 },		//turn right
+	{ 1.0, -1.0, 1.0, -1.0 },	//turn right
 	{ -1.0, 1.0, -1.0, 1.0 },	//turn left
 	};
 	const float SPEED_DATA[ESPEED::TOTAL] =
-	{ 0.0, 0.25, 0.5, 1.0 };
+	{ 0.0, 0.45, 0.7, 0.95 };
 }
 using namespace TOADBOT;
 
