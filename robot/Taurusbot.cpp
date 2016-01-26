@@ -17,18 +17,18 @@ namespace TAURUSBOT
 	//motor0, motor1
 	{ 0.0, 0.0 },	//idle
 	{ 1.0, 1.0 },	//forward
-	{ 1.0, 0.5 },	//right forward
+	{ 1.25, 0.75 },	//right forward
 	{ 1.0, -1.0 },	//right
-	{ -1.0, -0.5 },	//right backward
+	{ -1.25, -0.75 },	//right backward
 	{ -1.0, -1.0 },	//backward
-	{ -0.5, -1.0 },	//left backward
+	{ -0.7, -1.25 },	//left backward
 	{ -1.0, 1.0 },	//left
-	{ 0.5, 1.0 },	//left forward
+	{ 0.75, 1.25 },	//left forward
 	{ 0.0, 0.0 },	//turn right
 	{ 0.0, 0.0 },	//turn left
 	};
 	const float SPEED_DATA[ESPEED::TOTAL] =
-	{ 0.0, 0.4, 0.7, 1.0 };
+	{ 0.0, 0.4, 0.65, 0.9 };
 }
 using namespace TAURUSBOT;
 
