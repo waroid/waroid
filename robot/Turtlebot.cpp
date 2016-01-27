@@ -16,19 +16,19 @@ namespace TURTLEBOT
 	{
 	//0:motor0, 0:motor1, 1:motor0, 1:motor1
 	{ 0.0, 0.0, 0.0, 0.0 },		//idle
-	{ 1.0, 1.0, 1.0, 1.0 },	//forward
-	{ 1.0, 0.0, 0.0, 1.0 },	//right forward
+	{ 1.0, 1.0, 1.0, 1.0 },		//forward
+	{ 1.0, 0.0, 0.0, 1.0 },		//right forward
 	{ 1.0, -1.0, -1.0, 1.0 },	//right
 	{ 0.0, -1.0, -1.0, 0.0 },	//right backward
 	{ -1.0, -1.0, -1.0, -1.0 },	//backward
 	{ -1.0, 0.0, 0.0, -1.0 },	//left backward
 	{ -1.0, 1.0, 1.0, -1.0 },	//left
-	{ 0.0, 1.0, 1.0, 0.0 },	//left forward
-	{ 1.0, -1.0, 1.0, -1.0 },		//turn right
+	{ 0.0, 1.0, 1.0, 0.0 },		//left forward
+	{ 1.0, -1.0, 1.0, -1.0 },	//turn right
 	{ -1.0, 1.0, -1.0, 1.0 },	//turn left
 	};
 	const float SPEED_DATA[ESPEED::TOTAL] =
-	{ 0.0, 0.25, 0.5, 1.0 };
+	{ 0.0, 0.4, 0.7, 0.9 };
 }
 using namespace TURTLEBOT;
 
