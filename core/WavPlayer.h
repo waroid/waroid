@@ -47,11 +47,23 @@ public:
 	bool load(const char* wavFile);
 	void close();
 
+public:
 	void play();
+
+private:
+	void work();
+	void writePcm();
 
 protected:
 	snd_pcm_t* m_pcm;
 	DATA* m_data;
+
+	pthread_t m_thread;
+	pthread_mutex_t m_threadMutex;
+	pthread_cond_t m_threadCond;
+
+private:
+	static void* worker(void* param);
 };
 
 #endif /* WAVPLAYER_H_ */

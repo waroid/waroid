@@ -10,29 +10,30 @@
 #include "WavPlayer.h"
 
 WavPlayer::WavPlayer()
-		: m_pcm(NULL), m_data(NULL)
+		: m_pcm(NULL), m_data(NULL), m_thread(-1)
 {
 	// TODO Auto-generated constructor stub
-
-	GCHECK_RETURN(snd_pcm_open(&m_pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) >= 0);
+	GCHECK_RETURN(pthread_mutex_init(&m_threadMutex, NULL)==0);
+	GCHECK_RETURN(pthread_cond_init(&m_threadCond, NULL)==0);
+	GCHECK_RETURN(pthread_create(&m_thread, NULL, worker, this)==0);
 }
 
 WavPlayer::~WavPlayer()
 {
 	// TODO Auto-generated destructor stub
-	close();
-
-	if (m_pcm)
+	if (m_thread != -1)
 	{
-		snd_pcm_drain(m_pcm);
-		snd_pcm_close(m_pcm);
-		m_pcm = NULL;
+		if (pthread_cancel(m_thread) == 0)
+		{
+			pthread_join(m_thread, NULL);
+		}
 	}
 }
 
 bool WavPlayer::load(const char* wavFile)
 {
-	GCHECK_RETFALSE(m_pcm!=NULL);
+	GCHECK_RETFALSE(m_pcm==NULL);
+	GCHECK_RETFALSE(snd_pcm_open(&m_pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) >= 0);
 
 	SF_INFO info;
 	SNDFILE* file = sf_open(wavFile, SFM_READ, &info);
@@ -82,9 +83,35 @@ void WavPlayer::close()
 		delete data;
 		data = next;
 	}
+
+	if (m_pcm)
+	{
+		snd_pcm_drain(m_pcm);
+		snd_pcm_close(m_pcm);
+		m_pcm = NULL;
+	}
 }
 
 void WavPlayer::play()
+{
+	pthread_mutex_lock(&m_threadMutex);
+	pthread_cond_signal(&m_threadCond);
+	pthread_mutex_unlock(&m_threadMutex);
+}
+
+void WavPlayer::work()
+{
+	for (;;)
+	{
+		pthread_mutex_lock(&m_threadMutex);
+		pthread_cond_wait(&m_threadCond, &m_threadMutex);
+		pthread_mutex_unlock(&m_threadMutex);
+
+		writePcm();
+	}
+}
+
+void WavPlayer::writePcm()
 {
 	GCHECK_RETURN(m_pcm!=NULL);
 
@@ -109,4 +136,11 @@ void WavPlayer::play()
 
 		data = data->next;
 	}
+
+	snd_pcm_drain(m_pcm);
+}
+
+void* WavPlayer::worker(void* param)
+{
+	((WavPlayer*) param)->work();
 }
