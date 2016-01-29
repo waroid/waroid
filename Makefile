@@ -9,13 +9,14 @@ CXXFLAGS =
 
 INCPATH = 
 LINK = g++
-LIBS = -lwiringPi -lm -lpthread
+LIBS = -lwiringPi -lm -lpthread -lasound -lsndfile
 
 # FILE
 CSOURCES = 
 
 CPPSOURCES = main.cpp \
 	core/Logger.cpp \
+	core/WavPlayer.cpp \
 	module/AdafruitAudioFxSoundBoard.cpp \
 	module/AduinoBoard.cpp \
 	module/BatteryChecker.cpp \

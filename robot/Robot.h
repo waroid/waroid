@@ -8,6 +8,7 @@
 #ifndef ROBOT_H_
 #define ROBOT_H_
 
+#include "../core/WavPlayer.h"
 #include "../weapon/Weapon.h"
 #include "../Global.h"
 
@@ -55,6 +56,7 @@ protected:
 	EROBOT::ETYPE m_erobot;
 	char m_team;
 	char m_name[100];
+	WavPlayer m_wavPlayer;
 	Weapon* m_weapons[ROBOT_MAX_WEAPON_SLOT];
 };
 

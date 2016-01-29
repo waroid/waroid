@@ -142,7 +142,9 @@ Weapon* Robot::createWeapon(EWEAPON::ETYPE eweapon, bool real)
 
 bool Robot::onStart()
 {
-	system("aplay /usr/local/share/waroid/boot_sentrymode_active.wav");
+	//system("aplay /usr/local/share/waroid/boot_sentrymode_active.wav");
+	GCHECK_RETFALSE(m_wavPlayer.load("/usr/local/share/waroid/boot_sentrymode_active.wav"));
+	m_wavPlayer.play();
 
 	return true;
 }
@@ -157,6 +159,7 @@ void Robot::onStop()
 			m_weapons[i] = NULL;
 		}
 	}
+	m_wavPlayer.close();
 }
 
 void Robot::onReset()
