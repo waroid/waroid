@@ -69,6 +69,5 @@ void Cannon::onFireStart()
 
 void Cannon::onFireEnd()
 {
-	m_weaponWav.stop();
 }
 

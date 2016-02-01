@@ -48,7 +48,8 @@ OBJECTS += $(CPPSOURCES:%.cpp=%.o)
 SOUNDS = sound/boot_sentrymode_active.wav \
 	sound/cannon.wav \
 	sound/gatling.wav \
-	sound/rocket.wav
+	sound/rocket.wav \
+	sound/test.wav
 
 TARGET = WaroidServer
 

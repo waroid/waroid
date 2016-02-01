@@ -72,7 +72,7 @@ void Testbot::onFire(int data0, int data1)
 	Robot::onFire(data0, data1);
 	GDEV("[%s]fire switch of %d slot weapon is %s", getName(), data1,
 	        (data0 == 1) ? "on" : "off");
-	if (data0 == 1) m_testWav.play(WavPlayer::LOOPING);
+	if (data0 == 1) m_testWav.play();
 	else m_testWav.stop();
 
 }

@@ -73,5 +73,4 @@ void Rocket::onFireStart()
 
 void Rocket::onFireEnd()
 {
-	m_weaponWav.stop();
 }
