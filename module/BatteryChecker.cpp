@@ -59,7 +59,7 @@ void BatteryChecker::close()
 		{
 			pthread_join(m_thread, NULL);
 		}
-		GLOG("cancel PlasmaCannon thread");
+		GLOG("cancel BatteryChecker thread");
 	}
 }
 

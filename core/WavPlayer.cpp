@@ -92,6 +92,7 @@ void WavPlayer::close()
 		{
 			pthread_join(m_thread, NULL);
 		}
+		GLOG("[%s]cancel WavPlayer thread", m_wavFile);
 	}
 }
 
@@ -151,9 +152,9 @@ void WavPlayer::work()
 void* WavPlayer::worker(void* param)
 {
 	WavPlayer* wavPlayer = (WavPlayer*)param;
-	GLOG("[%s]start wav player thread.", wavPlayer->m_wavFile);
+	GLOG("[%s]start WavPlayer thread.", wavPlayer->m_wavFile);
 	wavPlayer->work();
-	GLOG("[%s]stop wav player thread.", wavPlayer->m_wavFile);
+	GLOG("[%s]stop WavPlayer thread.", wavPlayer->m_wavFile);
 
 	return NULL;
 }
