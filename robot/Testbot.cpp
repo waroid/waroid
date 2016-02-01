@@ -31,11 +31,13 @@ Testbot::~Testbot()
 
 bool Testbot::onStart()
 {
-	GCHECK_RETFALSE(m_testWav.load("sound/test.wav"));
+	char temp[256];
+	sprintf(temp, "%s/test.wav", g_soundDir);
+	GCHECK_RETFALSE(m_startWav.load(temp));
 
 	GCHECK_RETFALSE(m_testModule.open());
 
-	EWEAPON::ETYPE randomWeapon = (EWEAPON::ETYPE)((rand() % (EWEAPON::TOTAL - 1)) + 1);
+	EWEAPON::ETYPE randomWeapon = (EWEAPON::ETYPE) ((rand() % (EWEAPON::TOTAL - 1)) + 1);
 	m_weapons[0] = createWeapon(randomWeapon, false);
 	GCHECK_RETFALSE(m_weapons[0]);
 	GCHECK_RETFALSE(m_weapons[0]->open());

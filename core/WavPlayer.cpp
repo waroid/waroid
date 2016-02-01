@@ -136,6 +136,7 @@ void WavPlayer::work()
 					else if (writeFrames < 0)
 					{
 						GLOG("error writing to PCM device. (%s)", snd_strerror(writeFrames));
+						return;
 					}
 					else if (writeFrames != (snd_pcm_sframes_t) data->frames)
 					{
