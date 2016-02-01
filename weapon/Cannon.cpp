@@ -57,6 +57,8 @@ void Cannon::onInit()
 
 void Cannon::onFireStart()
 {
+	m_weaponWav.play();
+
 	if (isReal())
 	{
 		digitalWrite(GPIO_NUM, 1);
@@ -67,5 +69,6 @@ void Cannon::onFireStart()
 
 void Cannon::onFireEnd()
 {
+	m_weaponWav.stop();
 }
 

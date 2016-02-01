@@ -14,6 +14,9 @@
 
 class WavPlayer
 {
+public:
+	static const int LOOPING = -1;
+
 protected:
 	struct DATA
 	{
@@ -48,7 +51,8 @@ public:
 	void close();
 
 public:
-	void play();
+	void play(int count=1);
+	void stop();
 
 private:
 	void work();
@@ -58,9 +62,12 @@ protected:
 	snd_pcm_t* m_pcm;
 	DATA* m_data;
 
+	char m_wavFile[256];
 	pthread_t m_thread;
 	pthread_mutex_t m_threadMutex;
 	pthread_cond_t m_threadCond;
+	bool m_playing;
+	int m_count;
 
 private:
 	static void* worker(void* param);

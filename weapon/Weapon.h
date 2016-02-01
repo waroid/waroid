@@ -8,6 +8,7 @@
 #ifndef WEAPON_H_
 #define WEAPON_H_
 
+#include "../core/WavPlayer.h"
 #include "../Global.h"
 
 class Weapon
@@ -40,6 +41,7 @@ protected:
 protected:
 	EWEAPON::ETYPE m_eweapon;
 	bool m_real;
+	WavPlayer m_weaponWav;
 };
 
 #endif /* WEAPON_H_ */

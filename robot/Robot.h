@@ -56,7 +56,7 @@ protected:
 	EROBOT::ETYPE m_erobot;
 	char m_team;
 	char m_name[100];
-	WavPlayer m_wavPlayer;
+	WavPlayer m_startWav;
 	Weapon* m_weapons[ROBOT_MAX_WEAPON_SLOT];
 };
 

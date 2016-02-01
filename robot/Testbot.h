@@ -8,6 +8,7 @@
 #ifndef TESTBOT_H_
 #define TESTBOT_H_
 
+#include "../core/WavPlayer.h"
 #include "../module/TestModule.h"
 #include "Robot.h"
 
@@ -29,6 +30,7 @@ protected:
 
 protected:
 	TestModule m_testModule;
+	WavPlayer m_testWav;
 };
 
 #endif /* TESTBOT_H_ */

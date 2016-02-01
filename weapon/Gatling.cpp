@@ -52,11 +52,15 @@ void Gatling::onInit()
 
 void Gatling::onFireStart()
 {
+	m_weaponWav.play(WavPlayer::LOOPING);
+
 	if (isReal()) digitalWrite(GPIO_NUM, 1);
 }
 
 void Gatling::onFireEnd()
 {
+	m_weaponWav.stop();
+
 	if (isReal()) digitalWrite(GPIO_NUM, 0);
 }
 

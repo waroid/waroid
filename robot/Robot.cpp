@@ -34,36 +34,37 @@ Robot::Robot(EROBOT::ETYPE erobot, char team)
 Robot::~Robot()
 {
 	// TODO Auto-generated destructor stub
-
-	for (int i = 0; i < ROBOT_MAX_WEAPON_SLOT; ++i)
-	{
-		if (m_weapons[i] != NULL)
-		{
-			delete m_weapons[i];
-			m_weapons[i] = NULL;
-		}
-	}
 }
 
 bool Robot::start()
 {
+	char temp[256];
+	sprintf(temp, "%s/boot_sentrymode_active.wav", g_soundDir);
+	GCHECK_RETFALSE(m_startWav.load(temp));
+
 	GCHECK_RETFALSE(onStart());
 	GLOG("[%s]started", getName());
 
 	onReset();
 	GLOG("[%s]reset", getName());
 
+	m_startWav.play();
+
 	return true;
 }
 
 void Robot::stop()
 {
+	m_startWav.close();
+
 	onStop();
 	GLOG("[%s]stopped", getName());
 }
 
 void Robot::reset()
 {
+	m_startWav.stop();
+
 	onReset();
 	GLOG("[%s]reset", getName());
 }
@@ -142,10 +143,6 @@ Weapon* Robot::createWeapon(EWEAPON::ETYPE eweapon, bool real)
 
 bool Robot::onStart()
 {
-	//system("aplay /usr/local/share/waroid/boot_sentrymode_active.wav");
-	GCHECK_RETFALSE(m_wavPlayer.load("/usr/local/share/waroid/boot_sentrymode_active.wav"));
-	m_wavPlayer.play();
-
 	return true;
 }
 
@@ -159,7 +156,6 @@ void Robot::onStop()
 			m_weapons[i] = NULL;
 		}
 	}
-	m_wavPlayer.close();
 }
 
 void Robot::onReset()

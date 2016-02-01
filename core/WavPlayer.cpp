@@ -10,24 +10,14 @@
 #include "WavPlayer.h"
 
 WavPlayer::WavPlayer()
-		: m_pcm(NULL), m_data(NULL), m_thread(-1)
+		: m_pcm(NULL), m_data(NULL), m_thread(-1), m_playing(false), m_count(0)
 {
 	// TODO Auto-generated constructor stub
-	GCHECK_RETURN(pthread_mutex_init(&m_threadMutex, NULL)==0);
-	GCHECK_RETURN(pthread_cond_init(&m_threadCond, NULL)==0);
-	GCHECK_RETURN(pthread_create(&m_thread, NULL, worker, this)==0);
 }
 
 WavPlayer::~WavPlayer()
 {
 	// TODO Auto-generated destructor stub
-	if (m_thread != -1)
-	{
-		if (pthread_cancel(m_thread) == 0)
-		{
-			pthread_join(m_thread, NULL);
-		}
-	}
 }
 
 bool WavPlayer::load(const char* wavFile)
@@ -70,6 +60,11 @@ bool WavPlayer::load(const char* wavFile)
 	free(buffer);
 	sf_close(file);
 
+	strcpy(m_wavFile, wavFile);
+	GCHECK_RETFALSE(pthread_mutex_init(&m_threadMutex, NULL)==0);
+	GCHECK_RETFALSE(pthread_cond_init(&m_threadCond, NULL)==0);
+	GCHECK_RETFALSE(pthread_create(&m_thread, NULL, worker, this)==0);
+
 	return true;
 }
 
@@ -90,13 +85,29 @@ void WavPlayer::close()
 		snd_pcm_close(m_pcm);
 		m_pcm = NULL;
 	}
+
+	if (m_thread != (pthread_t) -1)
+	{
+		if (pthread_cancel(m_thread) == 0)
+		{
+			pthread_join(m_thread, NULL);
+		}
+	}
 }
 
-void WavPlayer::play()
+void WavPlayer::play(int count)
 {
+	m_playing = true;
+	m_count = count;
 	pthread_mutex_lock(&m_threadMutex);
 	pthread_cond_signal(&m_threadCond);
 	pthread_mutex_unlock(&m_threadMutex);
+}
+
+void WavPlayer::stop()
+{
+	m_playing = false;
+	m_count = 0;
 }
 
 void WavPlayer::work()
@@ -107,40 +118,42 @@ void WavPlayer::work()
 		pthread_cond_wait(&m_threadCond, &m_threadMutex);
 		pthread_mutex_unlock(&m_threadMutex);
 
-		writePcm();
+		if (m_pcm)
+		{
+			for (int i = 0; i < m_count || m_count == LOOPING; ++i)
+			{
+				snd_pcm_sframes_t writeFrames;
+				DATA* data = m_data;
+				while (m_playing && data)
+				{
+					writeFrames = snd_pcm_writei(m_pcm, data->buffer, data->frames);
+					if (writeFrames == -EPIPE)
+					{
+						GLOG("Underrun");
+						snd_pcm_prepare(m_pcm);
+					}
+					else if (writeFrames < 0)
+					{
+						GLOG("error writing to PCM device. (%s)", snd_strerror(writeFrames));
+					}
+					else if (writeFrames != (snd_pcm_sframes_t) data->frames)
+					{
+						GLOG("write differs from read. (%s)");
+					}
+
+					data = data->next;
+				}
+			}
+		}
 	}
-}
-
-void WavPlayer::writePcm()
-{
-	GCHECK_RETURN(m_pcm!=NULL);
-
-	snd_pcm_sframes_t writeFrames;
-	DATA* data = m_data;
-	while (data)
-	{
-		writeFrames = snd_pcm_writei(m_pcm, data->buffer, data->frames);
-		if (writeFrames == -EPIPE)
-		{
-			GLOG("Underrun");
-			snd_pcm_prepare(m_pcm);
-		}
-		else if (writeFrames < 0)
-		{
-			GLOG("error writing to PCM device. (%s)", snd_strerror(writeFrames));
-		}
-		else if (writeFrames != (snd_pcm_sframes_t) data->frames)
-		{
-			GLOG("write differs from read. (%s)");
-		}
-
-		data = data->next;
-	}
-
-	snd_pcm_drain(m_pcm);
 }
 
 void* WavPlayer::worker(void* param)
 {
-	((WavPlayer*) param)->work();
+	WavPlayer* wavPlayer = (WavPlayer*)param;
+	GLOG("[%s]start wav player thread.", wavPlayer->m_wavFile);
+	wavPlayer->work();
+	GLOG("[%s]stop wav player thread.", wavPlayer->m_wavFile);
+
+	return NULL;
 }

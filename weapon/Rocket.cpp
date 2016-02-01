@@ -68,8 +68,10 @@ void Rocket::onInit()
 
 void Rocket::onFireStart()
 {
+	m_weaponWav.play();
 }
 
 void Rocket::onFireEnd()
 {
+	m_weaponWav.stop();
 }

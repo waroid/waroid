@@ -26,8 +26,10 @@ struct WEAPON_DATA
 	EWEAPON::ETYPE weapon;
 	EWEAPONKIND::ETYPE weaponKind;
 	char name[100];
+	char wavFile[100];
 };
 
+extern const char* g_soundDir;
 extern const char* g_robotTypeNames[EROBOT::TOTAL];
 extern WEAPON_DATA g_weaponDatas[EWEAPON::TOTAL];
 
