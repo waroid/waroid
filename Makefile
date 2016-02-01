@@ -45,10 +45,10 @@ CPPSOURCES = main.cpp \
 OBJECTS = $(CSOURCES:%.c=%.o)
 OBJECTS += $(CPPSOURCES:%.cpp=%.o)
 
-SOUNDS = boot_sentrymode_active.wav \
-	cannon.wav \
-	gatling.wav \
-	rocket.wav
+SOUNDS = sound/boot_sentrymode_active.wav \
+	sound/cannon.wav \
+	sound/gatling.wav \
+	sound/rocket.wav
 
 TARGET = WaroidServer
 
@@ -77,7 +77,7 @@ rebuild: clean depend all
 install:
 	mkdir -p $(DATADIR)
 	cp -f $(TARGET) $(BINDIR)
-	cp -f sound/$(SOUNDS) $(DATADIR)
+	cp -f $(SOUNDS) $(DATADIR)
 
 uninstall:
 	- killall $(TARGET)
