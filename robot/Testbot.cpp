@@ -5,6 +5,9 @@
  *      Author: mirime
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <wiringPi.h>
 #include "../core/Logger.h"
 #include "Testbot.h"
@@ -18,9 +21,7 @@ Testbot::Testbot(char team)
 		: Robot(EROBOT::TESTBOT, team)
 {
 	// TODO Auto-generated constructor stub
-	char temp[256];
-	sprintf(temp, "%s/boot_sentrymode_active.wav", g_soundDir);
-	GCHECK_RETURN(m_testWav.load(temp));
+	srand(time(NULL));
 }
 
 Testbot::~Testbot()
@@ -30,8 +31,18 @@ Testbot::~Testbot()
 
 bool Testbot::onStart()
 {
+	GCHECK_RETFALSE(m_testWav.load("sound/test.wav"));
+
 	GCHECK_RETFALSE(m_testModule.open());
+
+	EWEAPON::ETYPE randomWeapon = (EWEAPON::ETYPE)((rand() % (EWEAPON::TOTAL - 1)) + 1);
+	m_weapons[0] = createWeapon(randomWeapon, false);
+	GCHECK_RETFALSE(m_weapons[0]);
+	GCHECK_RETFALSE(m_weapons[0]->open());
+
 	GCHECK_RETFALSE(Robot::onStart());
+
+	sleep(1);
 	m_testWav.play();
 
 	return true;
@@ -46,7 +57,6 @@ void Testbot::onStop()
 
 void Testbot::onReset()
 {
-	m_testWav.stop();
 	m_testModule.init();
 	Robot::onReset();
 }
