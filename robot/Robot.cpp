@@ -222,6 +222,7 @@ void Robot::onEquipWeapon(int data0, int data1)
 	}
 	m_weapons[1] = createWeapon((EWEAPON::ETYPE) data0, false);
 	GCHECK_RETURN(m_weapons[1]);
+	GCHECK_RETURN(m_weapons[1]->open());
 
 	GLOG("[%s]equiped weapon. name=%s", getName(), m_weapons[1]->getName());
 }

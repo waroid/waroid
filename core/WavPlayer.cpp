@@ -142,8 +142,10 @@ void WavPlayer::work()
 						GLOG("write differs from read. (%s)");
 					}
 
+					usleep(1000);
 					data = data->next;
 				}
+				usleep(10000);
 			}
 		}
 	}
