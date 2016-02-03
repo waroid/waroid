@@ -18,11 +18,11 @@ namespace SCORPIOBOT
 	{ 0.0, 0.0, 0.0 },	//idle
 	{ 1.0, 1.0, 0.0 },	//forward
 	{ 0.0, 0.0, 0.0 },	//right forward
-	{ 0.333, -0.333, 0.667 },	//right
+	{ 0.5, -0.5, 0.9 },	//right
 	{ 0.0, 0.0, 0.0 },	//right backward
 	{ -1.0, -1.0, 0.0 },	//backward
 	{ 0.0, 0.0, 0.0 },	//left backward
-	{ -0.333, 0.333, -0.667 },	//left
+	{ -0.5, 0.5, -0.9 },	//left
 	{ 0.0, 0.0, 0.0 },	//left forward
 	{ 1.0, -1.0, -1.0 },	//turn right
 	{ -1.0, 1.0, 1.0 },	//turn left
