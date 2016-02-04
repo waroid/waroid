@@ -53,6 +53,10 @@ SOUNDS = sound/boot_sentrymode_active.wav \
 	sound/12.7mm_GAU-19B_HMG.wav \
 	sound/20mm_M61_Vulcan.wav \
 	sound/20mm_M134D_Minigun.wav \
+	sound/25mm_M242_Chaingun.wav \
+	sound/30mm_2A72_Autocannon.wav \
+	sound/40mm_Bofors_L60.wav \
+	sound/Starstreak_Avenger.wav \
 	sound/test.wav
 
 TARGET = WaroidServer
