@@ -55,8 +55,8 @@ bool Testbot::onStart()
 
 	GCHECK_RETFALSE(Robot::onStart());
 
-	sleep(1);
-	m_testWav.play();
+	//sleep(1);
+	//m_testWav.play();
 
 	return true;
 }

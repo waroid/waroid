@@ -45,7 +45,7 @@ CPPSOURCES = main.cpp \
 OBJECTS = $(CSOURCES:%.c=%.o)
 OBJECTS += $(CPPSOURCES:%.cpp=%.o)
 
-SOUNDS = sound/boot_sentrymode_active.wav \
+SOUNDS = sound/startup.wav \
 	sound/cannon.wav \
 	sound/gatling.wav \
 	sound/rocket.wav \

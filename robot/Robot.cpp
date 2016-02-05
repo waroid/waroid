@@ -16,7 +16,7 @@
 
 namespace ROBOT
 {
-
+	const char* TTS_WAV = "/tmp/say.wav";
 }
 using namespace ROBOT;
 
@@ -24,6 +24,10 @@ Robot::Robot(EROBOT::ETYPE erobot, char team)
 		: m_erobot(erobot), m_team(toupper(team))
 {
 	sprintf(m_name, "%s_%c", g_robotTypeNames[m_erobot], team);
+
+	char temp[256];
+	sprintf(temp, "pico2wave --wave %s \"i'm a %s. ready!\"", TTS_WAV, g_robotTypeNames[m_erobot]);
+	system(temp);
 
 	for (int i = 0; i < ROBOT_MAX_WEAPON_SLOT; ++i)
 	{
@@ -39,8 +43,9 @@ Robot::~Robot()
 bool Robot::start()
 {
 	char temp[256];
-	sprintf(temp, "%s/boot_sentrymode_active.wav", g_soundDir);
-	GCHECK_RETFALSE(m_startWav.load(temp));
+	sprintf(temp, "%s/startup.wav", g_soundDir);
+	GCHECK_RETFALSE(m_startupWav.load(temp));
+	GCHECK_RETFALSE(m_ttsWav.load(TTS_WAV));
 
 	GCHECK_RETFALSE(onStart());
 	GLOG("[%s]started", getName());
@@ -48,14 +53,17 @@ bool Robot::start()
 	onReset();
 	GLOG("[%s]reset", getName());
 
-	m_startWav.play();
+	m_startupWav.play();
+	usleep(500000);
+	m_ttsWav.play();
 
 	return true;
 }
 
 void Robot::stop()
 {
-	m_startWav.close();
+	m_startupWav.close();
+	m_ttsWav.close();
 
 	onStop();
 	GLOG("[%s]stopped", getName());
@@ -63,7 +71,8 @@ void Robot::stop()
 
 void Robot::reset()
 {
-	m_startWav.stop();
+	m_startupWav.stop();
+	m_ttsWav.stop();
 
 	onReset();
 	GLOG("[%s]reset", getName());
