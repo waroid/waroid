@@ -10,6 +10,23 @@
 
 namespace SPIDERBOT
 {
+	const char DIRECTION_DATA[EDIRECTION::TOTAL] =
+	{
+	AUDUINO_MOT_BASIC,			//idle
+	AUDUINO_MOT_FORWARD,		//forward
+	AUDUINO_MOT_BASIC,			//right forward
+	AUDUINO_MOT_RIGHT_SLIDE,	//right
+	AUDUINO_MOT_BASIC,			//right backward
+	AUDUINO_MOT_BACKWARD,		//backward
+	AUDUINO_MOT_BASIC,			//left backward
+	AUDUINO_MOT_LEFT_SLIDE,		//left
+	AUDUINO_MOT_BASIC,			//left forward
+	AUDUINO_MOT_RIGHT_TURN,		//turn right
+	AUDUINO_MOT_LEFT_TURN,		//turn left
+	};
+
+	const char SPEED_DATA[ESPEED::TOTAL] =
+	{ 0x00, 0x01, 0x02, 0x03 };
 }
 using namespace SPIDERBOT;
 
@@ -57,5 +74,5 @@ void Spiderbot::onMove(int data0, int data1)
 	int speed = data1;
 	if (speed < 0 || speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
 
-	m_aduinoBoard.move(dir, speed);
+	m_aduinoBoard.motion(DIRECTION_DATA[dir], SPEED_DATA[speed]);
 }

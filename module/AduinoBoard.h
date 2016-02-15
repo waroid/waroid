@@ -23,9 +23,6 @@ public:
 	virtual void close();
 	virtual void init();
 
-	void move(int dir, int speed);
-
-protected:
 	void motion(char command, char option);
 
 protected:

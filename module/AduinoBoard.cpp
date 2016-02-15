@@ -14,31 +14,6 @@ namespace ADUINO_BOARD
 {
 	const char PREFIX = 0xff;
 	const char POSTFIX = 0xfe;
-
-	enum ECOMMAND
-	{
-		MOT_BASIC = 0x00,
-		MOT_FORWARD = 0x01,
-		MOT_BACKWARD = 0x02,
-		MOT_LEFT_SLIDE = 0x03,
-		MOT_RIGHT_SLIDE = 0x04,
-		MOT_LEFT_TURN = 0x05,
-		MOT_RIGHT_TURN = 0x06,
-	};
-
-	const ECOMMAND DIRECTION_DATA[EDIRECTION::TOTAL] =
-	{ MOT_BASIC,	//idle
-	MOT_FORWARD,	//forward
-	MOT_BASIC,		//right forward
-	MOT_RIGHT_SLIDE,	//right
-	MOT_BASIC,			//right backward
-	MOT_BACKWARD,		//backward
-	MOT_BASIC,			//left backward
-	MOT_LEFT_SLIDE,		//left
-	MOT_BASIC,			//left forward
-	MOT_RIGHT_TURN,		//turn right
-	MOT_LEFT_TURN,		//turn left
-	};
 }
 using namespace ADUINO_BOARD;
 
@@ -80,12 +55,7 @@ void AduinoBoard::close()
 
 void AduinoBoard::init()
 {
-	motion(MOT_BASIC, 0);
-}
-
-void AduinoBoard::move(int dir, int speed)
-{
-	motion(DIRECTION_DATA[dir], (char) speed);
+	motion(AUDUINO_MOT_BASIC, 0);
 }
 
 void AduinoBoard::motion(char command, char option)
