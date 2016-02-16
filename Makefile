@@ -18,7 +18,7 @@ CPPSOURCES = main.cpp \
 	core/Logger.cpp \
 	core/WavPlayer.cpp \
 	module/AdafruitAudioFxSoundBoard.cpp \
-	module/AduinoBoard.cpp \
+	module/ArduinoBoard.cpp \
 	module/BatteryChecker.cpp \
 	module/PicoBorgReverse.cpp \
 	module/PololuQik.cpp \
