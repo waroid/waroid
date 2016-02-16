@@ -8,7 +8,7 @@
 #ifndef THORBOT_H_
 #define THORBOT_H_
 
-#include "../module/AduinoBoard.h"
+#include "../module/ArduinoBoard.h"
 #include "Robot.h"
 
 class Thorbot: public Robot
@@ -24,7 +24,7 @@ protected:
 	virtual void onMove(int data0, int data1);
 
 protected:
-	AduinoBoard m_aduinoBoard;
+	ArduinoBoard m_arduinoBoard;
 };
 
 #endif /* THORBOT_H_ */

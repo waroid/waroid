@@ -6,23 +6,24 @@
  */
 
 #include "../core/Logger.h"
+#include "../Global.h"
 #include "Thorbot.h"
 
 namespace THORBOT
 {
 	const char DIRECTION_DATA[EDIRECTION::TOTAL] =
 		{
-		AUDUINO_MOT_BASIC,			//idle
-		AUDUINO_MOT_FORWARD,		//forward
-		AUDUINO_MOT_BASIC,			//right forward
-		AUDUINO_MOT_RIGHT_SLIDE,	//right
-		AUDUINO_MOT_BASIC,			//right backward
-		AUDUINO_MOT_BACKWARD,		//backward
-		AUDUINO_MOT_BASIC,			//left backward
-		AUDUINO_MOT_LEFT_SLIDE,		//left
-		AUDUINO_MOT_BASIC,			//left forward
-		AUDUINO_MOT_RIGHT_TURN,		//turn right
-		AUDUINO_MOT_LEFT_TURN,		//turn left
+		ARDUINO_MOT_BASIC,			//idle
+		ARDUINO_MOT_FORWARD,		//forward
+		ARDUINO_MOT_BASIC,			//right forward
+		ARDUINO_MOT_RIGHT_SLIDE,	//right
+		ARDUINO_MOT_BASIC,			//right backward
+		ARDUINO_MOT_BACKWARD,		//backward
+		ARDUINO_MOT_BASIC,			//left backward
+		ARDUINO_MOT_LEFT_SLIDE,		//left
+		ARDUINO_MOT_BASIC,			//left forward
+		ARDUINO_MOT_RIGHT_TURN,		//turn right
+		ARDUINO_MOT_LEFT_TURN,		//turn left
 		};
 
 		const char SPEED_DATA[ESPEED::TOTAL] =
@@ -44,7 +45,7 @@ Thorbot::~Thorbot()
 
 bool Thorbot::onStart()
 {
-	GCHECK_RETFALSE(m_aduinoBoard.open());
+	GCHECK_RETFALSE(m_arduinoBoard.open());
 
 	m_weapons[0] = createWeapon(EWEAPON::M61_VULCAN, true);
 	GCHECK_RETFALSE(m_weapons[0]);
@@ -57,13 +58,13 @@ bool Thorbot::onStart()
 
 void Thorbot::onStop()
 {
-	m_aduinoBoard.close();
+	m_arduinoBoard.close();
 	Robot::onStop();
 }
 
 void Thorbot::onReset()
 {
-	m_aduinoBoard.init();
+	m_arduinoBoard.init();
 	Robot::onReset();
 }
 
@@ -75,5 +76,5 @@ void Thorbot::onMove(int data0, int data1)
 	int speed = data1;
 	if (speed < 0 || speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
 
-	m_aduinoBoard.motion(DIRECTION_DATA[dir], SPEED_DATA[speed]);
+	m_arduinoBoard.motion(DIRECTION_DATA[dir], SPEED_DATA[speed]);
 }

@@ -8,7 +8,7 @@
 #ifndef SPIDERBOT_H_
 #define SPIDERBOT_H_
 
-#include "../module/AduinoBoard.h"
+#include "../module/ArduinoBoard.h"
 #include "Robot.h"
 
 class Spiderbot: public Robot
@@ -24,7 +24,7 @@ protected:
 	virtual void onMove(int data0, int data1);
 
 protected:
-	AduinoBoard	m_aduinoBoard;
+	ArduinoBoard	m_arduinoBoard;
 };
 
 #endif /* SPIDERBOT_H_ */
