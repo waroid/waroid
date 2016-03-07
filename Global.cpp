@@ -28,7 +28,7 @@ WEAPON_DATA g_weaponDatas[EWEAPON::TOTAL] =
 { EWEAPON::M242_CHAINGUN, EWEAPONKIND::CANNON, "25mm M242 Chaingun", "25mm_M242_Chaingun.wav" },
 { EWEAPON::BOFORS_L60, EWEAPONKIND::CANNON, "40mm Bofors L60", "40mm_Bofors_L60.wav" },
 { EWEAPON::M61_VULCAN, EWEAPONKIND::GATLING, "20mm M61 Vulcan", "20mm_M61_Vulcan.wav" },
-{ EWEAPON::PLASMA_GUN, EWEAPONKIND::CANNON, "Plasma Gun", "cannon.wav" },
-{ EWEAPON::ENERGY_CANNON, EWEAPONKIND::CANNON, "Energy Cannon", "cannon.wav" },
-{ EWEAPON::LASER_CANNON, EWEAPONKIND::CANNON, "Laser Cannon", "cannon.wav" } };
+{ EWEAPON::PLASMA_GUN, EWEAPONKIND::CANNON, "Plasma Gun", "plasma.wav" },
+{ EWEAPON::ENERGY_CANNON, EWEAPONKIND::CANNON, "Energy Cannon", "energy.wav" },
+{ EWEAPON::LASER_CANNON, EWEAPONKIND::CANNON, "Laser Cannon", "laser.wav" } };
 

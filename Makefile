@@ -46,9 +46,9 @@ OBJECTS = $(CSOURCES:%.c=%.o)
 OBJECTS += $(CPPSOURCES:%.cpp=%.o)
 
 SOUNDS = sound/startup.wav \
-	sound/cannon.wav \
-	sound/gatling.wav \
-	sound/rocket.wav \
+	sound/plasma.wav \
+	sound/laser.wav \
+	sound/energy.wav \
 	sound/5.56mm_XM214_Microgun.wav \
 	sound/12.7mm_GAU-19B_HMG.wav \
 	sound/20mm_M61_Vulcan.wav \
