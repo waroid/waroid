@@ -30,6 +30,7 @@ namespace EMESSAGE
 		PING,
 		PING_ACK,
 		EQUIP_WEAPON,
+		CONTROL_THROTTLE,
 		//----------
 		TOTAL,
 	};

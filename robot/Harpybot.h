@@ -8,7 +8,7 @@
 #ifndef HARPYBOT_H_
 #define HARPYBOT_H_
 
-#include "../module/ArduinoBoard.h"
+#include "../module/DronBoard.h"
 #include "Robot.h"
 
 class Harpybot: public Robot
@@ -22,9 +22,10 @@ protected:
 	virtual void onStop();
 	virtual void onReset();
 	virtual void onMove(int data0, int data1);
+	virtual void onControlThrottle(int data0, int data1);
 
 protected:
-	ArduinoBoard m_arduinoBoard;
+	DronBoard m_dronBoard;
 };
 
 #endif /* HARPYBOT_H_ */

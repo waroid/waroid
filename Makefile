@@ -20,6 +20,7 @@ CPPSOURCES = main.cpp \
 	module/AdafruitAudioFxSoundBoard.cpp \
 	module/ArduinoBoard.cpp \
 	module/BatteryChecker.cpp \
+	module/DronBoard.cpp \
 	module/PicoBorgReverse.cpp \
 	module/PololuQik.cpp \
 	module/TestModule.cpp \

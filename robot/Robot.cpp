@@ -117,6 +117,13 @@ void Robot::process(const ROBOT_DATA& robotData)
 		}
 		break;
 
+		case EMESSAGE::CONTROL_THROTTLE:
+		{
+			GDEV("[%s]control throttle. Data0=%d Data1=%d", getName(), robotData.Data0, robotData.Data1);
+			onControlThrottle(robotData.Data0, robotData.Data1);
+		}
+		break;
+
 		default:
 		{
 			GLOG("[%s]invalid message. ID=%d Data0=%d Data1=%d", getName(), robotData.ID, robotData.Data0, robotData.Data1);
@@ -234,4 +241,8 @@ void Robot::onEquipWeapon(int data0, int data1)
 	GCHECK_RETURN(m_weapons[1]->open());
 
 	GLOG("[%s]equiped weapon. name=%s", getName(), m_weapons[1]->getName());
+}
+
+void Robot::onControlThrottle(int data0, int data1)
+{
 }
