@@ -23,7 +23,7 @@ public:
 	virtual void close();
 	virtual void init();
 
-	void command(char cmd, char throttlef=DRON_IDEL_VALUE, char roll=DRON_IDEL_VALUE, char pitch=DRON_IDEL_VALUE, char yaw=DRON_IDEL_VALUE);
+	void command(char cmd, char throttlef=DRON_IDLE_VALUE, char roll=DRON_IDLE_VALUE, char pitch=DRON_IDLE_VALUE, char yaw=DRON_IDLE_VALUE);
 
 protected:
 	int m_fd;

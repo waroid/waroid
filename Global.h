@@ -53,7 +53,7 @@ const int ROBOT_MAX_WEAPON_SLOT = 2;
 #define DRON_COMMAND_ULTRASONIC	0x06
 #define DRON_COMMAND_REMOTE		0x07
 
-#define DRON_IDEL_VALUE	0x7f
+#define DRON_IDLE_VALUE	0x7f
 
 
 #endif /* GLOBAL_H_ */
