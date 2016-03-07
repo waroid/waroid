@@ -61,6 +61,7 @@ void DronBoard::init()
 void DronBoard::active()
 {
 	command(DRON_COMMAND_START);
+	command(DRON_COMMAND_ULTRASONIC);
 	m_active = true;
 }
 
