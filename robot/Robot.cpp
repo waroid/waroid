@@ -117,10 +117,10 @@ void Robot::process(const ROBOT_DATA& robotData)
 		}
 		break;
 
-		case EMESSAGE::CONTROL_THROTTLE:
+		case EMESSAGE::CONTROL_DRON:
 		{
-			GDEV("[%s]control throttle. Data0=%d Data1=%d", getName(), robotData.Data0, robotData.Data1);
-			onControlThrottle(robotData.Data0, robotData.Data1);
+			GDEV("[%s]control dron. Data0=%d Data1=%d", getName(), robotData.Data0, robotData.Data1);
+			onControlDron(robotData.Data0, robotData.Data1);
 		}
 		break;
 
@@ -243,6 +243,6 @@ void Robot::onEquipWeapon(int data0, int data1)
 	GLOG("[%s]equiped weapon. name=%s", getName(), m_weapons[1]->getName());
 }
 
-void Robot::onControlThrottle(int data0, int data1)
+void Robot::onControlDron(int data0, int data1)
 {
 }

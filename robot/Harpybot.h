@@ -22,7 +22,7 @@ protected:
 	virtual void onStop();
 	virtual void onReset();
 	virtual void onMove(int data0, int data1);
-	virtual void onControlThrottle(int data0, int data1);
+	virtual void onControlDron(int data0, int data1);
 
 protected:
 	DronBoard m_dronBoard;

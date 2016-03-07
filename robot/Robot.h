@@ -51,7 +51,7 @@ protected:
 	virtual void onMove(int data0, int data1);
 	virtual void onControlTurret(int data0, int data1);
 	virtual void onEquipWeapon(int data0, int data1);
-	virtual void onControlThrottle(int data0, int data1);
+	virtual void onControlDron(int data0, int data1);
 
 protected:
 	EROBOT::ETYPE m_erobot;

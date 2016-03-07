@@ -74,7 +74,7 @@ void Harpybot::onMove(int data0, int data1)
 	m_dronBoard.command(DRON_COMMAND_CONTROL, 1, DIRECTION_DATA[dir][0], DIRECTION_DATA[dir][1], DIRECTION_DATA[dir][2]);
 }
 
-void Harpybot::onControlThrottle(int data0, int data1)
+void Harpybot::onControlDron(int data0, int data1)
 {
 	switch (data0)
 	{
