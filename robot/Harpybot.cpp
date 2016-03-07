@@ -76,6 +76,6 @@ void Harpybot::onMove(int data0, int data1)
 
 void Harpybot::onControlThrottle(int data0, int data1)
 {
-	GCHECK_RETURN(data0==1||data0==-1);
+	GCHECK_RETURN(data0==1||data0==-1||data0==0);
 	m_dronBoard.command(DRON_COMMAND_CONTROL, (char)(DRON_IDLE_VALUE + OFFSET * data0));
 }
