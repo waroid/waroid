@@ -17,13 +17,13 @@ namespace HARPYBOT
 	{
 	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE, DRON_IDLE_VALUE },	//idle
 	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE },	//forward
-	{ DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE },	//right forward
+	{ DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE },//right forward
 	{ DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE, DRON_IDLE_VALUE },	//right
-	{ DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE },	//right backward
+	{ DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE },//right backward
 	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE },	//backward
-	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE },	//left backward
+	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE },//left backward
 	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE, DRON_IDLE_VALUE },	//left
-	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE },	//left forward
+	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE },//left forward
 	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE, DRON_IDLE_VALUE + 5 },	//turn right
 	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE, DRON_IDLE_VALUE - 5 },	//turn left
 	};
@@ -76,6 +76,26 @@ void Harpybot::onMove(int data0, int data1)
 
 void Harpybot::onControlThrottle(int data0, int data1)
 {
-	GCHECK_RETURN(data0==1||data0==-1||data0==0);
-	m_dronBoard.command(DRON_COMMAND_CONTROL, (char)(DRON_IDLE_VALUE + OFFSET * data0));
+	switch (data0)
+	{
+		case 1:
+		{
+			data1 ? m_dronBoard.active() : m_dronBoard.deactive();
+		}
+		break;
+
+		case 2:
+		{
+			GCHECK_RETURN(data1 == 1 || data1 == -1 || data1 == 0);
+			m_dronBoard.command(DRON_COMMAND_CONTROL, (char) (DRON_IDLE_VALUE + OFFSET * data1));
+		}
+		break;
+
+		default:
+		{
+			bool f = false;
+			GCHECK_RETURN(f);
+		}
+		break;
+	}
 }

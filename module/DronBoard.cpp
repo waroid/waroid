@@ -17,7 +17,7 @@ namespace DRON_BOARD
 using namespace DRON_BOARD;
 
 DronBoard::DronBoard()
-		: m_fd(-1)
+		: m_fd(-1), m_active(false)
 {
 	// TODO Auto-generated constructor stub
 
@@ -45,6 +45,7 @@ bool DronBoard::open()
 
 void DronBoard::close()
 {
+	m_active = false;
 	command(DRON_COMMAND_STOP);
 	if (m_fd != -1)
 	{
@@ -55,12 +56,24 @@ void DronBoard::close()
 
 void DronBoard::init()
 {
+}
+
+void DronBoard::active()
+{
 	command(DRON_COMMAND_START);
-	command(DRON_COMMAND_CONTROL, 1);
+	m_active = true;
+}
+
+void DronBoard::deactive()
+{
+	command(DRON_COMMAND_STOP);
+	m_active = false;
 }
 
 void DronBoard::command(char cmd, char throttle, char roll, char pitch, char yaw)
 {
+	GCHECK_RETURN(m_active);
+
 	serialPutchar(m_fd, HEADER);
 	serialPutchar(m_fd, cmd);
 	serialPutchar(m_fd, throttle);

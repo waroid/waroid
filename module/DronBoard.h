@@ -23,10 +23,13 @@ public:
 	virtual void close();
 	virtual void init();
 
-	void command(char cmd, char throttlef=DRON_IDLE_VALUE, char roll=DRON_IDLE_VALUE, char pitch=DRON_IDLE_VALUE, char yaw=DRON_IDLE_VALUE);
+	void active();
+	void deactive();
+	void command(char cmd, char throttle=DRON_IDLE_VALUE, char roll=DRON_IDLE_VALUE, char pitch=DRON_IDLE_VALUE, char yaw=DRON_IDLE_VALUE);
 
 protected:
 	int m_fd;
+	bool m_active;
 };
 
 #endif /* DRONBOARD_H_ */
