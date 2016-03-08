@@ -11,7 +11,7 @@
 
 namespace HARPYBOT
 {
-	const char OFFSET = 0x5;
+	const char OFFSET = 15;
 	//roll, pitch, yaw
 	const char DIRECTION_DATA[EDIRECTION::TOTAL][3] =
 	{
@@ -24,8 +24,8 @@ namespace HARPYBOT
 	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE },//left backward
 	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE, DRON_IDLE_VALUE },	//left
 	{ DRON_IDLE_VALUE - OFFSET, DRON_IDLE_VALUE + OFFSET, DRON_IDLE_VALUE },//left forward
-	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE, DRON_IDLE_VALUE + 5 },	//turn right
-	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE, DRON_IDLE_VALUE - 5 },	//turn left
+	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE, DRON_IDLE_VALUE + OFFSET },	//turn right
+	{ DRON_IDLE_VALUE, DRON_IDLE_VALUE, DRON_IDLE_VALUE - OFFSET },	//turn left
 	};
 }
 using namespace HARPYBOT;
