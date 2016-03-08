@@ -71,7 +71,7 @@ void Harpybot::onMove(int data0, int data1)
 	int speed = data1;
 	if (speed < 0 || speed >= ESPEED::TOTAL) speed = ESPEED::NONE;
 
-	m_dronBoard.command(DRON_COMMAND_CONTROL, 1, DIRECTION_DATA[dir][0], DIRECTION_DATA[dir][1], DIRECTION_DATA[dir][2]);
+	m_dronBoard.command(DRON_COMMAND_ULTRASONIC, 1, DIRECTION_DATA[dir][0], DIRECTION_DATA[dir][1], DIRECTION_DATA[dir][2]);
 }
 
 void Harpybot::onControlDron(int data0, int data1)
@@ -87,7 +87,7 @@ void Harpybot::onControlDron(int data0, int data1)
 		case 2:
 		{
 			GCHECK_RETURN(data1 == 1 || data1 == -1 || data1 == 0);
-			m_dronBoard.command(DRON_COMMAND_CONTROL, (char) (DRON_IDLE_VALUE + OFFSET * data1));
+			m_dronBoard.command(DRON_COMMAND_ULTRASONIC, (char) (DRON_IDLE_VALUE + OFFSET * data1));
 		}
 		break;
 
