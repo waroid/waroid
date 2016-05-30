@@ -36,6 +36,7 @@ CPPSOURCES = main.cpp \
 	robot/Toadbot.cpp \
 	robot/Turtlebot.cpp \
 	robot/Warthogbot.cpp \
+	robot/Warbot1.cpp \
 	weapon/Weapon.cpp \
 	weapon/Cannon.cpp \
 	weapon/Gatling.cpp \

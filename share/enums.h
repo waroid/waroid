@@ -51,6 +51,12 @@ namespace EROBOT
 		SPIDERBOT,
 		THORBOT,
 		HARPYBOT,
+		WARBOT1,
+		WARBOT2,
+		WARBOT3,
+		WARBOT4,
+		WARBOT5,
+		WARBOT6,
 		//----------
 		TOTAL,
 	};
