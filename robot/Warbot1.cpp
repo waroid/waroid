@@ -28,7 +28,7 @@ namespace WARBOT1
 	{ 0.0, 0.0 },	//turn left
 	};
 	const float SPEED_DATA[ESPEED::TOTAL] =
-	{ 0.0, 0.35, 0.6, 0.85 };
+	{ 0.0, 0.85, 0.9, 0.95 };
 }
 using namespace WARBOT1;
 

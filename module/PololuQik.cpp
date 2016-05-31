@@ -17,10 +17,10 @@ namespace POLOLU_QIK
 
 	enum ECOMMAND
 	{
-		COMMAND_SET_MOTOR_0_FORWARD = 0x8C,
-		COMMAND_SET_MOTOR_0_BACKWARD = 0x8E,
-		COMMAND_SET_MOTOR_1_FORWARD = 0x88,
-		COMMAND_SET_MOTOR_1_BACKWARD = 0x8A,
+		COMMAND_SET_MOTOR_0_FORWARD = 0x88,
+		COMMAND_SET_MOTOR_0_BACKWARD = 0x8A,
+		COMMAND_SET_MOTOR_1_FORWARD = 0x8C,
+		COMMAND_SET_MOTOR_1_BACKWARD = 0x8E,
 	};
 
 }
@@ -45,10 +45,10 @@ bool PololuQik::open()
 	m_fd = serialOpen("/dev/ttyAMA0", 38400);
 	GCHECK_RETFALSE(m_fd!=-1);
 
-	// set timeout to 262ms
+	// set timeout to 0ms
 	serialPutchar(m_fd, 0x84);
 	serialPutchar(m_fd, 0x03);
-	serialPutchar(m_fd, 0x01);
+	serialPutchar(m_fd, 0x00);
 	serialPutchar(m_fd, 0x55);
 	serialPutchar(m_fd, 0x2a);
 
