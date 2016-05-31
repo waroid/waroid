@@ -26,6 +26,8 @@
 #include "robot/Thorbot.h"
 #include "robot/Harpybot.h"
 #include "robot/Warbot1.h"
+#include "robot/Warbot2.h"
+#include "robot/Warbot3.h"
 
 #include "MainManager.h"
 
@@ -162,6 +164,14 @@ Robot* MainManager::createRobot(EROBOT::ETYPE erobot, char team)
 
 		case EROBOT::WARBOT1:
 			robot = new Warbot1(team);
+		break;
+
+		case EROBOT::WARBOT2:
+			robot = new Warbot2(team);
+		break;
+
+		case EROBOT::WARBOT3:
+			robot = new Warbot3(team);
 		break;
 
 		default:

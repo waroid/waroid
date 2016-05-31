@@ -54,9 +54,6 @@ namespace EROBOT
 		WARBOT1,
 		WARBOT2,
 		WARBOT3,
-		WARBOT4,
-		WARBOT5,
-		WARBOT6,
 		//----------
 		TOTAL,
 	};
